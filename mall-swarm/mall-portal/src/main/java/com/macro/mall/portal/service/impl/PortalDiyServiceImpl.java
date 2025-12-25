@@ -2829,7 +2829,7 @@ public class PortalDiyServiceImpl implements PortalDiyService {
      * 生成默认面预览URL
      */
     private String generateDefaultFacePreviewUrl(int faceIndex) {
-        return "https://guanghengzou-mall.oss-cn-guangzhou.aliyuncs.com/static/diy/default-face-" + faceIndex + ".jpg";
+        return "${DEFAULT_OSS_URL}/static/diy/default-face-" + faceIndex + ".jpg";
     }
 
     /**
@@ -2837,7 +2837,7 @@ public class PortalDiyServiceImpl implements PortalDiyService {
      */
     private String generateDefaultPreviewUrl(DiyDesignParam designParam) {
         // 返回默认的预览图URL
-        return "https://guanghengzou-mall.oss-cn-guangzhou.aliyuncs.com/static/diy/default-preview.jpg";
+        return "${DEFAULT_OSS_URL}/static/diy/default-preview.jpg";
     }
 
     /**
@@ -2991,17 +2991,17 @@ public class PortalDiyServiceImpl implements PortalDiyService {
 
         switch (productType) {
             case "clothing":
-                areas.add(createCustomizableArea(1L, "正面", "https://guanghengzou-mall.oss-cn-guangzhou.aliyuncs.com/static/new_index/banner1.jpg", true));
-                areas.add(createCustomizableArea(2L, "背面", "https://guanghengzou-mall.oss-cn-guangzhou.aliyuncs.com/static/new_index/banner2.jpg", true));
-                areas.add(createCustomizableArea(3L, "左袖口", "https://guanghengzou-mall.oss-cn-guangzhou.aliyuncs.com/static/new_index/banner1.jpg", true));
-                areas.add(createCustomizableArea(4L, "右袖口", "https://guanghengzou-mall.oss-cn-guangzhou.aliyuncs.com/static/new_index/banner2.jpg", true));
+                areas.add(createCustomizableArea(1L, "正面", "${DEFAULT_OSS_URL}/static/new_index/banner1.jpg", true));
+                areas.add(createCustomizableArea(2L, "背面", "${DEFAULT_OSS_URL}/static/new_index/banner2.jpg", true));
+                areas.add(createCustomizableArea(3L, "左袖口", "${DEFAULT_OSS_URL}/static/new_index/banner1.jpg", true));
+                areas.add(createCustomizableArea(4L, "右袖口", "${DEFAULT_OSS_URL}/static/new_index/banner2.jpg", true));
                 break;
             case "stationery":
-                areas.add(createCustomizableArea(1L, "正面", "https://guanghengzou-mall.oss-cn-guangzhou.aliyuncs.com/static/new_index/banner1.jpg", true));
-                areas.add(createCustomizableArea(2L, "背面", "https://guanghengzou-mall.oss-cn-guangzhou.aliyuncs.com/static/new_index/banner2.jpg", true));
+                areas.add(createCustomizableArea(1L, "正面", "${DEFAULT_OSS_URL}/static/new_index/banner1.jpg", true));
+                areas.add(createCustomizableArea(2L, "背面", "${DEFAULT_OSS_URL}/static/new_index/banner2.jpg", true));
                 break;
             default:
-                areas.add(createCustomizableArea(1L, "正面", "https://guanghengzou-mall.oss-cn-guangzhou.aliyuncs.com/static/new_index/banner1.jpg", true));
+                areas.add(createCustomizableArea(1L, "正面", "${DEFAULT_OSS_URL}/static/new_index/banner1.jpg", true));
                 break;
         }
 

@@ -6,4 +6,4 @@ spring:
   cloud:
     nacos:
       config:
-        prefix: guanghengzou-search
+        prefix: ishopdev-search

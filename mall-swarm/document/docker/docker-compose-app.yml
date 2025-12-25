@@ -5,7 +5,7 @@ networks:
     external: true
 services:
   mall-admin:
-    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-admin:1.0-SNAPSHOT
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-admin:1.0-SNAPSHOT
     container_name: mall-admin
     restart: unless-stopped
     ports:
@@ -34,7 +34,7 @@ services:
     networks:
       - mall-network
   mall-portal:
-    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-portal:1.0-SNAPSHOT
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-portal:1.0-SNAPSHOT
     container_name: mall-portal
     restart: unless-stopped
     ports:
@@ -63,7 +63,7 @@ services:
     networks:
       - mall-network
   mall-selfcheck:
-    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-selfcheck:1.0-SNAPSHOT
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-selfcheck:1.0-SNAPSHOT
     container_name: mall-selfcheck
     restart: unless-stopped
     ports:
@@ -92,7 +92,7 @@ services:
     networks:
       - mall-network
   mall-auth:
-    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-auth:1.0-SNAPSHOT
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-auth:1.0-SNAPSHOT
     container_name: mall-auth
     restart: unless-stopped
     ports:
@@ -121,7 +121,7 @@ services:
     networks:
       - mall-network
   mall-gateway:
-    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-gateway:1.0-SNAPSHOT
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-gateway:1.0-SNAPSHOT
     container_name: mall-gateway
     restart: unless-stopped
     ports:
@@ -150,7 +150,7 @@ services:
     networks:
       - mall-network
   mall-monitor:
-    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-monitor:1.0-SNAPSHOT
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-monitor:1.0-SNAPSHOT
     container_name: mall-monitor
     restart: unless-stopped
     ports:

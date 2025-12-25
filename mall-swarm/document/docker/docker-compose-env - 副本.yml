@@ -60,9 +60,9 @@ services:
     environment:
       - TZ=Asia/Shanghai
     volumes:
-      - /mydata/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf #挂载logstash的配置文件
+      - /mydata/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf #挂载logstash的配置文�?
     depends_on:
-      - elasticsearch #kibana在elasticsearch启动之后再启动
+      - elasticsearch #kibana在elasticsearch启动之后再启�?
     links:
       - elasticsearch:es #可以用es这个域名访问elasticsearch服务
     ports:
@@ -76,7 +76,7 @@ services:
     links:
       - elasticsearch:es #可以用es这个域名访问elasticsearch服务
     depends_on:
-      - elasticsearch #kibana在elasticsearch启动之后再启动
+      - elasticsearch #kibana在elasticsearch启动之后再启�?
     environment:
       - "elasticsearch.hosts=http://es:9200" #设置访问elasticsearch的地址
     ports:

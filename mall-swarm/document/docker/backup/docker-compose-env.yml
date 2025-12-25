@@ -45,7 +45,7 @@ services:
       - TZ=Asia/Shanghai
       - LS_JAVA_OPTS=-Xms128m -Xmx256m
     volumes:
-      - /mydata/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf #挂载logstash的配置文件
+      - /mydata/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf #挂载logstash的配置文�?
       - /mydata/logstash/logs:/var/log/logstash #日志文件输出目录挂载到宿主机
     ports:
       - 4560:4560

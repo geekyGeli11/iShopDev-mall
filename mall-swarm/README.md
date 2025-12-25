@@ -120,24 +120,24 @@ mall
 - docker compose -f docker-compose-env.yml up -d
 - docker compose -f docker-compose-app.yml up -d
 
-- docker login --username=食议兽科技 registry.cn-hangzhou.aliyuncs.com
-- docker tag guanghengzou-mall-portal:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-portal:1.0-SNAPSHOT
-- docker tag guanghengzou-mall-selfcheck:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-selfcheck:1.0-SNAPSHOT
-- docker tag guanghengzou-mall-admin:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-admin:1.0-SNAPSHOT
-- docker tag guanghengzou-mall-gateway:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-gateway:1.0-SNAPSHOT
-- docker tag guanghengzou-mall-search:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-search:1.0-SNAPSHOT
-- docker tag guanghengzou-mall-auth:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-auth:1.0-SNAPSHOT
-- docker tag guanghengzou-mall-monitor:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-monitor:1.0-SNAPSHOT
+- docker login --username=${DOCKER_USERNAME} registry.cn-hangzhou.aliyuncs.com
+- docker tag ishopdev-mall-portal:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-portal:1.0-SNAPSHOT
+- docker tag ishopdev-mall-selfcheck:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-selfcheck:1.0-SNAPSHOT
+- docker tag ishopdev-mall-admin:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-admin:1.0-SNAPSHOT
+- docker tag ishopdev-mall-gateway:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-gateway:1.0-SNAPSHOT
+- docker tag ishopdev-mall-search:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-search:1.0-SNAPSHOT
+- docker tag ishopdev-mall-auth:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-auth:1.0-SNAPSHOT
+- docker tag ishopdev-mall-monitor:1.0-SNAPSHOT registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-monitor:1.0-SNAPSHOT
 
 - 登录Docker Hub 【或者自己的镜像服务地址，推荐使用国内的镜像地址】 docker login
 - 推送到远程仓库  docker push fghsg/mall-admin:1.0-SNAPSHOT
-- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-portal:1.0-SNAPSHOT
-- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-selfcheck:1.0-SNAPSHOT
-- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-admin:1.0-SNAPSHOT
-- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-gateway:1.0-SNAPSHOT
-- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-search:1.0-SNAPSHOT
-- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-auth:1.0-SNAPSHOT
-- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-monitor:1.0-SNAPSHOT
+- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-portal:1.0-SNAPSHOT
+- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-selfcheck:1.0-SNAPSHOT
+- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-admin:1.0-SNAPSHOT
+- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-gateway:1.0-SNAPSHOT
+- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-search:1.0-SNAPSHOT
+- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-auth:1.0-SNAPSHOT
+- docker push registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-mall-monitor:1.0-SNAPSHOT
 
 - nginx 需要到 /mydata/nginx/conf 里面修改nginx.conf 和 mine.type
 
@@ -173,15 +173,15 @@ mall
   -d minio/minio server /data
 ## 服务器和数据库相关资料
 ### 服务器
-- IP 8.134.203.152
-- 用户名 root
-- 登录密码 Guanghengzou2025
+- IP ${SERVER_IP}
+- 用户名 ${SERVER_USERNAME}
+- 登录密码 ${SERVER_PASSWORD}
 
 ### 数据库
-IP rm-7xvw6f28955onk26duo.mysql.rds.aliyuncs.com
-用户名 guanghengzou
-密码 Guanghengzou2025
-数据库名：guanghengzou-mall
+IP ${MYSQL_HOST}
+用户名 ${MYSQL_USERNAME}
+密码 ${MYSQL_PASSWORD}
+数据库名：mall
 
 - 查看注册中心注册服务信息，访问地址：http://192.168.3.101:8848/nacos/
 

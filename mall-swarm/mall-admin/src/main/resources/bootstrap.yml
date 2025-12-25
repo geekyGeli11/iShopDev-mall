@@ -6,4 +6,4 @@ spring:
   cloud:
     nacos:
       config:
-        prefix: guanghengzou-admin
+        prefix: ishopdev-admin

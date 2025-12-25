@@ -289,7 +289,7 @@
                         <registry>${docker.registry}</registry>
                         <authConfig>
                             <username>食议兽科技</username>
-                            <password>321Wssba</password>
+                            <password></password>
                         </authConfig>
                         -->
                         <!-- 增加稳定性配置 -->
@@ -297,8 +297,8 @@
                         <logStdout>true</logStdout>
                         <images>
                             <image>
-                                <!--定义镜像名称，格式：registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-项目名:版本-->
-                                <name>${docker.registry}/${docker.namespace}/guanghengzou-${project.name}:${project.version}</name>
+                                <!--定义镜像名称，格式：registry.cn-hangzhou.aliyuncs.com/yinshi/ishopdev-项目名:版本-->
+                                <name>${docker.registry}/${docker.namespace}/ishopdev-${project.name}:${project.version}</name>
                                 <!--定义镜像构建行为-->
                                 <build>
                                     <!--定义基础镜像-->
