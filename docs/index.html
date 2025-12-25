@@ -3,218 +3,1073 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iShopDev Mall - 开源电商解决方案</title>
+    <title>iShopDev Mall - 开源微服务电商解决方案</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .feature-icon { width: 60px; height: 60px; }
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+        }
+        .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%); }
+        .gradient-text { background: linear-gradient(135deg, #6366f1, #a855f7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); }
+        .flow-box { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 2px solid #e2e8f0; }
+        .flow-arrow { color: #6366f1; }
+        .tech-tag { transition: all 0.2s ease; }
+        .tech-tag:hover { transform: scale(1.05); }
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: white; transition: width 0.3s; }
+        .nav-link:hover::after { width: 100%; }
+        .section-title { position: relative; display: inline-block; }
+        .section-title::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 60px; height: 4px; background: linear-gradient(90deg, #6366f1, #a855f7); border-radius: 2px; }
+        .arch-box { background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%); }
+        .arch-layer { border-left: 4px solid; }
+        .layer-client { border-color: #22c55e; background: linear-gradient(90deg, rgba(34,197,94,0.1) 0%, transparent 100%); }
+        .layer-gateway { border-color: #3b82f6; background: linear-gradient(90deg, rgba(59,130,246,0.1) 0%, transparent 100%); }
+        .layer-service { border-color: #8b5cf6; background: linear-gradient(90deg, rgba(139,92,246,0.1) 0%, transparent 100%); }
+        .layer-infra { border-color: #f59e0b; background: linear-gradient(90deg, rgba(245,158,11,0.1) 0%, transparent 100%); }
+        html { scroll-behavior: smooth; }
+        .flow-step { position: relative; }
+        .flow-step::after { content: '→'; position: absolute; right: -20px; top: 50%; transform: translateY(-50%); color: #6366f1; font-size: 1.5rem; font-weight: bold; }
+        .flow-step:last-child::after { display: none; }
+        .project-card { border: 1px solid #e5e7eb; transition: all 0.3s ease; }
+        .project-card:hover { border-color: #6366f1; box-shadow: 0 10px 40px -10px rgba(99,102,241,0.3); }
+        .feature-grid { display: grid; gap: 0.75rem; }
+        .feature-item { background: #f8fafc; border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
+        .feature-item i { color: #6366f1; }
     </style>
 </head>
 <body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold gradient-text">🛒 iShopDev Mall</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#features" class="nav-link text-gray-600 hover:text-indigo-600">功能特性</a>
+                <a href="#architecture" class="nav-link text-gray-600 hover:text-indigo-600">系统架构</a>
+                <a href="#projects" class="nav-link text-gray-600 hover:text-indigo-600">子项目</a>
+                <a href="#tech" class="nav-link text-gray-600 hover:text-indigo-600">技术栈</a>
+                <a href="#contact" class="nav-link text-gray-600 hover:text-indigo-600">联系我们</a>
+            </div>
+            <a href="https://github.com/geekyGeli11/iShopDev-mall" target="_blank" class="bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+                <i class="fab fa-github mr-2"></i>GitHub
+            </a>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
-    <header class="gradient-bg text-white">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold">🛒 iShopDev Mall</div>
-            <div class="space-x-6">
-                <a href="#features" class="hover:text-gray-200">功能特性</a>
-                <a href="#architecture" class="hover:text-gray-200">系统架构</a>
-                <a href="#tech" class="hover:text-gray-200">技术栈</a>
-                <a href="https://github.com/geekyGeli11/iShopDev-mall" class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100">
-                    <i class="fab fa-github mr-2"></i>GitHub
+    <header class="gradient-bg text-white pt-24">
+        <div class="container mx-auto px-6 py-20 text-center">
+            <div class="inline-block px-4 py-2 bg-white/20 rounded-full text-sm mb-6">
+                🎉 基于 Spring Cloud 2023 + Vue 全家桶
+            </div>
+            <h1 class="text-5xl md:text-6xl font-bold mb-6">iShopDev Mall</h1>
+            <p class="text-xl md:text-2xl mb-4 text-indigo-100">一站式微服务电商解决方案</p>
+            <p class="text-lg mb-10 text-indigo-200 max-w-3xl mx-auto">
+                整合后台管理、移动端商城、小程序、自助收银等多终端，提供完整的电商业务闭环
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="https://github.com/geekyGeli11/iShopDev-mall" target="_blank" class="bg-white text-indigo-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors inline-flex items-center">
+                    <i class="fab fa-github mr-2 text-xl"></i>查看源码
+                </a>
+                <a href="#projects" class="border-2 border-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-indigo-600 transition-colors inline-flex items-center">
+                    <i class="fas fa-rocket mr-2"></i>快速开始
                 </a>
             </div>
-        </nav>
-        <div class="container mx-auto px-6 py-20 text-center">
-            <h1 class="text-5xl font-bold mb-6">iShopDev Mall</h1>
-            <p class="text-xl mb-8 text-gray-200">一站式微服务电商解决方案，基于 Spring Cloud 2023 + Vue 全家桶</p>
-            <div class="space-x-4">
-                <a href="https://github.com/geekyGeli11/iShopDev-mall" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 inline-block">
-                    <i class="fab fa-github mr-2"></i>查看源码
-                </a>
-                <a href="#quickstart" class="border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 inline-block">
-                    快速开始
-                </a>
+            <div class="mt-16 flex justify-center gap-12 text-center">
+                <div>
+                    <div class="text-4xl font-bold">4+</div>
+                    <div class="text-indigo-200">子项目</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold">10+</div>
+                    <div class="text-indigo-200">微服务</div>
+                </div>
+                <div>
+                    <div class="text-4xl font-bold">50+</div>
+                    <div class="text-indigo-200">功能模块</div>
+                </div>
             </div>
         </div>
+        <div class="h-16 bg-gradient-to-b from-transparent to-gray-50"></div>
     </header>
 
     <!-- Features Section -->
     <section id="features" class="py-20">
         <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12">核心功能</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="bg-white p-6 rounded-xl shadow-lg card-hover transition-all duration-300">
-                    <div class="feature-icon bg-blue-100 rounded-full flex items-center justify-center mb-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">核心功能</h2>
+            <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">覆盖电商全业务场景，从商品管理到订单履约，从会员运营到营销推广</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
                         <i class="fas fa-store text-blue-600 text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">商城系统</h3>
-                    <p class="text-gray-600">商品管理、分类、品牌、库存、购物车、订单全流程</p>
+                    <h3 class="text-xl font-semibold mb-2">商品管理</h3>
+                    <p class="text-gray-600 text-sm">商品CRUD、多级分类、品牌管理、规格属性、库存预警、报损管理</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-lg card-hover transition-all duration-300">
-                    <div class="feature-icon bg-green-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-users text-green-600 text-2xl"></i>
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-shopping-cart text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">订单系统</h3>
+                    <p class="text-gray-600 text-sm">购物车、订单管理、支付结算、物流跟踪、售后服务、运费模板</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-purple-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold mb-2">会员体系</h3>
-                    <p class="text-gray-600">会员等级、积分、签到、优惠券、分销推广</p>
+                    <p class="text-gray-600 text-sm">会员等级、积分系统、签到奖励、余额充值、分销推广、邀请返利</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-lg card-hover transition-all duration-300">
-                    <div class="feature-icon bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-palette text-purple-600 text-2xl"></i>
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-bullhorn text-orange-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">营销工具</h3>
+                    <p class="text-gray-600 text-sm">优惠券、秒杀活动、积分商城、广告管理、消息推送、专题页面</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="w-14 h-14 bg-pink-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-palette text-pink-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold mb-2">AI 定制</h3>
-                    <p class="text-gray-600">商品个性化定制、AI 图像生成、效果预览</p>
+                    <p class="text-gray-600 text-sm">商品个性化定制、AI图像生成、效果实时预览、定制订单管理</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-lg card-hover transition-all duration-300">
-                    <div class="feature-icon bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fas fa-cash-register text-orange-600 text-2xl"></i>
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="w-14 h-14 bg-cyan-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-cash-register text-cyan-600 text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-semibold mb-2">自助收银</h3>
-                    <p class="text-gray-600">扫码购物、多种支付、小票打印、语音播报</p>
+                    <p class="text-gray-600 text-sm">扫码购物、多种支付、会员识别、小票打印、语音播报</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-red-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">数据统计</h3>
+                    <p class="text-gray-600 text-sm">销售报表、商品分析、会员画像、实时大屏、数据可视化</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg card-hover">
+                    <div class="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-shield-alt text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">权限管理</h3>
+                    <p class="text-gray-600 text-sm">RBAC权限模型、角色管理、菜单配置、资源控制、操作日志</p>
                 </div>
             </div>
         </div>
     </section>
 
+
     <!-- Architecture Section -->
-    <section id="architecture" class="py-20 bg-gray-100">
+    <section id="architecture" class="py-20 bg-white">
         <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12">系统架构</h2>
-            <div class="bg-white rounded-xl shadow-lg p-8">
-                <pre class="text-sm overflow-x-auto">
-┌─────────────────────────────────────────────────────────────────────────┐
-│                           客户端层                                       │
-│     ┌───────────┐    ┌───────────┐    ┌───────────┐    ┌───────────┐   │
-│     │ 小程序端   │    │   H5端    │    │  管理后台  │    │ 自助收银   │   │
-│     └───────────┘    └───────────┘    └───────────┘    └───────────┘   │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                          API 网关层                                      │
-│                    mall-gateway (Spring Cloud Gateway)                  │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         微服务应用层                                     │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ │
-│  │mall-admin │ │mall-portal│ │mall-search│ │mall-auth  │ │mall-self  │ │
-│  │ 后台服务   │ │ 前台服务   │ │ 搜索服务   │ │ 认证服务   │ │ check服务 │ │
-│  └───────────┘ └───────────┘ └───────────┘ └───────────┘ └───────────┘ │
-└─────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         基础设施层                                       │
-│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ │
-│  │   Nacos   │ │   Redis   │ │   MySQL   │ │ RabbitMQ  │ │Elasticsearch│
-│  └───────────┘ └───────────┘ └───────────┘ └───────────┘ └───────────┘ │
-└─────────────────────────────────────────────────────────────────────────┘
-                </pre>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">系统架构</h2>
+            <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">基于 Spring Cloud 微服务架构，采用前后端分离设计，支持高并发、高可用</p>
+            
+            <div class="max-w-5xl mx-auto">
+                <!-- Client Layer -->
+                <div class="arch-layer layer-client rounded-xl p-6 mb-4">
+                    <div class="flex items-center mb-4">
+                        <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium mr-3">客户端层</span>
+                        <span class="text-gray-500 text-sm">多终端覆盖，统一用户体验</span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                            <i class="fab fa-weixin text-green-500 text-3xl mb-2"></i>
+                            <div class="font-medium">小程序</div>
+                            <div class="text-xs text-gray-500">uni-app</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                            <i class="fas fa-mobile-alt text-blue-500 text-3xl mb-2"></i>
+                            <div class="font-medium">H5/App</div>
+                            <div class="text-xs text-gray-500">uni-app</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                            <i class="fas fa-desktop text-purple-500 text-3xl mb-2"></i>
+                            <div class="font-medium">管理后台</div>
+                            <div class="text-xs text-gray-500">Vue + Element</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                            <i class="fas fa-cash-register text-orange-500 text-3xl mb-2"></i>
+                            <div class="font-medium">自助收银</div>
+                            <div class="text-xs text-gray-500">Vue3 + Electron</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="flex justify-center my-2">
+                    <i class="fas fa-chevron-down text-2xl text-gray-300"></i>
+                </div>
+
+                <!-- Gateway Layer -->
+                <div class="arch-layer layer-gateway rounded-xl p-6 mb-4">
+                    <div class="flex items-center mb-4">
+                        <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium mr-3">网关层</span>
+                        <span class="text-gray-500 text-sm">统一入口，路由转发，认证鉴权</span>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 shadow-sm">
+                        <div class="flex items-center justify-between flex-wrap gap-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-network-wired text-blue-500 text-2xl mr-3"></i>
+                                <div>
+                                    <div class="font-medium">Spring Cloud Gateway</div>
+                                    <div class="text-sm text-gray-500">路由转发 / 负载均衡 / 限流熔断 / 认证鉴权</div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">Sa-Token</span>
+                                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">Sentinel</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="flex justify-center my-2">
+                    <i class="fas fa-chevron-down text-2xl text-gray-300"></i>
+                </div>
+
+                <!-- Service Layer -->
+                <div class="arch-layer layer-service rounded-xl p-6 mb-4">
+                    <div class="flex items-center mb-4">
+                        <span class="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium mr-3">微服务层</span>
+                        <span class="text-gray-500 text-sm">业务服务拆分，独立部署，弹性伸缩</span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-user-shield text-purple-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">mall-auth</div>
+                            <div class="text-xs text-gray-500">认证服务</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-cogs text-purple-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">mall-admin</div>
+                            <div class="text-xs text-gray-500">后台服务</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-store text-purple-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">mall-portal</div>
+                            <div class="text-xs text-gray-500">前台服务</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-search text-purple-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">mall-search</div>
+                            <div class="text-xs text-gray-500">搜索服务</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-cash-register text-purple-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">mall-selfcheck</div>
+                            <div class="text-xs text-gray-500">收银服务</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-chart-bar text-purple-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">mall-monitor</div>
+                            <div class="text-xs text-gray-500">监控服务</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <div class="flex justify-center my-2">
+                    <i class="fas fa-chevron-down text-2xl text-gray-300"></i>
+                </div>
+
+                <!-- Infrastructure Layer -->
+                <div class="arch-layer layer-infra rounded-xl p-6">
+                    <div class="flex items-center mb-4">
+                        <span class="bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-medium mr-3">基础设施层</span>
+                        <span class="text-gray-500 text-sm">中间件支撑，数据存储，消息队列</span>
+                    </div>
+                    <div class="grid grid-cols-3 md:grid-cols-6 gap-3">
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-cloud text-amber-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">Nacos</div>
+                            <div class="text-xs text-gray-500">注册/配置</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-database text-amber-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">MySQL</div>
+                            <div class="text-xs text-gray-500">数据库</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-bolt text-amber-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">Redis</div>
+                            <div class="text-xs text-gray-500">缓存</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-envelope text-amber-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">RabbitMQ</div>
+                            <div class="text-xs text-gray-500">消息队列</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-search text-amber-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">ES</div>
+                            <div class="text-xs text-gray-500">搜索引擎</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <i class="fas fa-leaf text-amber-500 text-xl mb-1"></i>
+                            <div class="text-sm font-medium">MongoDB</div>
+                            <div class="text-xs text-gray-500">文档存储</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">子项目介绍</h2>
+            <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">四大子项目协同工作，覆盖电商全场景需求</p>
+
+            <!-- mall-swarm -->
+            <div class="project-card bg-white rounded-2xl p-8 mb-8">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mr-4">
+                        <i class="fas fa-server text-purple-600 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">mall-swarm</h3>
+                        <p class="text-gray-500">微服务后端系统</p>
+                    </div>
+                    <div class="ml-auto flex gap-2">
+                        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm">Spring Cloud 2023</span>
+                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">Spring Boot 3.2</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-6">基于 Spring Cloud 2023 & Alibaba 的微服务商城系统，采用 Sa-Token 认证授权，MyBatis ORM，支持 Docker/Kubernetes 部署。</p>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-3"><i class="fas fa-cubes text-purple-500 mr-2"></i>服务模块</h4>
+                        <div class="feature-grid grid-cols-2">
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>mall-auth 认证服务</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>mall-gateway 网关服务</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>mall-admin 后台服务</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>mall-portal 前台服务</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>mall-search 搜索服务</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>mall-selfcheck 收银服务</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>mall-monitor 监控服务</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>mall-common 公共模块</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-3"><i class="fas fa-cog text-purple-500 mr-2"></i>核心技术</h4>
+                        <div class="feature-grid grid-cols-2">
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>Nacos 注册/配置中心</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>Sa-Token 认证授权</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>Elasticsearch 搜索</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>RabbitMQ 消息队列</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>Redis 分布式缓存</div>
+                            <v class="feature-item"><i class="fas fa-check-circle"></i>Seata 分布式事务</v>didi
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>Docker 容器化部署</div>
+                            <div class="feature-item"><i class="fas fa-check-circle"></i>Kubernetes 编排</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend Business Flow -->
+                <h4 class="font-semibold text-gray-700 mb-4"><i class="fas fa-project-diagram text-purple-500 mr-2"></i>服务调用流程</h4>
+                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6">
+                    <div class="flex flex-wrap items-center justify-center gap-2 text-sm">
+                        <div class="bg-white px-4 py-2 rounded-lg shadow-sm border-2 border-green-400">
+                            <i class="fas fa-mobile-alt text-green-500 mr-1"></i>客户端请求
+                        </div>
+                        <i class="fas fa-arrow-right text-purple-400"></i>
+                        <div class="bg-white px-4 py-2 rounded-lg shadow-sm border-2 border-blue-400">
+                            <i class="fas fa-shield-alt text-blue-500 mr-1"></i>Gateway 网关
+                        </div>
+                        <i class="fas fa-arrow-right text-purple-400"></i>
+                        <div class="bg-white px-4 py-2 rounded-lg shadow-sm border-2 border-purple-400">
+                            <i class="fas fa-key text-purple-500 mr-1"></i>Auth 认证
+                        </div>
+                        <i class="fas fa-arrow-right text-purple-400"></i>
+                        <div class="bg-white px-4 py-2 rounded-lg shadow-sm border-2 border-indigo-400">
+                            <i class="fas fa-server text-indigo-500 mr-1"></i>业务服务
+                        </div>
+                        <i class="fas fa-arrow-right text-purple-400"></i>
+                        <div class="bg-white px-4 py-2 rounded-lg shadow-sm border-2 border-amber-400">
+                            <i class="fas fa-database text-amber-500 mr-1"></i>数据层
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- mall-admin-web -->
+            <div class="project-card bg-white rounded-2xl p-8 mb-8">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mr-4">
+                        <i class="fas fa-desktop text-blue-600 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">mall-admin-web</h3>
+                        <p class="text-gray-500">电商后台管理系统</p>
+                    </div>
+                    <div class="ml-auto flex gap-2">
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">Vue 2</span>
+                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">Element UI</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-6">功能完善的电商后台管理系统，包含商品管理、订单管理、会员管理、营销管理、权限管理、数据统计等核心模块。</p>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- PMS -->
+                    <div class="bg-blue-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-blue-800 mb-3"><i class="fas fa-box text-blue-500 mr-2"></i>商品管理 (PMS)</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-blue-400 mr-2"></i>商品列表 - 增删改查、上下架、批量操作</li>
+                            <li><i class="fas fa-check text-blue-400 mr-2"></i>商品分类 - 多级分类、排序、图标设置</li>
+                            <li><i class="fas fa-check text-blue-400 mr-2"></i>品牌管理 - 品牌信息、Logo、推荐设置</li>
+                            <li><i class="fas fa-check text-blue-400 mr-2"></i>属性管理 - 规格属性、参数属性配置</li>
+                            <li><i class="fas fa-check text-blue-400 mr-2"></i>库存管理 - SKU库存、预警、调整</li>
+                            <li><i class="fas fa-check text-blue-400 mr-2"></i>报损管理 - 报损登记、审核、统计</li>
+                        </ul>
+                    </div>
+                    <!-- OMS -->
+                    <div class="bg-green-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-green-800 mb-3"><i class="fas fa-shopping-bag text-green-500 mr-2"></i>订单管理 (OMS)</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>订单列表 - 查询、筛选、导出、批量操作</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>订单详情 - 信息查看、地址修改、备注</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>发货管理 - 单个/批量发货、物流录入</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>售后管理 - 退货申请、退款审核</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>运费模板 - 运费规则、包邮条件</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>充值订单 - 会员充值记录查询</li>
+                        </ul>
+                    </div>
+                    <!-- UMS -->
+                    <div class="bg-purple-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-purple-800 mb-3"><i class="fas fa-users text-purple-500 mr-2"></i>会员管理 (UMS)</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>会员列表 - 查询、筛选、导出、状态管理</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>会员详情 - 基本信息、订单、积分、优惠券</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>会员等级 - 等级规则、权益设置</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>积分管理 - 发放、扣减、明细查询</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>标签管理 - 标签创建、分配、批量打标</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>分销管理 - 分销员、佣金、提现审核</li>
+                        </ul>
+                    </div>
+                    <!-- SMS -->
+                    <div class="bg-orange-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-orange-800 mb-3"><i class="fas fa-bullhorn text-orange-500 mr-2"></i>营销管理 (SMS)</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>优惠券管理 - 创建、发放、使用统计</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>秒杀活动 - 场次配置、商品管理</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>广告管理 - 广告位配置、投放、统计</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>积分商城 - 积分商品、兑换规则</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>签到管理 - 签到规则、奖励设置</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>消息通知 - 模板管理、推送记录</li>
+                        </ul>
+                    </div>
+                    <!-- 权限管理 -->
+                    <div class="bg-red-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-red-800 mb-3"><i class="fas fa-shield-alt text-red-500 mr-2"></i>权限管理</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-red-400 mr-2"></i>管理员管理 - 账号创建、编辑、禁用</li>
+                            <li><i class="fas fa-check text-red-400 mr-2"></i>角色管理 - 角色创建、权限分配</li>
+                            <li><i class="fas fa-check text-red-400 mr-2"></i>菜单管理 - 菜单配置、排序、图标</li>
+                            <li><i class="fas fa-check text-red-400 mr-2"></i>资源管理 - API资源、分类、权限绑定</li>
+                            <li><i class="fas fa-check text-red-400 mr-2"></i>RBAC模型 - 基于角色的访问控制</li>
+                        </ul>
+                    </div>
+                    <!-- 数据统计 -->
+                    <div class="bg-indigo-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-indigo-800 mb-3"><i class="fas fa-chart-line text-indigo-500 mr-2"></i>数据统计</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>首页大屏 - 核心指标、实时监控</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>销售统计 - 销售额、订单量、客单价</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>商品统计 - 销量排行、库存预警</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>会员统计 - 新增、活跃、会员画像</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>数据可视化 - ECharts/DataV</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Admin Business Flow -->
+                <h4 class="font-semibold text-gray-700 mb-4"><i class="fas fa-project-diagram text-blue-500 mr-2"></i>订单处理流程</h4>
+                <div class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6">
+                    <div class="flex flex-wrap items-center justify-center gap-2 text-sm">
+                        <div class="bg-white px-4 py-2 rounded-lg shadow-sm border-2 border-yellow-400">
+                            <i class="fas fa-clock text-yellow-500 mr-1"></i>待付款
+                        </div>
+                        <i class="fas fa-arrow-right text-blue-400"></i>
+                        <div class="bg-white px-4 py-2 rounded-lg shadow-sm border-2 border-blue-400">
+                            <i class="fas fa-box text-blue-500 mr-1"></i>待发货
+                        </div>
+                        <i class="fas fa-arrow-right text-blue-400"></i>
+                        <div class="bg-white px-4 py-2 rounded-lg shadow-sm border-2 border-purple-400">
+                            <i class="fas fa-truck text-purple-500 mr-1"></i>已发货
+                        </div>
+                        <i class="fas fa-arrow-right text-blue-400"></i>
+                        <div class="bg-white px-4 py-2 rounded-lg shadow-sm border-2 border-green-400">
+                            <i class="fas fa-check-circle text-green-500 mr-1"></i>已完成
+                        </div>
+                    </div>
+                    <div class="flex justify-center mt-4 gap-8 text-xs text-gray-500">
+                        <span><i class="fas fa-times-circle text-red-400 mr-1"></i>取消订单 → 已取消</span>
+                        <span><i class="fas fa-undo text-orange-400 mr-1"></i>申请售后 → 售后中</span>
+                    </div>
+                </div>
+            </div>
+i></div>ul>li></ul>h4>li></div>i></li>li></i>li>i></li></div>div>ul>li></ul></div>div></i></div>div></i></div>div>i>v>i></i></div></i>div>div>i></div>p>""
+
+
+            <!-- mall-app-web -->
+            <div class="project-card bg-white rounded-2xl p-8 mb-8">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mr-4">
+                        <i class="fab fa-weixin text-green-600 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">mall-app-web</h3>
+                        <p class="text-gray-500">移动端商城 / 小程序</p>
+                    </div>
+                    <div class="ml-auto flex gap-2">
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">uni-app</span>
+                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">Vue 2</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-6">基于 uni-app 的跨平台移动端商城，支持微信小程序、H5、App 等多端部署，提供完整的移动购物体验。</p>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- 首页门户 -->
+                    <div class="bg-green-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-green-800 mb-3"><i class="fas fa-home text-green-500 mr-2"></i>首页门户</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>轮播广告 - 活动海报、促销信息</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>分类导航 - 快速进入分类页面</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>推荐商品 - 热门、新品、推荐</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>活动专区 - 秒杀、满减入口</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>搜索入口 - 商品关键词搜索</li>
+                        </ul>
+                    </div>
+                    <!-- 商品功能 -->
+                    <div class="bg-blue-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-blue-800 mb-3"><i class="fas fa-box-open text-blue-500 mr-2"></i>商品功能</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <><i class="fas fa-check text-blue-400 mr-2"></i>商品搜索 - 关键词、历史、热门</>
+                            <li><i class="fas fa-check text-blue-400 mr-2"></i>商品分类 - 多级分类浏览筛选</li>
+                            <li><i class="fas fa-check text-blue-400 mr-2"></i>商品详情 - 图片轮播、规格选择</li>
+                            <li><i class="fas fa-check text-blue-400 mr-2"></i>商品收藏 - 收藏/取消、收藏列表</li>
+                            <li><i class="fas fa-check text-blue-400 mr-2"></i>浏览历史 - 浏览记录、清空</li>
+                        </ul>
+                    </div>
+                    <!-- 购物车 -->
+                    <div class="bg-orange-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-orange-800 mb-3"><i class="fas fa-shopping-cart text-orange-500 mr-2"></i>购物车</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>商品列表 - 已加入购物车商品</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>数量修改 - 增减商品数量</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>规格切换 - 修改商品规格</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>优惠券 - 选择可用优惠券</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>价格计算 - 自动计算总价优惠</li>
+                        </ul>
+                    </div>
+                    <!-- 订单管理 -->
+                    <div class="bg-purple-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-purple-800 mb-3"><i class="fas fa-receipt text-purple-500 mr-2"></i>订单管理</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>创建订单 - 确认商品、地址、支付</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>订单支付 - 微信/余额/积分抵扣</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>订单列表 - 按状态筛选、搜索</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>物流跟踪 - 实时物流信息查询</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>售后申请 - 退货退款、换货</li>
+                        </ul>
+                    </div>
+                    <!-- 会员中心 -->
+                    <div class="bg-pink-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-pink-800 mb-3"><i class="fas fa-user-circle text-pink-500 mr-2"></i>会员中心</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-pink-400 mr-2"></i>个人信息 - 头像、昵称、手机号</li>
+                            <li><i class="fas fa-check text-pink-400 mr-2"></i>收货地址 - 地址增删改、默认设置</li>
+                            <li><i class="fas fa-check text-pink-400 mr-2"></i>我的积分 - 余额、明细、规则</li>
+                            <li><i class="fas fa-check text-pink-400 mr-2"></i>我的优惠券 - 可用/已用/过期</li>
+                            <li><i class="fas fa-check text-pink-400 mr-2"></i>账户余额 - 查询、充值、消费</li>
+                        </ul>
+                    </div>
+                    <!-- 特色功能 -->
+                    <div class="bg-indigo-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-indigo-800 mb-3"><i class="fas fa-star text-indigo-500 mr-2"></i>特色功能</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>AI定制 - 模板选择、AI生成、预览</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>积分商城 - 商品/优惠券兑换</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>签到系统 - 每日签到、连续奖励</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>礼物功能 - 送礼、祝福、礼袋</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>分销中心 - 邀请、推广、佣金</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- App Business Flow -->
+                <h4 class="font-semibold text-gray-700 mb-4"><i class="fas fa-project-diagram text-green-500 mr-2"></i>用户购物流程</h4>
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6">
+                    <div class="flex flex-wrap items-center justify-center gap-2 text-sm mb-4">
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-green-400">
+                            <i class="fas fa-home text-green-500 mr-1"></i>浏览首页
+                        </div>
+                        <i class="fas fa-arrow-right text-green-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-blue-400">
+                            <i class="fas fa-search text-blue-500 mr-1"></i>搜索商品
+                        </div>
+                        <i class="fas fa-arrow-right text-green-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-purple-400">
+                            <i class="fas fa-eye text-purple-500 mr-1"></i>查看详情
+                        </div>
+                        <i class="fas fa-arrow-right text-green-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-orange-400">
+                            <i class="fas fa-cart-plus text-orange-500 mr-1"></i>加入购物车
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-2 text-sm">
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-pink-400">
+                            <i class="fas fa-map-marker-alt text-pink-500 mr-1"></i>选择地址
+                        </div>
+                        <i class="fas fa-arrow-right text-green-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-yellow-400">
+                            <i class="fas fa-ticket-alt text-yellow-500 mr-1"></i>选择优惠
+                        </div>
+                        <i class="fas fa-arrow-right text-green-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-indigo-400">
+                            <i class="fas fa-credit-card text-indigo-500 mr-1"></i>确认支付
+                        </div>
+                        <i class="fas fa-arrow-right text-green-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-teal-400">
+                            <i class="fas fa-check-double text-teal-500 mr-1"></i>订单完成
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Supported Platforms -->
+                <h4 class="font-semibold text-gray-700 mt-6 mb-4"><i class="fas fa-mobile-alt text-green-500 mr-2"></i>支持平台</h4>
+                <div class="flex flex-wrap gap-3">
+                    <span class="bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm"><i class="fab fa-weixin mr-2"></i>微信小程序</span>
+                    <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm"><i class="fas fa-globe mr-2"></i>H5 移动端</span>
+                    <span class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm"><i class="fab fa-apple mr-2"></i>iOS App</span>
+                    <span class="bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm"><i class="fab fa-android mr-2"></i>Android App</span>
+                    <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-sm"><i class="fab fa-alipay mr-2"></i>支付宝小程序</span>
+                    <span class="bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm"><i class="fas fa-paw mr-2"></i>百度小程序</span>
+                </div>
+            </div>
+
+            <!-- mall-self-checkout -->
+            <div class="project-card bg-white rounded-2xl p-8">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mr-4">
+                        <i class="fas fa-cash-register text-orange-600 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">mall-self-checkout</h3>
+                        <p class="text-gray-500">跨平台自助收银系统</p>
+                    </div>
+                    <div class="ml-auto flex gap-2">
+                        <span class="bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full text-sm">Vue 3</span>
+                        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm">Electron</span>
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">Capacitor</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-6">跨平台自助收银系统，支持 Windows 桌面端和 Android 移动端，提供完整的自助收银解决方案。</p>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- 登录方式 -->
+                    <div class="bg-cyan-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-cyan-800 mb-3"><i class="fas fa-sign-in-alt text-cyan-500 mr-2"></i>登录方式</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-cyan-400 mr-2"></i>非会员结算 - 直接进入扫码购物</li>
+                            <li><i class="fas fa-check text-cyan-400 mr-2"></i>手机号登录 - 验证码登录</li>
+                            <li><i class="fas fa-check text-cyan-400 mr-2"></i>会员码登录 - 扫描会员码</li>
+                            <li><i class="fas fa-check text-cyan-400 mr-2"></i>会员识别 - 自动识别会员权益</li>
+                        </ul>
+                    </div>
+                    <!-- 购物功能 -->
+                    <div class="bg-orange-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-orange-800 mb-3"><i class="fas fa-barcode text-orange-500 mr-2"></i>购物功能</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>商品扫码 - 条码识别、信息查询</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>购物车管理 - 添加、修改数量</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>会员优惠 - 自动计算会员折扣</li>
+                            <li><i class="fas fa-check text-orange-400 mr-2"></i>价格计算 - 实时计算总价</li>
+                        </ul>
+                    </div>
+                    <!-- 支付结算 -->
+                    <div class="bg-green-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-green-800 mb-3"><i class="fas fa-credit-card text-green-500 mr-2"></i>支付结算</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>微信支付 - 扫码支付</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>支付宝支付 - 扫码支付</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>余额支付 - 会员余额抵扣</li>
+                            <li><i class="fas fa-check text-green-400 mr-2"></i>小票打印 - 订单小票打印</li>
+                        </ul>
+                    </div>
+                    <!-- 辅助功能 -->
+                    <div class="bg-purple-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-purple-800 mb-3"><i class="fas fa-cogs text-purple-500 mr-2"></i>辅助功能</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>TTS语音播报 - 语音提示功能</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>虚拟键盘 - 触屏输入支持</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>数据脱敏 - 手机号安全显示</li>
+                            <li><i class="fas fa-check text-purple-400 mr-2"></i>自动清理 - 退出时清理数据</li>
+                        </ul>
+                    </div>
+                    <!-- 技术特性 -->
+                    <div class="bg-indigo-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-indigo-800 mb-3"><i class="fas fa-code text-indigo-500 mr-2"></i>技术特性</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>Vue 3 + TypeScript</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>Vite 构建工具</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>Pinia 状态管理</li>
+                            <li><i class="fas fa-check text-indigo-400 mr-2"></i>Vant 4 UI 框架</li>
+                        </ul>
+                    </div>
+                    <!-- 支持平台 -->
+                    <div class="bg-teal-50 rounded-xl p-5">
+                        <h4 class="font-semibold text-teal-800 mb-3"><i class="fas fa-desktop text-teal-500 mr-2"></i>支持平台</h4>
+                        <ul class="text-sm text-gray-600 space-y-2">
+                            <li><i class="fas fa-check text-teal-400 mr-2"></i>Windows 桌面端 (Electron)</li>
+                            <li><i class="fas fa-check text-teal-400 mr-2"></i>Android 移动端 (Capacitor)</li>
+                            <li><i class="fas fa-check text-teal-400 mr-2"></i>Web 浏览器 (H5)</li>
+                            <li><i class="fas fa-check text-teal-400 mr-2"></i>响应式设计适配</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Self-checkout Business Flow -->
+                <h4 class="font-semibold text-gray-700 mb-4"><i class="fas fa-project-diagram text-orange-500 mr-2"></i>自助收银流程</h4>
+                <div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl p-6">
+                    <div class="text-center mb-4">
+                        <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium">会员结算流程</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-2 text-sm mb-6">
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-cyan-400">
+                            <i class="fas fa-user text-cyan-500 mr-1"></i>会员登录
+                        </div>
+                        <i class="fas fa-arrow-right text-orange-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-orange-400">
+                            <i class="fas fa-barcode text-orange-500 mr-1"></i>扫码购物
+                        </div>
+                        <i class="fas fa-arrow-right text-orange-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-purple-400">
+                            <i class="fas fa-shopping-basket text-purple-500 mr-1"></i>购物车确认
+                        </div>
+                        <i class="fas fa-arrow-right text-orange-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-green-400">
+                            <i class="fas fa-qrcode text-green-500 mr-1"></i>扫码支付
+                        </div>
+                        <i class="fas fa-arrow-right text-orange-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-blue-400">
+                            <i class="fas fa-print text-blue-500 mr-1"></i>打印小票
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">非会员结算流程</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-2 text-sm mt-4">
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-gray-400">
+                            <i class="fas fa-user-slash text-gray-500 mr-1"></i>非会员结算
+                        </div>
+                        <i class="fas fa-arrow-right text-orange-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-orange-400">
+                            <i class="fas fa-barcode text-orange-500 mr-1"></i>扫码购物
+                        </div>
+                        <i class="fas fa-arrow-right text-orange-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-green-400">
+                            <i class="fas fa-qrcode text-green-500 mr-1"></i>扫码支付
+                        </div>
+                        <i class="fas fa-arrow-right text-orange-400"></i>
+                        <div class="bg-white px-3 py-2 rounded-lg shadow-sm border-2 border-blue-400">
+                            <i class="fas fa-print text-blue-500 mr-1"></i>打印小票
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Tech Stack Section -->
-    <section id="tech" class="py-20">
+    <section id="tech" class="py-20 bg-white">
         <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12">技术栈</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-xl font-semibold mb-4 flex items-center">
-                        <i class="fas fa-server text-blue-600 mr-3"></i>后端技术
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">技术栈</h2>
+            <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">采用主流技术栈，确保系统稳定性、可扩展性和开发效率</p>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 后端技术 -->
+                <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-purple-800 mb-4 flex items-center">
+                        <i class="fas fa-server text-purple-500 mr-3"></i>后端技术
                     </h3>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Spring Cloud 2023</span>
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Spring Boot 3.2</span>
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Sa-Token</span>
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">MyBatis</span>
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Elasticsearch</span>
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Redis</span>
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">RabbitMQ</span>
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Docker</span>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Spring Cloud 2023</span>
+                            <span class="text-xs text-gray-500">微服务框架</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Spring Boot 3.2</span>
+                            <span class="text-xs text-gray-500">容器+MVC</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Sa-Token</span>
+                            <span class="text-xs text-gray-500">认证授权</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">MyBatis</span>
+                            <span class="text-xs text-gray-500">ORM框架</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Elasticsearch</span>
+                            <span class="text-xs text-gray-500">搜索引擎</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">RabbitMQ</span>
+                            <span class="text-xs text-gray-500">消息队列</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Seata</span>
+                            <span class="text-xs text-gray-500">分布式事务</span>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-xl font-semibold mb-4 flex items-center">
-                        <i class="fas fa-laptop-code text-green-600 mr-3"></i>前端技术
+
+                <!-- 前端技术 -->
+                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
+                        <i class="fas fa-desktop text-blue-500 mr-3"></i>前端技术
                     </h3>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Vue 2/3</span>
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Element UI</span>
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">uni-app</span>
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Vant</span>
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Electron</span>
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Capacitor</span>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Vue 2 / Vue 3</span>
+                            <span class="text-xs text-gray-500">前端框架</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Element UI</span>
+                            <span class="text-xs text-gray-500">后台UI框架</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Vant 4</span>
+                            <span class="text-xs text-gray-500">移动端UI</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Vuex / Pinia</span>
+                            <span class="text-xs text-gray-500">状态管理</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">ECharts / DataV</span>
+                            <span class="text-xs text-gray-500">数据可视化</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">TypeScript</span>
+                            <span class="text-xs text-gray-500">类型安全</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Vite / Webpack</span>
+                            <span class="text-xs text-gray-500">构建工具</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 跨平台技术 -->
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-green-800 mb-4 flex items-center">
+                        <i class="fas fa-mobile-alt text-green-500 mr-3"></i>跨平台技术
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">uni-app</span>
+                            <span class="text-xs text-gray-500">多端开发</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Electron</span>
+                            <span class="text-xs text-gray-500">桌面端框架</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Capacitor</span>
+                            <span class="text-xs text-gray-500">移动端框架</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">微信小程序</span>
+                            <span class="text-xs text-gray-500">小程序平台</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">H5</span>
+                            <span class="text-xs text-gray-500">移动端网页</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">iOS / Android</span>
+                            <span class="text-xs text-gray-500">原生App</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 数据存储 -->
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-amber-800 mb-4 flex items-center">
+                        <i class="fas fa-database text-amber-500 mr-3"></i>数据存储
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">MySQL 5.7+</span>
+                            <span class="text-xs text-gray-500">关系型数据库</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Redis 7.0</span>
+                            <span class="text-xs text-gray-500">分布式缓存</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">MongoDB 5.0</span>
+                            <span class="text-xs text-gray-500">文档数据库</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Elasticsearch 7.17</span>
+                            <span class="text-xs text-gray-500">搜索引擎</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">MinIO / OSS</span>
+                            <span class="text-xs text-gray-500">对象存储</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 中间件 -->
+                <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-pink-800 mb-4 flex items-center">
+                        <i class="fas fa-cogs text-pink-500 mr-3"></i>中间件
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Nacos</span>
+                            <span class="text-xs text-gray-500">注册/配置中心</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">RabbitMQ</span>
+                            <span class="text-xs text-gray-500">消息队列</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Nginx</span>
+                            <span class="text-xs text-gray-500">反向代理</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Sentinel</span>
+                            <span class="text-xs text-gray-500">限流熔断</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Logstash</span>
+                            <span class="text-xs text-gray-500">日志收集</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 运维部署 -->
+                <div class="bg-gradient-to-br from-gray-50 to-slate-100 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-cloud text-gray-500 mr-3"></i>运维部署
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Docker</span>
+                            <span class="text-xs text-gray-500">容器化部署</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Docker Compose</span>
+                            <span class="text-xs text-gray-500">编排工具</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Kubernetes</span>
+                            <span class="text-xs text-gray-500">容器编排</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Jenkins</span>
+                            <span class="text-xs text-gray-500">CI/CD</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg px-4 py-2 shadow-sm">
+                            <span class="font-medium">Portainer</span>
+                            <span class="text-xs text-gray-500">容器管理</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Project Structure -->
-    <section id="quickstart" class="py-20 bg-gray-100">
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 gradient-bg text-white">
         <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold text-center mb-12">项目结构</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <div class="text-4xl mb-4">⚙️</div>
-                    <h3 class="text-lg font-semibold mb-2">mall-swarm</h3>
-                    <p class="text-gray-600 text-sm">Spring Cloud 微服务后端</p>
-                    <a href="https://github.com/geekyGeli11/iShopDev-mall/tree/master/mall-swarm" class="text-purple-600 text-sm mt-2 inline-block hover:underline">查看详情 →</a>
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">联系我们</h2>
+            <p class="text-indigo-200 text-center mb-12 max-w-2xl mx-auto">欢迎加入技术交流群，一起探讨电商系统开发</p>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- WeChat -->
+                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fab fa-weixin text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">微信</h3>
+                        <p class="text-indigo-200 text-lg">Geeky-GH</p>
+                    </div>
+                    
+                    <!-- QQ -->
+                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fab fa-qq text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">QQ</h3>
+                        <p class="text-indigo-200 text-lg">3661232064</p>
+                    </div>
+                    
+                    <!-- QQ Group -->
+                    <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
+                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-users text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">技术交流Q群</h3>
+                        <p class="text-indigo-200 text-sm mb-1">iShopDev 技术交流三群</p>
+                        <p class="text-white text-lg font-medium">852049418</p>
+                    </div>
                 </div>
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <div class="text-4xl mb-4">🖥️</div>
-                    <h3 class="text-lg font-semibold mb-2">mall-admin-web</h3>
-                    <p class="text-gray-600 text-sm">Vue 2 + Element UI 管理后台</p>
-                    <a href="https://github.com/geekyGeli11/iShopDev-mall/tree/master/mall-admin-web" class="text-purple-600 text-sm mt-2 inline-block hover:underline">查看详情 →</a>
+                
+                <!-- GitHub CTA -->
+                <div class="mt-12 text-center">
+                    <p class="text-indigo-200 mb-6">如果这个项目对你有帮助，欢迎 Star 支持</p>
+                    <a href="https://github.com/geekyGeli11/iShopDev-mall" target="_blank" class="inline-flex items-center bg-white text-indigo-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
+                        <i class="fab fa-github text-2xl mr-3"></i>
+                        <span>Star on GitHub</span>
+                    </a>
                 </div>
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <div class="text-4xl mb-4">📱</div>
-                    <h3 class="text-lg font-semibold mb-2">mall-app-web</h3>
-                    <p class="text-gray-600 text-sm">uni-app 小程序/H5/App</p>
-                    <a href="https://github.com/geekyGeli11/iShopDev-mall/tree/master/mall-app-web" class="text-purple-600 text-sm mt-2 inline-block hover:underline">查看详情 →</a>
-                </div>
-                <div class="bg-white rounded-xl shadow-lg p-6">
-                    <div class="text-4xl mb-4">🏪</div>
-                    <h3 class="text-lg font-semibold mb-2">mall-self-checkout</h3>
-                    <p class="text-gray-600 text-sm">Vue 3 自助收银系统</p>
-                    <a href="https://github.com/geekyGeli11/iShopDev-mall/tree/master/mall-self-checkout" class="text-purple-600 text-sm mt-2 inline-block hover:underline">查看详情 →</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="gradient-bg py-16">
-        <div class="container mx-auto px-6 text-center text-white">
-            <h2 class="text-3xl font-bold mb-4">开始使用 iShopDev Mall</h2>
-            <p class="text-xl mb-8 text-gray-200">完整的电商解决方案，开箱即用</p>
-            <div class="space-x-4">
-                <a href="https://github.com/geekyGeli11/iShopDev-mall" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 inline-block">
-                    <i class="fab fa-github mr-2"></i>Star on GitHub
-                </a>
-                <a href="https://github.com/geekyGeli11/iShopDev-mall/fork" class="border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 inline-block">
-                    <i class="fas fa-code-branch mr-2"></i>Fork 项目
-                </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-400 py-8">
-        <div class="container mx-auto px-6 text-center">
-            <p>© 2025 iShopDev Mall. Released under the Apache-2.0 License.</p>
-            <p class="mt-2">
-                <a href="https://github.com/geekyGeli11/iShopDev-mall" class="hover:text-white">GitHub</a>
-                <span class="mx-2">|</span>
-                <a href="https://github.com/geekyGeli11/iShopDev-mall/issues" class="hover:text-white">Issues</a>
-                <span class="mx-2">|</span>
-                <a href="https://github.com/geekyGeli11/iShopDev-mall/blob/master/README.md" class="hover:text-white">文档</a>
-            </p>
+    <footer class="bg-gray-900 text-gray-400 py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="text-2xl font-bold text-white mb-2">🛒 iShopDev Mall</div>
+                    <p class="text-sm">一站式微服务电商解决方案</p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-6 text-sm">
+                    <a href="#features" class="hover:text-white transition-colors">功能特性</a>
+                    <a href="#architecture" class="hover:text-white transition-colors">系统架构</a>
+                    <a href="#projects" class="hover:text-white transition-colors">子项目</a>
+                    <a href="#tech" class="hover:text-white transition-colors">技术栈</a>
+                    <a href="https://github.com/geekyGeli11/iShopDev-mall" target="_blank" class="hover:text-white transition-colors">GitHub</a>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
+                <p>&copy; 2024 iShopDev Mall. All rights reserved.</p>
+                <p class="mt-2">基于 Apache License 2.0 开源协议</p>
+            </div>
         </div>
     </footer>
+
+    <!-- Back to Top -->
+    <a href="#" class="fixed bottom-8 right-8 w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-indigo-700 transition-colors">
+        <i class="fas fa-arrow-up"></i>
+    </a>
 </body>
-</html>
+</html>""
