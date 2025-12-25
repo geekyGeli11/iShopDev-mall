@@ -20,9 +20,16 @@
         .flow-arrow { color: #6366f1; }
         .tech-tag { transition: all 0.2s ease; }
         .tech-tag:hover { transform: scale(1.05); }
-        .nav-link { position: relative; }
-        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: white; transition: width 0.3s; }
+        .nav-link { position: relative; transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: currentColor; transition: width 0.3s; }
         .nav-link:hover::after { width: 100%; }
+        /* 导航栏滚动效果 */
+        .nav-scrolled { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%) !important; box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
+        .nav-scrolled .nav-link { color: rgba(255,255,255,0.9) !important; }
+        .nav-scrolled .nav-link:hover { color: white !important; }
+        .nav-scrolled .nav-logo { background: linear-gradient(135deg, #fff, #e0e7ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-scrolled .nav-github { background: white !important; color: #6366f1 !important; }
+        .nav-scrolled .nav-github:hover { background: #f3f4f6 !important; }
         .section-title { position: relative; display: inline-block; }
         .section-title::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 60px; height: 4px; background: linear-gradient(90deg, #6366f1, #a855f7); border-radius: 2px; }
         .arch-box { background: linear-gradient(180deg, #fafafa 0%, #f5f5f5 100%); }
@@ -44,9 +51,9 @@
 </head>
 <body class="bg-gray-50">
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold gradient-text">🛒 iShopDev Mall</a>
+            <a href="#" class="text-2xl font-bold gradient-text nav-logo">🛒 iShopDev Mall</a>
             <div class="hidden md:flex space-x-8">
                 <a href="#features" class="nav-link text-gray-600 hover:text-indigo-600">功能特性</a>
                 <a href="#architecture" class="nav-link text-gray-600 hover:text-indigo-600">系统架构</a>
@@ -54,7 +61,7 @@
                 <a href="#tech" class="nav-link text-gray-600 hover:text-indigo-600">技术栈</a>
                 <a href="#contact" class="nav-link text-gray-600 hover:text-indigo-600">联系我们</a>
             </div>
-            <a href="https://github.com/geekyGeli11/iShopDev-mall" target="_blank" class="bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
+            <a href="https://github.com/geekyGeli11/iShopDev-mall" target="_blank" class="nav-github bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors">
                 <i class="fab fa-github mr-2"></i>GitHub
             </a>
         </div>
@@ -1059,7 +1066,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-                <p>&copy; 2024 iShopDev Mall. All rights reserved.</p>
+                <p>&copy; 2025 iShopDev Mall. All rights reserved.</p>
                 <p class="mt-2">基于 Apache License 2.0 开源协议</p>
             </div>
         </div>
@@ -1069,5 +1076,17 @@
     <a href="#" class="fixed bottom-8 right-8 w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-indigo-700 transition-colors">
         <i class="fas fa-arrow-up"></i>
     </a>
+
+    <!-- Scroll Script -->
+    <script>
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('nav-scrolled');
+            } else {
+                navbar.classList.remove('nav-scrolled');
+            }
+        });
+    </script>
 </body>
-</html>""
+</html>
