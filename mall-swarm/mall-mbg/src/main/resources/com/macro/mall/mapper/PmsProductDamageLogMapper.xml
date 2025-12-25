@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.PmsProductDamageLogMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.PmsProductDamageLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="damage_report_id" jdbcType="BIGINT" property="damageReportId" />
+    <result column="action_type" jdbcType="TINYINT" property="actionType" />
+    <result column="action_content" jdbcType="VARCHAR" property="actionContent" />
+    <result column="before_status" jdbcType="TINYINT" property="beforeStatus" />
+    <result column="after_status" jdbcType="TINYINT" property="afterStatus" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="operator_name" jdbcType="VARCHAR" property="operatorName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, damage_report_id, action_type, action_content, before_status, after_status, operator_id, 
+    operator_name, create_time
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.PmsProductDamageLogExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pms_product_damage_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pms_product_damage_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pms_product_damage_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsProductDamageLogExample">
+    delete from pms_product_damage_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.PmsProductDamageLog">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_product_damage_log (damage_report_id, action_type, action_content, 
+      before_status, after_status, operator_id, 
+      operator_name, create_time)
+    values (#{damageReportId,jdbcType=BIGINT}, #{actionType,jdbcType=TINYINT}, #{actionContent,jdbcType=VARCHAR}, 
+      #{beforeStatus,jdbcType=TINYINT}, #{afterStatus,jdbcType=TINYINT}, #{operatorId,jdbcType=BIGINT}, 
+      #{operatorName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsProductDamageLog">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_product_damage_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="damageReportId != null">
+        damage_report_id,
+      </if>
+      <if test="actionType != null">
+        action_type,
+      </if>
+      <if test="actionContent != null">
+        action_content,
+      </if>
+      <if test="beforeStatus != null">
+        before_status,
+      </if>
+      <if test="afterStatus != null">
+        after_status,
+      </if>
+      <if test="operatorId != null">
+        operator_id,
+      </if>
+      <if test="operatorName != null">
+        operator_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="damageReportId != null">
+        #{damageReportId,jdbcType=BIGINT},
+      </if>
+      <if test="actionType != null">
+        #{actionType,jdbcType=TINYINT},
+      </if>
+      <if test="actionContent != null">
+        #{actionContent,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeStatus != null">
+        #{beforeStatus,jdbcType=TINYINT},
+      </if>
+      <if test="afterStatus != null">
+        #{afterStatus,jdbcType=TINYINT},
+      </if>
+      <if test="operatorId != null">
+        #{operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="operatorName != null">
+        #{operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.PmsProductDamageLogExample" resultType="java.lang.Long">
+    select count(*) from pms_product_damage_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pms_product_damage_log
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.damageReportId != null">
+        damage_report_id = #{row.damageReportId,jdbcType=BIGINT},
+      </if>
+      <if test="row.actionType != null">
+        action_type = #{row.actionType,jdbcType=TINYINT},
+      </if>
+      <if test="row.actionContent != null">
+        action_content = #{row.actionContent,jdbcType=VARCHAR},
+      </if>
+      <if test="row.beforeStatus != null">
+        before_status = #{row.beforeStatus,jdbcType=TINYINT},
+      </if>
+      <if test="row.afterStatus != null">
+        after_status = #{row.afterStatus,jdbcType=TINYINT},
+      </if>
+      <if test="row.operatorId != null">
+        operator_id = #{row.operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="row.operatorName != null">
+        operator_name = #{row.operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.createTime != null">
+        create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pms_product_damage_log
+    set id = #{row.id,jdbcType=BIGINT},
+      damage_report_id = #{row.damageReportId,jdbcType=BIGINT},
+      action_type = #{row.actionType,jdbcType=TINYINT},
+      action_content = #{row.actionContent,jdbcType=VARCHAR},
+      before_status = #{row.beforeStatus,jdbcType=TINYINT},
+      after_status = #{row.afterStatus,jdbcType=TINYINT},
+      operator_id = #{row.operatorId,jdbcType=BIGINT},
+      operator_name = #{row.operatorName,jdbcType=VARCHAR},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsProductDamageLog">
+    update pms_product_damage_log
+    <set>
+      <if test="damageReportId != null">
+        damage_report_id = #{damageReportId,jdbcType=BIGINT},
+      </if>
+      <if test="actionType != null">
+        action_type = #{actionType,jdbcType=TINYINT},
+      </if>
+      <if test="actionContent != null">
+        action_content = #{actionContent,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeStatus != null">
+        before_status = #{beforeStatus,jdbcType=TINYINT},
+      </if>
+      <if test="afterStatus != null">
+        after_status = #{afterStatus,jdbcType=TINYINT},
+      </if>
+      <if test="operatorId != null">
+        operator_id = #{operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="operatorName != null">
+        operator_name = #{operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsProductDamageLog">
+    update pms_product_damage_log
+    set damage_report_id = #{damageReportId,jdbcType=BIGINT},
+      action_type = #{actionType,jdbcType=TINYINT},
+      action_content = #{actionContent,jdbcType=VARCHAR},
+      before_status = #{beforeStatus,jdbcType=TINYINT},
+      after_status = #{afterStatus,jdbcType=TINYINT},
+      operator_id = #{operatorId,jdbcType=BIGINT},
+      operator_name = #{operatorName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

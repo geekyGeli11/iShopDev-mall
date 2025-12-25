@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.OmsOrderDao">
+    <resultMap id="orderDetailResultMap" type="com.macro.mall.dto.OmsOrderDetail" extends="com.macro.mall.mapper.OmsOrderMapper.ResultMapWithBLOBs">
+        <result property="returnApplyCount" column="return_apply_count"/>
+        <result property="hasReturnApply" column="has_return_apply"/>
+        <collection property="orderItemList" resultMap="com.macro.mall.mapper.OmsOrderItemMapper.BaseResultMap" columnPrefix="item_"/>
+        <collection property="historyList" resultMap="com.macro.mall.mapper.OmsOrderOperateHistoryMapper.BaseResultMap" columnPrefix="history_"/>
+        <collection property="commentList" resultMap="com.macro.mall.mapper.PmsCommentMapper.ResultMapWithBLOBs" columnPrefix="comment_"/>
+        <collection property="returnApplyList" resultMap="com.macro.mall.mapper.OmsOrderReturnApplyMapper.BaseResultMap" columnPrefix="return_"/>
+    </resultMap>
+
+    <resultMap id="orderWithItemsResultMap" type="com.macro.mall.dto.OmsOrderWithItems" extends="com.macro.mall.mapper.OmsOrderMapper.BaseResultMap">
+        <result property="schoolName" column="school_name"/>
+        <result property="returnApplyCount" column="return_apply_count"/>
+        <result property="latestReturnApplyStatus" column="latest_return_apply_status"/>
+        <result property="latestReturnApplyId" column="latest_return_apply_id"/>
+        <result property="returnApplyStatusText" column="return_apply_status_text"/>
+        <collection property="orderItemList" resultMap="com.macro.mall.mapper.OmsOrderItemMapper.BaseResultMap" columnPrefix="item_"/>
+    </resultMap>
+    <select id="getList" resultMap="orderWithItemsResultMap">
+        SELECT o.*,
+               s.school_name as school_name,
+               oi.id item_id,
+               oi.order_id item_order_id,
+               oi.order_sn item_order_sn,
+               oi.product_id item_product_id,
+               oi.product_sn item_product_sn,
+               oi.product_pic item_product_pic,
+               oi.product_name item_product_name,
+               oi.product_brand item_product_brand,
+               oi.product_price item_product_price,
+               oi.product_quantity item_product_quantity,
+               oi.product_sku_id item_product_sku_id,
+               oi.product_sku_code item_product_sku_code,
+               oi.product_category_id item_product_category_id,
+               oi.promotion_name item_promotion_name,
+               oi.promotion_amount item_promotion_amount,
+               oi.coupon_amount item_coupon_amount,
+               oi.integration_amount item_integration_amount,
+               oi.real_amount item_real_amount,
+               oi.gift_integration item_gift_integration,
+               oi.gift_growth item_gift_growth,
+               oi.product_attr item_product_attr
+        FROM oms_order o
+        LEFT JOIN oms_order_item oi ON o.id = oi.order_id
+        LEFT JOIN oms_school s ON o.source_school_id = s.id
+        WHERE o.delete_status = 0
+        <if test="queryParam.orderSn!=null and queryParam.orderSn!=''">
+            AND o.order_sn = #{queryParam.orderSn}
+        </if>
+        <if test="queryParam.status!=null">
+            AND o.`status` = #{queryParam.status}
+        </if>
+        <if test="queryParam.sourceType!=null">
+            AND o.source_type = #{queryParam.sourceType}
+        </if>
+        <if test="queryParam.orderType!=null">
+            AND o.order_type = #{queryParam.orderType}
+        </if>
+        <if test="queryParam.createTime!=null and queryParam.createTime!=''">
+            AND o.create_time LIKE concat(#{queryParam.createTime},"%")
+        </if>
+        <if test="queryParam.startTime!=null and queryParam.startTime!=''">
+            AND o.create_time &gt;= concat(#{queryParam.startTime}," 00:00:00")
+        </if>
+        <if test="queryParam.endTime!=null and queryParam.endTime!=''">
+            AND o.create_time &lt;= concat(#{queryParam.endTime}," 23:59:59")
+        </if>
+        <if test="queryParam.receiverKeyword!=null and queryParam.receiverKeyword!=''">
+            AND (
+            o.receiver_name LIKE concat("%",#{queryParam.receiverKeyword},"%")
+            OR o.receiver_phone LIKE concat("%",#{queryParam.receiverKeyword},"%")
+            )
+        </if>
+        <if test="queryParam.deliveryType!=null">
+            AND (o.delivery_method = #{queryParam.deliveryType} OR (o.delivery_method IS NULL AND o.delivery_type = #{queryParam.deliveryType}))
+        </if>
+        <if test="queryParam.payType!=null">
+            AND o.pay_type = #{queryParam.payType}
+        </if>
+        <if test="queryParam.isGift!=null">
+            AND o.is_gift = #{queryParam.isGift}
+        </if>
+        <if test="queryParam.productName!=null and queryParam.productName!=''">
+            AND EXISTS (
+                SELECT 1 FROM oms_order_item oi3
+                WHERE oi3.order_id = o.id
+                AND oi3.product_name LIKE concat("%",#{queryParam.productName},"%")
+            )
+        </if>
+        <if test="queryParam.schoolId!=null">
+            AND o.source_school_id = #{queryParam.schoolId}
+        </if>
+        <if test="queryParam.deliveryStoreId!=null">
+            AND EXISTS (
+                SELECT 1 FROM pms_stock_operation_log sol
+                WHERE (sol.order_id = o.id OR sol.order_sn = o.order_sn)
+                AND sol.store_id = #{queryParam.deliveryStoreId}
+                AND sol.operation_type = 2
+                AND sol.operation_subtype = 1
+            )
+        </if>
+        ORDER BY o.create_time DESC
+    </select>
+
+    <select id="getListWithItems" resultMap="orderWithItemsResultMap">
+        SELECT o.*,
+               s.school_name as school_name,
+               oi.id item_id,
+               oi.order_id item_order_id,
+               oi.order_sn item_order_sn,
+               oi.product_id item_product_id,
+               oi.product_sn item_product_sn,
+               oi.product_pic item_product_pic,
+               oi.product_name item_product_name,
+               oi.product_brand item_product_brand,
+               oi.product_price item_product_price,
+               oi.product_quantity item_product_quantity,
+               oi.product_sku_id item_product_sku_id,
+               oi.product_sku_code item_product_sku_code,
+               oi.product_category_id item_product_category_id,
+               oi.promotion_name item_promotion_name,
+               oi.promotion_amount item_promotion_amount,
+               oi.coupon_amount item_coupon_amount,
+               oi.integration_amount item_integration_amount,
+               oi.real_amount item_real_amount,
+               oi.gift_integration item_gift_integration,
+               oi.gift_growth item_gift_growth,
+               oi.product_attr item_product_attr,
+               COALESCE(ra_stats.return_apply_count, 0) as return_apply_count,
+               ra_stats.latest_return_apply_status,
+               ra_stats.latest_return_apply_id,
+               CASE
+                   WHEN ra_stats.latest_return_apply_status = 0 THEN '待处理'
+                   WHEN ra_stats.latest_return_apply_status = 1 THEN '退货中'
+                   WHEN ra_stats.latest_return_apply_status = 2 THEN '已完成'
+                   WHEN ra_stats.latest_return_apply_status = 3 THEN '已拒绝'
+                   ELSE NULL
+               END as return_apply_status_text
+        FROM (
+            SELECT o_inner.*
+            FROM oms_order o_inner
+            WHERE o_inner.delete_status = 0
+            <if test="queryParam.orderSn!=null and queryParam.orderSn!=''">
+                AND o_inner.order_sn = #{queryParam.orderSn}
+            </if>
+            <if test="queryParam.status!=null">
+                AND o_inner.`status` = #{queryParam.status}
+            </if>
+            <if test="queryParam.sourceType!=null">
+                AND o_inner.source_type = #{queryParam.sourceType}
+            </if>
+            <if test="queryParam.orderType!=null">
+                AND o_inner.order_type = #{queryParam.orderType}
+            </if>
+            <if test="queryParam.createTime!=null and queryParam.createTime!=''">
+                AND o_inner.create_time LIKE concat(#{queryParam.createTime},"%")
+            </if>
+            <if test="queryParam.startTime!=null and queryParam.startTime!=''">
+                AND o_inner.create_time &gt;= concat(#{queryParam.startTime}," 00:00:00")
+            </if>
+            <if test="queryParam.endTime!=null and queryParam.endTime!=''">
+                AND o_inner.create_time &lt;= concat(#{queryParam.endTime}," 23:59:59")
+            </if>
+            <if test="queryParam.receiverKeyword!=null and queryParam.receiverKeyword!=''">
+                AND (
+                o_inner.receiver_name LIKE concat("%",#{queryParam.receiverKeyword},"%")
+                OR o_inner.receiver_phone LIKE concat("%",#{queryParam.receiverKeyword},"%")
+                )
+            </if>
+            <if test="queryParam.deliveryType!=null">
+                AND (o_inner.delivery_method = #{queryParam.deliveryType} OR (o_inner.delivery_method IS NULL AND o_inner.delivery_type = #{queryParam.deliveryType}))
+            </if>
+            <if test="queryParam.payType!=null">
+                AND o_inner.pay_type = #{queryParam.payType}
+            </if>
+            <if test="queryParam.isGift!=null">
+                AND o_inner.is_gift = #{queryParam.isGift}
+            </if>
+            <if test="queryParam.productName!=null and queryParam.productName!=''">
+                AND EXISTS (
+                    SELECT 1 FROM oms_order_item oi2
+                    WHERE oi2.order_id = o_inner.id
+                    AND oi2.product_name LIKE concat("%",#{queryParam.productName},"%")
+                )
+            </if>
+            <if test="queryParam.hasReturnApply!=null">
+                <choose>
+                    <when test="queryParam.hasReturnApply == true">
+                        AND EXISTS (SELECT 1 FROM oms_order_return_apply ra WHERE ra.order_id = o_inner.id)
+                    </when>
+                    <otherwise>
+                        AND NOT EXISTS (SELECT 1 FROM oms_order_return_apply ra WHERE ra.order_id = o_inner.id)
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="queryParam.schoolId!=null">
+                AND o_inner.source_school_id = #{queryParam.schoolId}
+            </if>
+            <if test="queryParam.deliveryStoreId!=null">
+                AND EXISTS (
+                    SELECT 1 FROM pms_stock_operation_log sol
+                    WHERE (sol.order_id = o_inner.id OR sol.order_sn = o_inner.order_sn)
+                    AND sol.store_id = #{queryParam.deliveryStoreId}
+                    AND sol.operation_type = 2
+                    AND sol.operation_subtype = 1
+                )
+            </if>
+            ORDER BY o_inner.create_time DESC
+        ) o
+        LEFT JOIN oms_order_item oi ON o.id = oi.order_id
+        LEFT JOIN oms_school s ON o.source_school_id = s.id
+        LEFT JOIN (
+            SELECT
+                ra.order_id,
+                COUNT(*) as return_apply_count,
+                MAX(ra.status) as latest_return_apply_status,
+                MAX(ra.id) as latest_return_apply_id
+            FROM oms_order_return_apply ra
+            GROUP BY ra.order_id
+        ) ra_stats ON o.id = ra_stats.order_id
+        ORDER BY o.create_time DESC
+    </select>
+    <update id="delivery">
+        UPDATE oms_order
+        SET
+        delivery_sn = CASE id
+        <foreach collection="list" item="item">
+            WHEN #{item.orderId} THEN #{item.deliverySn}
+        </foreach>
+        END,
+        delivery_company = CASE id
+        <foreach collection="list" item="item">
+            WHEN #{item.orderId} THEN #{item.deliveryCompany}
+        </foreach>
+        END,
+        delivery_method = CASE id
+        <foreach collection="list" item="item">
+            WHEN #{item.orderId} THEN #{item.deliveryMethod}
+        </foreach>
+        END,
+        virtual_delivery_info = CASE id
+        <foreach collection="list" item="item">
+            WHEN #{item.orderId} THEN #{item.virtualDeliveryInfo}
+        </foreach>
+        END,
+        delivery_time = CASE id
+        <foreach collection="list" item="item">
+            WHEN #{item.orderId} THEN now()
+        </foreach>
+        END,
+        `status` = CASE id
+        <foreach collection="list" item="item">
+            WHEN #{item.orderId} THEN
+            <choose>
+                <when test="item.deliveryMethod == 2">3</when>
+                <otherwise>2</otherwise>
+            </choose>
+        </foreach>
+        END
+        WHERE
+        id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item.orderId}
+        </foreach>
+        AND `status` = 1
+    </update>
+    <select id="getDetail" resultMap="orderDetailResultMap">
+        SELECT o.*,
+            oi.id item_id,
+            oi.product_id item_product_id,
+            oi.product_sn item_product_sn,
+            oi.product_pic item_product_pic,
+            oi.product_name item_product_name,
+            oi.product_brand item_product_brand,
+            oi.product_price item_product_price,
+            oi.product_quantity item_product_quantity,
+            oi.product_attr item_product_attr,
+            oh.id history_id,
+            oh.operate_man history_operate_man,
+            oh.create_time history_create_time,
+            oh.order_status history_order_status,
+            oh.note history_note,
+            pc.id comment_id,
+            pc.product_id comment_product_id,
+            pc.member_nick_name comment_member_nick_name,
+            pc.product_name comment_product_name,
+            pc.star comment_star,
+            pc.content comment_content,
+            pc.pics comment_pics,
+            pc.member_ip comment_member_ip,
+            pc.create_time comment_create_time,
+            pc.show_status comment_show_status,
+            pc.product_attribute comment_product_attribute,
+            pc.member_icon comment_member_icon,
+            pc.replay_count comment_replay_count,
+            pc.order_id comment_order_id,
+            pc.member_id comment_member_id,
+            ra.id return_id,
+            ra.order_id return_order_id,
+            ra.order_sn return_order_sn,
+            ra.create_time return_create_time,
+            ra.member_username return_member_username,
+            ra.return_amount return_return_amount,
+            ra.return_name return_return_name,
+            ra.return_phone return_return_phone,
+            ra.status return_status,
+            ra.handle_time return_handle_time,
+            ra.product_pic return_product_pic,
+            ra.product_name return_product_name,
+            ra.product_brand return_product_brand,
+            ra.product_attr return_product_attr,
+            ra.product_count return_product_count,
+            ra.product_price return_product_price,
+            ra.product_real_price return_product_real_price,
+            ra.reason return_reason,
+            ra.description return_description,
+            ra.proof_pics return_proof_pics,
+            ra.handle_note return_handle_note,
+            ra.handle_man return_handle_man,
+            ra.receive_man return_receive_man,
+            ra.receive_time return_receive_time,
+            ra.receive_note return_receive_note,
+            COALESCE(ra_stats.return_apply_count, 0) as return_apply_count,
+            CASE WHEN ra_stats.return_apply_count > 0 THEN 1 ELSE 0 END as has_return_apply
+        FROM
+            oms_order o
+            LEFT JOIN oms_order_item oi ON o.id = oi.order_id
+            LEFT JOIN oms_order_operate_history oh ON o.id = oh.order_id
+            LEFT JOIN pms_comment pc ON o.id = pc.order_id
+            LEFT JOIN oms_order_return_apply ra ON o.id = ra.order_id
+            LEFT JOIN (
+                SELECT
+                    order_id,
+                    COUNT(*) as return_apply_count
+                FROM oms_order_return_apply
+                GROUP BY order_id
+            ) ra_stats ON o.id = ra_stats.order_id
+        WHERE
+            o.id = #{id}
+        ORDER BY oi.id ASC,oh.create_time DESC,pc.create_time DESC,ra.create_time DESC
+    </select>
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        FROM oms_order o
+        LEFT JOIN (
+            SELECT
+                order_id,
+                COUNT(*) as return_apply_count
+            FROM oms_order_return_apply
+            GROUP BY order_id
+        ) ra_stats ON o.id = ra_stats.order_id
+        WHERE o.delete_status = 0
+        <if test="queryParam.orderSn!=null and queryParam.orderSn!=''">
+            AND o.order_sn = #{queryParam.orderSn}
+        </if>
+        <if test="queryParam.status!=null">
+            AND o.`status` = #{queryParam.status}
+        </if>
+        <if test="queryParam.sourceType!=null">
+            AND o.source_type = #{queryParam.sourceType}
+        </if>
+        <if test="queryParam.orderType!=null">
+            AND o.order_type = #{queryParam.orderType}
+        </if>
+        <if test="queryParam.createTime!=null and queryParam.createTime!=''">
+            AND o.create_time LIKE concat(#{queryParam.createTime},"%")
+        </if>
+        <if test="queryParam.startTime!=null and queryParam.startTime!=''">
+            AND o.create_time &gt;= concat(#{queryParam.startTime}," 00:00:00")
+        </if>
+        <if test="queryParam.endTime!=null and queryParam.endTime!=''">
+            AND o.create_time &lt;= concat(#{queryParam.endTime}," 23:59:59")
+        </if>
+        <if test="queryParam.receiverKeyword!=null and queryParam.receiverKeyword!=''">
+            AND (
+            o.receiver_name LIKE concat("%",#{queryParam.receiverKeyword},"%")
+            OR o.receiver_phone LIKE concat("%",#{queryParam.receiverKeyword},"%")
+            )
+        </if>
+        <if test="queryParam.deliveryType!=null">
+            AND o.delivery_type = #{queryParam.deliveryType}
+        </if>
+        <if test="queryParam.payType!=null">
+            AND o.pay_type = #{queryParam.payType}
+        </if>
+        <if test="queryParam.isGift!=null">
+            AND o.is_gift = #{queryParam.isGift}
+        </if>
+        <if test="queryParam.productName!=null and queryParam.productName!=''">
+            AND EXISTS (
+                SELECT 1 FROM oms_order_item oi3
+                WHERE oi3.order_id = o.id
+                AND oi3.product_name LIKE concat("%",#{queryParam.productName},"%")
+            )
+        </if>
+        <if test="queryParam.hasReturnApply!=null">
+            <choose>
+                <when test="queryParam.hasReturnApply == true">
+                    AND ra_stats.return_apply_count > 0
+                </when>
+                <otherwise>
+                    AND (ra_stats.return_apply_count IS NULL OR ra_stats.return_apply_count = 0)
+                </otherwise>
+            </choose>
+        </if>
+        <if test="queryParam.schoolId!=null">
+            AND o.source_school_id = #{queryParam.schoolId}
+        </if>
+        <if test="queryParam.deliveryStoreId!=null">
+            AND EXISTS (
+                SELECT 1 FROM pms_stock_operation_log sol
+                WHERE (sol.order_id = o.id OR sol.order_sn = o.order_sn)
+                AND sol.store_id = #{queryParam.deliveryStoreId}
+                AND sol.operation_type = 2
+                AND sol.operation_subtype = 1
+            )
+        </if>
+    </select>
+
+    <!-- 根据订单号获取库存扣除详情 -->
+    <!-- 兼容两种数据格式：1.新格式使用order_sn字段 2.旧格式在operation_reason中包含订单号 -->
+    <select id="getStockDeductionByOrderSn" resultType="com.macro.mall.dto.OmsStockDeductionDetail">
+        SELECT 
+            oi.id as orderItemId,
+            sol.product_id as productId,
+            sol.sku_id as skuId,
+            sol.sku_code as skuCode,
+            sol.product_name as productName,
+            sol.store_id as storeId,
+            COALESCE(sa.address_name, 
+                CASE WHEN sol.store_id IS NULL THEN '总库存' ELSE '未知门店' END
+            ) as storeName,
+            COALESCE(sa.store_type, 'UNKNOWN') as storeType,
+            ABS(sol.operation_quantity) as deductQuantity,
+            sol.before_stock as beforeStock,
+            sol.after_stock as afterStock,
+            sol.operation_no as operationNo,
+            sol.created_at as operationTime,
+            sol.operation_reason as operationReason
+        FROM pms_stock_operation_log sol
+        LEFT JOIN oms_store_address sa ON sol.store_id = sa.id
+        LEFT JOIN oms_order_item oi ON sol.product_id = oi.product_id 
+            AND sol.sku_id = oi.product_sku_id
+            AND oi.order_sn = #{orderSn}
+        WHERE (
+            sol.order_sn = #{orderSn}
+            OR (
+                (sol.order_sn IS NULL OR sol.order_sn = '')
+                AND sol.operation_reason LIKE CONCAT('%（订单号：', #{orderSn}, '）%')
+            )
+            OR (
+                (sol.order_sn IS NULL OR sol.order_sn = '')
+                AND sol.operation_reason LIKE CONCAT('%订单号：', #{orderSn}, '%')
+            )
+        )
+            AND sol.operation_type = 2
+            AND sol.operation_subtype = 1
+        ORDER BY sol.created_at DESC
+    </select>
+</mapper>

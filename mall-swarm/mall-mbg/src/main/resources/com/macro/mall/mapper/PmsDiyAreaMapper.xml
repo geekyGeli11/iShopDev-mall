@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.PmsDiyAreaMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.PmsDiyArea">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="surface_id" jdbcType="BIGINT" property="surfaceId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="bounds" jdbcType="VARCHAR" property="bounds" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="mask_image_url" jdbcType="VARCHAR" property="maskImageUrl" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.macro.mall.model.PmsDiyArea">
+    <result column="path_data" jdbcType="LONGVARCHAR" property="pathData" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, surface_id, name, bounds, create_time, mask_image_url
+  </sql>
+  <sql id="Blob_Column_List">
+    path_data
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.model.PmsDiyAreaExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pms_diy_area
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.macro.mall.model.PmsDiyAreaExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pms_diy_area
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pms_diy_area
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pms_diy_area
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsDiyAreaExample">
+    delete from pms_diy_area
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.PmsDiyArea">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_diy_area (surface_id, name, bounds, 
+      create_time, mask_image_url, path_data
+      )
+    values (#{surfaceId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{bounds,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{maskImageUrl,jdbcType=VARCHAR}, #{pathData,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsDiyArea">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_diy_area
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="surfaceId != null">
+        surface_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="bounds != null">
+        bounds,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="maskImageUrl != null">
+        mask_image_url,
+      </if>
+      <if test="pathData != null">
+        path_data,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="surfaceId != null">
+        #{surfaceId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="bounds != null">
+        #{bounds,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="maskImageUrl != null">
+        #{maskImageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="pathData != null">
+        #{pathData,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.PmsDiyAreaExample" resultType="java.lang.Long">
+    select count(*) from pms_diy_area
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pms_diy_area
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.surfaceId != null">
+        surface_id = #{row.surfaceId,jdbcType=BIGINT},
+      </if>
+      <if test="row.name != null">
+        name = #{row.name,jdbcType=VARCHAR},
+      </if>
+      <if test="row.bounds != null">
+        bounds = #{row.bounds,jdbcType=VARCHAR},
+      </if>
+      <if test="row.createTime != null">
+        create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.maskImageUrl != null">
+        mask_image_url = #{row.maskImageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="row.pathData != null">
+        path_data = #{row.pathData,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update pms_diy_area
+    set id = #{row.id,jdbcType=BIGINT},
+      surface_id = #{row.surfaceId,jdbcType=BIGINT},
+      name = #{row.name,jdbcType=VARCHAR},
+      bounds = #{row.bounds,jdbcType=VARCHAR},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      mask_image_url = #{row.maskImageUrl,jdbcType=VARCHAR},
+      path_data = #{row.pathData,jdbcType=LONGVARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pms_diy_area
+    set id = #{row.id,jdbcType=BIGINT},
+      surface_id = #{row.surfaceId,jdbcType=BIGINT},
+      name = #{row.name,jdbcType=VARCHAR},
+      bounds = #{row.bounds,jdbcType=VARCHAR},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      mask_image_url = #{row.maskImageUrl,jdbcType=VARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsDiyArea">
+    update pms_diy_area
+    <set>
+      <if test="surfaceId != null">
+        surface_id = #{surfaceId,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="bounds != null">
+        bounds = #{bounds,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="maskImageUrl != null">
+        mask_image_url = #{maskImageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="pathData != null">
+        path_data = #{pathData,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.PmsDiyArea">
+    update pms_diy_area
+    set surface_id = #{surfaceId,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      bounds = #{bounds,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      mask_image_url = #{maskImageUrl,jdbcType=VARCHAR},
+      path_data = #{pathData,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsDiyArea">
+    update pms_diy_area
+    set surface_id = #{surfaceId,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      bounds = #{bounds,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      mask_image_url = #{maskImageUrl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

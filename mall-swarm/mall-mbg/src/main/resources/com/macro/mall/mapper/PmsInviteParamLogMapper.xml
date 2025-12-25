@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.PmsInviteParamLogMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.PmsInviteParamLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="invite_param" jdbcType="VARCHAR" property="inviteParam" />
+    <result column="param_timestamp" jdbcType="BIGINT" property="paramTimestamp" />
+    <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime" />
+    <result column="use_count" jdbcType="INTEGER" property="useCount" />
+    <result column="max_use_count" jdbcType="INTEGER" property="maxUseCount" />
+    <result column="qr_code_url" jdbcType="VARCHAR" property="qrCodeUrl" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="last_used_time" jdbcType="TIMESTAMP" property="lastUsedTime" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, user_id, invite_param, param_timestamp, expire_time, use_count, max_use_count, 
+    qr_code_url, status, last_used_time, created_at, updated_at
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.PmsInviteParamLogExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pms_invite_param_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pms_invite_param_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pms_invite_param_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsInviteParamLogExample">
+    delete from pms_invite_param_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.PmsInviteParamLog">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_invite_param_log (user_id, invite_param, param_timestamp, 
+      expire_time, use_count, max_use_count, 
+      qr_code_url, status, last_used_time, 
+      created_at, updated_at)
+    values (#{userId,jdbcType=BIGINT}, #{inviteParam,jdbcType=VARCHAR}, #{paramTimestamp,jdbcType=BIGINT}, 
+      #{expireTime,jdbcType=TIMESTAMP}, #{useCount,jdbcType=INTEGER}, #{maxUseCount,jdbcType=INTEGER}, 
+      #{qrCodeUrl,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{lastUsedTime,jdbcType=TIMESTAMP}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsInviteParamLog">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_invite_param_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="inviteParam != null">
+        invite_param,
+      </if>
+      <if test="paramTimestamp != null">
+        param_timestamp,
+      </if>
+      <if test="expireTime != null">
+        expire_time,
+      </if>
+      <if test="useCount != null">
+        use_count,
+      </if>
+      <if test="maxUseCount != null">
+        max_use_count,
+      </if>
+      <if test="qrCodeUrl != null">
+        qr_code_url,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="lastUsedTime != null">
+        last_used_time,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="inviteParam != null">
+        #{inviteParam,jdbcType=VARCHAR},
+      </if>
+      <if test="paramTimestamp != null">
+        #{paramTimestamp,jdbcType=BIGINT},
+      </if>
+      <if test="expireTime != null">
+        #{expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="useCount != null">
+        #{useCount,jdbcType=INTEGER},
+      </if>
+      <if test="maxUseCount != null">
+        #{maxUseCount,jdbcType=INTEGER},
+      </if>
+      <if test="qrCodeUrl != null">
+        #{qrCodeUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="lastUsedTime != null">
+        #{lastUsedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.PmsInviteParamLogExample" resultType="java.lang.Long">
+    select count(*) from pms_invite_param_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pms_invite_param_log
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.userId != null">
+        user_id = #{row.userId,jdbcType=BIGINT},
+      </if>
+      <if test="row.inviteParam != null">
+        invite_param = #{row.inviteParam,jdbcType=VARCHAR},
+      </if>
+      <if test="row.paramTimestamp != null">
+        param_timestamp = #{row.paramTimestamp,jdbcType=BIGINT},
+      </if>
+      <if test="row.expireTime != null">
+        expire_time = #{row.expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.useCount != null">
+        use_count = #{row.useCount,jdbcType=INTEGER},
+      </if>
+      <if test="row.maxUseCount != null">
+        max_use_count = #{row.maxUseCount,jdbcType=INTEGER},
+      </if>
+      <if test="row.qrCodeUrl != null">
+        qr_code_url = #{row.qrCodeUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="row.status != null">
+        status = #{row.status,jdbcType=TINYINT},
+      </if>
+      <if test="row.lastUsedTime != null">
+        last_used_time = #{row.lastUsedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.createdAt != null">
+        created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updatedAt != null">
+        updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pms_invite_param_log
+    set id = #{row.id,jdbcType=BIGINT},
+      user_id = #{row.userId,jdbcType=BIGINT},
+      invite_param = #{row.inviteParam,jdbcType=VARCHAR},
+      param_timestamp = #{row.paramTimestamp,jdbcType=BIGINT},
+      expire_time = #{row.expireTime,jdbcType=TIMESTAMP},
+      use_count = #{row.useCount,jdbcType=INTEGER},
+      max_use_count = #{row.maxUseCount,jdbcType=INTEGER},
+      qr_code_url = #{row.qrCodeUrl,jdbcType=VARCHAR},
+      status = #{row.status,jdbcType=TINYINT},
+      last_used_time = #{row.lastUsedTime,jdbcType=TIMESTAMP},
+      created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsInviteParamLog">
+    update pms_invite_param_log
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="inviteParam != null">
+        invite_param = #{inviteParam,jdbcType=VARCHAR},
+      </if>
+      <if test="paramTimestamp != null">
+        param_timestamp = #{paramTimestamp,jdbcType=BIGINT},
+      </if>
+      <if test="expireTime != null">
+        expire_time = #{expireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="useCount != null">
+        use_count = #{useCount,jdbcType=INTEGER},
+      </if>
+      <if test="maxUseCount != null">
+        max_use_count = #{maxUseCount,jdbcType=INTEGER},
+      </if>
+      <if test="qrCodeUrl != null">
+        qr_code_url = #{qrCodeUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="lastUsedTime != null">
+        last_used_time = #{lastUsedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsInviteParamLog">
+    update pms_invite_param_log
+    set user_id = #{userId,jdbcType=BIGINT},
+      invite_param = #{inviteParam,jdbcType=VARCHAR},
+      param_timestamp = #{paramTimestamp,jdbcType=BIGINT},
+      expire_time = #{expireTime,jdbcType=TIMESTAMP},
+      use_count = #{useCount,jdbcType=INTEGER},
+      max_use_count = #{maxUseCount,jdbcType=INTEGER},
+      qr_code_url = #{qrCodeUrl,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      last_used_time = #{lastUsedTime,jdbcType=TIMESTAMP},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

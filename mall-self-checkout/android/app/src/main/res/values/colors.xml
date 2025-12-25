@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 主题色配置 -->
+    <color name="colorPrimary">#A9FF00</color>
+    <color name="colorPrimaryDark">#8FE000</color>
+    <color name="colorAccent">#A9FF00</color>
+    
+    <!-- 状态栏和导航栏 -->
+    <color name="statusBarColor">#A9FF00</color>
+    <color name="navigationBarColor">#FFFFFF</color>
+    
+    <!-- 背景色 -->
+    <color name="backgroundColor">#FFFFFF</color>
+    
+    <!-- 透明色 -->
+    <color name="transparent">#00000000</color>
+</resources>

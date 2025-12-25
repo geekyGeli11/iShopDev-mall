@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.portal.dao.UmsMemberBalanceDao">
+
+    <!-- 获取用户余额统计信息 -->
+    <select id="getBalanceStatistics" resultType="map" parameterType="java.lang.Long">
+        SELECT
+            IFNULL(SUM(CASE WHEN change_type = 1 THEN amount ELSE 0 END), 0) AS totalRechargeAmount,
+            IFNULL(SUM(CASE WHEN change_type = 2 THEN ABS(amount) ELSE 0 END), 0) AS totalConsumeAmount,
+            IFNULL(SUM(CASE 
+                WHEN change_type = 1 AND DATE(create_time) = CURDATE() THEN amount 
+                ELSE 0 
+            END), 0) AS todayRechargeAmount,
+            IFNULL(SUM(CASE 
+                WHEN change_type = 2 AND DATE(create_time) = CURDATE() THEN ABS(amount) 
+                ELSE 0 
+            END), 0) AS todayConsumeAmount
+        FROM ums_member_balance_history
+        WHERE member_id = #{memberId}
+    </select>
+
+    <!-- 获取用户今日充值总额 -->
+    <select id="getTodayRechargeAmount" resultType="java.math.BigDecimal" parameterType="java.lang.Long">
+        SELECT IFNULL(SUM(amount), 0)
+        FROM ums_member_balance_history
+        WHERE member_id = #{memberId}
+          AND change_type = 1
+          AND DATE(create_time) = CURDATE()
+    </select>
+
+    <!-- 获取用户今日消费总额 -->
+    <select id="getTodayConsumeAmount" resultType="java.math.BigDecimal" parameterType="java.lang.Long">
+        SELECT IFNULL(SUM(ABS(amount)), 0)
+        FROM ums_member_balance_history
+        WHERE member_id = #{memberId}
+          AND change_type = 2
+          AND DATE(create_time) = CURDATE()
+    </select>
+
+    <!-- 获取用户累计充值总额 -->
+    <select id="getTotalRechargeAmount" resultType="java.math.BigDecimal" parameterType="java.lang.Long">
+        SELECT IFNULL(SUM(amount), 0)
+        FROM ums_member_balance_history
+        WHERE member_id = #{memberId}
+          AND change_type = 1
+    </select>
+
+    <!-- 获取用户累计消费总额 -->
+    <select id="getTotalConsumeAmount" resultType="java.math.BigDecimal" parameterType="java.lang.Long">
+        SELECT IFNULL(SUM(ABS(amount)), 0)
+        FROM ums_member_balance_history
+        WHERE member_id = #{memberId}
+          AND change_type = 2
+    </select>
+
+</mapper> 

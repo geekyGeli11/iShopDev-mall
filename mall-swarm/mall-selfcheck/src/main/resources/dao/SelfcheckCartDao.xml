@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.selfcheck.dao.SelfcheckCartDao">
+
+    <!-- 购物车商品项结果映射 -->
+    <resultMap id="cartItemVOResultMap" type="com.macro.mall.selfcheck.dto.CartItemVO">
+        <id column="cart_id" property="itemId"/>
+        <result column="product_id" property="productId"/>
+        <result column="sku_id" property="skuId"/>
+        <result column="product_name" property="productName"/>
+        <result column="pic" property="productPic"/>
+        <result column="brand_name" property="brandName"/>
+        <result column="category_name" property="categoryName"/>
+        <result column="product_sn" property="productSn"/>
+        <result column="sku_code" property="skuCode"/>
+        <result column="sp1" property="skuSpec"/>
+        <result column="unit" property="unit"/>
+        <result column="price" property="originalPrice"/>
+        <result column="sale_price" property="currentPrice"/>
+        <result column="promotion_price" property="promotionPrice"/>
+        <result column="member_price" property="memberPrice"/>
+        <result column="actual_price" property="actualPrice"/>
+        <result column="quantity" property="quantity"/>
+        <result column="subtotal" property="subtotal"/>
+        <result column="stock" property="stock"/>
+        <result column="low_stock" property="stockStatus"/>
+        <result column="available" property="available"/>
+        <result column="publish_status" property="saleable"/>
+        <result column="product_status" property="productStatus"/>
+        <result column="promotion_type" property="promotionType"/>
+        <result column="limit_quantity" property="limitQuantity"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="updateTime"/>
+        <result column="remark" property="remark"/>
+        <result column="error_message" property="errorMessage"/>
+    </resultMap>
+
+    <!-- 查询会员购物车商品列表 -->
+    <select id="getMemberCartItems" resultMap="cartItemVOResultMap">
+        SELECT 
+            c.id as cart_id,
+            c.product_id,
+            c.product_sku_id as sku_id,
+            c.quantity,
+            c.create_time,
+            c.modify_time,
+            c.remark,
+            p.name as product_name,
+            p.pic,
+            p.product_sn,
+            p.unit,
+            p.price,
+            p.sale_price,
+            p.promotion_price,
+            p.member_price,
+            p.promotion_type,
+            p.publish_status,
+            p.delete_status,
+            b.name as brand_name,
+            pc.name as category_name,
+            COALESCE(ps.stock, 0) as stock,
+            COALESCE(ps.low_stock, 0) as low_stock,
+            CASE 
+                WHEN sku.id IS NOT NULL THEN sku.sku_code
+                ELSE p.product_sn
+            END as sku_code,
+            CASE 
+                WHEN sku.id IS NOT NULL THEN sku.sp1
+                ELSE NULL
+            END as sp1,
+            -- 计算实际价格（会员价 > 促销价 > 现价）
+            CASE 
+                WHEN p.member_price IS NOT NULL AND p.member_price &gt; 0 THEN p.member_price
+                WHEN p.promotion_price IS NOT NULL AND p.promotion_price &gt; 0 THEN p.promotion_price
+                WHEN p.sale_price IS NOT NULL AND p.sale_price &gt; 0 THEN p.sale_price
+                ELSE p.price
+            END as actual_price,
+            -- 计算小计
+            (CASE 
+                WHEN p.member_price IS NOT NULL AND p.member_price &gt; 0 THEN p.member_price
+                WHEN p.promotion_price IS NOT NULL AND p.promotion_price &gt; 0 THEN p.promotion_price
+                WHEN p.sale_price IS NOT NULL AND p.sale_price &gt; 0 THEN p.sale_price
+                ELSE p.price
+            END * c.quantity) as subtotal,
+            -- 判断商品是否可用
+            CASE 
+                WHEN p.delete_status = 1 THEN 0
+                WHEN p.publish_status = 0 THEN 0
+                WHEN COALESCE(ps.stock, 0) &lt; c.quantity THEN 0
+                ELSE 1
+            END as available,
+            -- 商品状态
+            CASE 
+                WHEN p.delete_status = 1 THEN 'DELETED'
+                WHEN p.publish_status = 0 THEN 'OFF_SHELF'
+                ELSE 'NORMAL'
+            END as product_status,
+            -- 错误信息
+            CASE 
+                WHEN p.delete_status = 1 THEN '商品已删除'
+                WHEN p.publish_status = 0 THEN '商品已下架'
+                WHEN COALESCE(ps.stock, 0) &lt; c.quantity THEN CONCAT('库存不足，仅剩', COALESCE(ps.stock, 0), '件')
+                ELSE NULL
+            END as error_message
+        FROM ums_shopping_cart c
+        LEFT JOIN pms_product p ON c.product_id = p.id
+        LEFT JOIN pms_brand b ON p.brand_id = b.id
+        LEFT JOIN pms_product_category pc ON p.product_category_id = pc.id
+        LEFT JOIN pms_sku_stock ps ON c.product_sku_id = ps.id
+        LEFT JOIN pms_sku_stock sku ON c.product_sku_id = sku.id
+        WHERE c.member_id = #{memberId}
+          AND c.delete_status = 0
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!-- 查询指定购物车项 -->
+    <select id="getMemberCartItem" resultMap="cartItemVOResultMap">
+        SELECT 
+            c.id as cart_id,
+            c.product_id,
+            c.product_sku_id as sku_id,
+            c.quantity,
+            c.create_time,
+            c.modify_time,
+            c.remark
+        FROM ums_shopping_cart c
+        WHERE c.member_id = #{memberId}
+          AND c.product_id = #{productId}
+          AND c.delete_status = 0
+          <if test="skuId != null">
+          AND c.product_sku_id = #{skuId}
+          </if>
+          <if test="skuId == null">
+          AND c.product_sku_id IS NULL
+          </if>
+        LIMIT 1
+    </select>
+
+    <!-- 添加商品到购物车 -->
+    <insert id="addMemberCartItem">
+        INSERT INTO ums_shopping_cart (
+            member_id, 
+            product_id, 
+            product_sku_id, 
+            quantity, 
+            remark,
+            create_time,
+            modify_time,
+            delete_status
+        ) VALUES (
+            #{memberId}, 
+            #{productId}, 
+            #{skuId}, 
+            #{quantity}, 
+            #{remark},
+            NOW(),
+            NOW(),
+            0
+        )
+    </insert>
+
+    <!-- 更新购物车商品数量 -->
+    <update id="updateMemberCartItemQuantity">
+        UPDATE ums_shopping_cart 
+        SET quantity = #{quantity},
+            modify_time = NOW()
+        WHERE member_id = #{memberId}
+          AND product_id = #{productId}
+          AND delete_status = 0
+          <if test="skuId != null">
+          AND product_sku_id = #{skuId}
+          </if>
+          <if test="skuId == null">
+          AND product_sku_id IS NULL
+          </if>
+    </update>
+
+    <!-- 删除购物车商品 -->
+    <update id="removeMemberCartItem">
+        UPDATE ums_shopping_cart 
+        SET delete_status = 1,
+            modify_time = NOW()
+        WHERE member_id = #{memberId}
+          AND product_id = #{productId}
+          AND delete_status = 0
+          <if test="skuId != null">
+          AND product_sku_id = #{skuId}
+          </if>
+          <if test="skuId == null">
+          AND product_sku_id IS NULL
+          </if>
+    </update>
+
+    <!-- 清空购物车 -->
+    <update id="clearMemberCart">
+        UPDATE ums_shopping_cart 
+        SET delete_status = 1,
+            modify_time = NOW()
+        WHERE member_id = #{memberId}
+          AND delete_status = 0
+    </update>
+
+    <!-- 获取购物车商品数量统计 -->
+    <select id="getMemberCartTotalQuantity" resultType="int">
+        SELECT COALESCE(SUM(quantity), 0)
+        FROM ums_shopping_cart
+        WHERE member_id = #{memberId}
+          AND delete_status = 0
+    </select>
+
+    <!-- 批量删除购物车商品 -->
+    <update id="batchRemoveMemberCartItems">
+        UPDATE ums_shopping_cart 
+        SET delete_status = 1,
+            modify_time = NOW()
+        WHERE member_id = #{memberId}
+          AND delete_status = 0
+          AND product_id IN
+          <foreach collection="productIds" item="productId" open="(" close=")" separator=",">
+              #{productId}
+          </foreach>
+    </update>
+
+    <!-- 检查商品是否在购物车中 -->
+    <select id="isProductInCart" resultType="boolean">
+        SELECT COUNT(*) &gt; 0
+        FROM ums_shopping_cart
+        WHERE member_id = #{memberId}
+          AND product_id = #{productId}
+          AND delete_status = 0
+          <if test="skuId != null">
+          AND product_sku_id = #{skuId}
+          </if>
+          <if test="skuId == null">
+          AND product_sku_id IS NULL
+          </if>
+    </select>
+
+    <!-- 获取购物车详细信息 -->
+    <select id="getMemberCartDetailItems" resultMap="cartItemVOResultMap">
+        SELECT 
+            c.id as cart_id,
+            c.product_id,
+            c.product_sku_id as sku_id,
+            c.quantity,
+            c.create_time,
+            c.modify_time,
+            c.remark,
+            p.name as product_name,
+            p.pic,
+            p.product_sn,
+            p.unit,
+            p.price,
+            p.sale_price,
+            p.promotion_price,
+            p.member_price,
+            p.promotion_type,
+            p.publish_status,
+            p.delete_status,
+            b.name as brand_name,
+            pc.name as category_name,
+            COALESCE(ps.stock, 0) as stock,
+            COALESCE(ps.low_stock, 0) as low_stock,
+            CASE 
+                WHEN sku.id IS NOT NULL THEN sku.sku_code
+                ELSE p.product_sn
+            END as sku_code,
+            CASE 
+                WHEN sku.id IS NOT NULL THEN sku.sp1
+                ELSE NULL
+            END as sp1,
+            -- 根据会员等级计算实际价格
+            CASE 
+                WHEN #{memberLevel} IS NOT NULL AND #{memberLevel} &gt; 0 AND p.member_price IS NOT NULL AND p.member_price &gt; 0 THEN p.member_price
+                WHEN p.promotion_price IS NOT NULL AND p.promotion_price &gt; 0 THEN p.promotion_price
+                WHEN p.sale_price IS NOT NULL AND p.sale_price &gt; 0 THEN p.sale_price
+                ELSE p.price
+            END as actual_price,
+            -- 计算小计
+            (CASE 
+                WHEN #{memberLevel} IS NOT NULL AND #{memberLevel} &gt; 0 AND p.member_price IS NOT NULL AND p.member_price &gt; 0 THEN p.member_price
+                WHEN p.promotion_price IS NOT NULL AND p.promotion_price &gt; 0 THEN p.promotion_price
+                WHEN p.sale_price IS NOT NULL AND p.sale_price &gt; 0 THEN p.sale_price
+                ELSE p.price
+            END * c.quantity) as subtotal,
+            -- 库存状态
+            CASE 
+                WHEN COALESCE(ps.stock, 0) = 0 THEN 'OUT_OF_STOCK'
+                WHEN COALESCE(ps.stock, 0) &lt;= COALESCE(ps.low_stock, 0) THEN 'LOW'
+                ELSE 'SUFFICIENT'
+            END as stock_status,
+            -- 判断商品是否可用
+            CASE 
+                WHEN p.delete_status = 1 THEN 0
+                WHEN p.publish_status = 0 THEN 0
+                WHEN COALESCE(ps.stock, 0) &lt; c.quantity THEN 0
+                ELSE 1
+            END as available,
+            -- 商品状态
+            CASE 
+                WHEN p.delete_status = 1 THEN 'DELETED'
+                WHEN p.publish_status = 0 THEN 'OFF_SHELF'
+                ELSE 'NORMAL'
+            END as product_status,
+            -- 错误信息
+            CASE 
+                WHEN p.delete_status = 1 THEN '商品已删除'
+                WHEN p.publish_status = 0 THEN '商品已下架'
+                WHEN COALESCE(ps.stock, 0) &lt; c.quantity THEN CONCAT('库存不足，仅剩', COALESCE(ps.stock, 0), '件')
+                ELSE NULL
+            END as error_message
+        FROM ums_shopping_cart c
+        LEFT JOIN pms_product p ON c.product_id = p.id
+        LEFT JOIN pms_brand b ON p.brand_id = b.id
+        LEFT JOIN pms_product_category pc ON p.product_category_id = pc.id
+        LEFT JOIN pms_sku_stock ps ON c.product_sku_id = ps.id
+        LEFT JOIN pms_sku_stock sku ON c.product_sku_id = sku.id
+        WHERE c.member_id = #{memberId}
+          AND c.delete_status = 0
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!-- 获取无效的购物车商品 -->
+    <select id="getInvalidCartItems" resultMap="cartItemVOResultMap">
+        SELECT 
+            c.id as cart_id,
+            c.product_id,
+            c.product_sku_id as sku_id,
+            c.quantity,
+            p.name as product_name,
+            p.pic,
+            p.product_sn,
+            -- 错误信息
+            CASE 
+                WHEN p.delete_status = 1 THEN '商品已删除'
+                WHEN p.publish_status = 0 THEN '商品已下架'
+                WHEN COALESCE(ps.stock, 0) &lt; c.quantity THEN CONCAT('库存不足，仅剩', COALESCE(ps.stock, 0), '件')
+                ELSE '商品异常'
+            END as error_message
+        FROM ums_shopping_cart c
+        LEFT JOIN pms_product p ON c.product_id = p.id
+        LEFT JOIN pms_sku_stock ps ON c.product_sku_id = ps.id
+        WHERE c.member_id = #{memberId}
+          AND c.delete_status = 0
+          AND (
+              p.delete_status = 1 
+              OR p.publish_status = 0 
+              OR COALESCE(ps.stock, 0) &lt; c.quantity
+          )
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!-- 删除无效的购物车商品 -->
+    <update id="removeInvalidCartItems">
+        UPDATE ums_shopping_cart c
+        LEFT JOIN pms_product p ON c.product_id = p.id
+        LEFT JOIN pms_sku_stock ps ON c.product_sku_id = ps.id
+        SET c.delete_status = 1,
+            c.modify_time = NOW()
+        WHERE c.member_id = #{memberId}
+          AND c.delete_status = 0
+          AND (
+              p.delete_status = 1 
+              OR p.publish_status = 0 
+              OR COALESCE(ps.stock, 0) &lt; c.quantity
+          )
+    </update>
+
+</mapper> 

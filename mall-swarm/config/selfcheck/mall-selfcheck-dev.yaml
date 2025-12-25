@@ -1,0 +1,105 @@
+﻿spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: ${MYSQL_PASSWORD:root}
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      password: 
+      timeout: 5000ms
+    mongodb:
+      host: localhost
+      port: 27017
+      database: mall-port
+  rabbitmq:
+    host: localhost
+    port: 5672
+    virtual-host: /mall
+    username: mall
+    password: mall
+    publisher-confirms: true
+logging:
+  level:
+    root: info
+    com.macro.mall.selfcheck: debug
+redis:
+  key:
+    verifyCode: 'selfcheck:verifyCode'
+    memberSession: 'selfcheck:memberSession'
+    paymentCache: 'selfcheck:payment'
+    paymentQR: 'selfcheck:payment:qr'
+    paymentStatus: 'selfcheck:payment:status'
+  expire:
+    verifyCode: 300
+    memberSession: 3600
+    paymentCache: 300
+
+# 自助收银系统配置
+selfcheck:
+  order:
+    timeout: 30
+  rabbitmq:
+    enabled: true
+  payment:
+    timeout: 5
+    pollInterval: 2
+    maxPollCount: 150
+    mockEnabled: false
+    
+    wechat:
+      appId: ${WX_PAY_APP_ID}
+      appSecret: ${WECHAT_APP_SECRET}
+      mchId: ${WX_PAY_MCH_ID}
+      mchKey: ${WX_PAY_MCH_KEY}
+      notifyUrl: ${WX_PAY_NOTIFY_URL}
+      certPath: classpath:certs/apiclient_cert.p12
+      keyPath: classpath:certs/apiclient_cert.p12
+      expireMinutes: 5
+    
+    alipay:
+      appId: ${ALIPAY_APP_ID}
+      privateKey: ${ALIPAY_PRIVATE_KEY}
+      appPrivateKey: ${ALIPAY_PRIVATE_KEY}
+      publicKey: ${ALIPAY_PUBLIC_KEY}
+      alipayPublicKey: ${ALIPAY_PUBLIC_KEY}
+      notifyUrl: ${ALIPAY_NOTIFY_URL}
+      returnUrl: http://localhost:8060/#/pages/money/paySuccess
+      gatewayUrl: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+      charset: UTF-8
+      signType: RSA2
+      expireMinutes: 5
+  
+  member:
+    verifyCodeExpire: 5
+    sessionTimeout: 3600
+    autoLogoutDelay: 3
+  
+  scan:
+    scanTimeout: 30
+    supportedFormats:
+      - EAN_13
+      - EAN_8
+      - CODE_128
+      - QR_CODE
+  
+  sms:
+    provider: aliyun
+    mock:
+      enabled: false
+      fixedCode: '123456'
+    aliyun:
+      accessKeyId: ${ALIYUN_SMS_ACCESS_KEY_ID}
+      accessKeySecret: ${ALIYUN_SMS_ACCESS_KEY_SECRET}
+      signName: ${ALIYUN_SMS_SIGN_NAME}
+      templateCode: ${ALIYUN_SMS_TEMPLATE_CODE}
+      region: cn-hangzhou
+  
+  security:
+    maxLoginAttempts: 5
+    loginLockDuration: 900
+    ipBlockDuration: 3600
+    rateLimitWindow: 300
+    maxAttemptsPerWindow: 3 

@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.PmsProductPaybackAnalysisMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.PmsProductPaybackAnalysis">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_sn" jdbcType="VARCHAR" property="productSn" />
+    <result column="target_quantity" jdbcType="INTEGER" property="targetQuantity" />
+    <result column="target_amount" jdbcType="DECIMAL" property="targetAmount" />
+    <result column="current_sold_quantity" jdbcType="INTEGER" property="currentSoldQuantity" />
+    <result column="current_sold_amount" jdbcType="DECIMAL" property="currentSoldAmount" />
+    <result column="payback_progress" jdbcType="DECIMAL" property="paybackProgress" />
+    <result column="payback_status" jdbcType="TINYINT" property="paybackStatus" />
+    <result column="start_date" jdbcType="DATE" property="startDate" />
+    <result column="payback_completed_date" jdbcType="DATE" property="paybackCompletedDate" />
+    <result column="payback_days" jdbcType="INTEGER" property="paybackDays" />
+    <result column="daily_avg_quantity" jdbcType="DECIMAL" property="dailyAvgQuantity" />
+    <result column="predicted_completion_date" jdbcType="DATE" property="predictedCompletionDate" />
+    <result column="last_order_date" jdbcType="DATE" property="lastOrderDate" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, product_id, product_name, product_sn, target_quantity, target_amount, current_sold_quantity, 
+    current_sold_amount, payback_progress, payback_status, start_date, payback_completed_date, 
+    payback_days, daily_avg_quantity, predicted_completion_date, last_order_date, created_at, 
+    updated_at
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.PmsProductPaybackAnalysisExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pms_product_payback_analysis
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pms_product_payback_analysis
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pms_product_payback_analysis
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsProductPaybackAnalysisExample">
+    delete from pms_product_payback_analysis
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.PmsProductPaybackAnalysis">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_product_payback_analysis (product_id, product_name, product_sn, 
+      target_quantity, target_amount, current_sold_quantity, 
+      current_sold_amount, payback_progress, payback_status, 
+      start_date, payback_completed_date, payback_days, 
+      daily_avg_quantity, predicted_completion_date, 
+      last_order_date, created_at, updated_at
+      )
+    values (#{productId,jdbcType=BIGINT}, #{productName,jdbcType=VARCHAR}, #{productSn,jdbcType=VARCHAR}, 
+      #{targetQuantity,jdbcType=INTEGER}, #{targetAmount,jdbcType=DECIMAL}, #{currentSoldQuantity,jdbcType=INTEGER}, 
+      #{currentSoldAmount,jdbcType=DECIMAL}, #{paybackProgress,jdbcType=DECIMAL}, #{paybackStatus,jdbcType=TINYINT}, 
+      #{startDate,jdbcType=DATE}, #{paybackCompletedDate,jdbcType=DATE}, #{paybackDays,jdbcType=INTEGER}, 
+      #{dailyAvgQuantity,jdbcType=DECIMAL}, #{predictedCompletionDate,jdbcType=DATE}, 
+      #{lastOrderDate,jdbcType=DATE}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsProductPaybackAnalysis">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_product_payback_analysis
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="productSn != null">
+        product_sn,
+      </if>
+      <if test="targetQuantity != null">
+        target_quantity,
+      </if>
+      <if test="targetAmount != null">
+        target_amount,
+      </if>
+      <if test="currentSoldQuantity != null">
+        current_sold_quantity,
+      </if>
+      <if test="currentSoldAmount != null">
+        current_sold_amount,
+      </if>
+      <if test="paybackProgress != null">
+        payback_progress,
+      </if>
+      <if test="paybackStatus != null">
+        payback_status,
+      </if>
+      <if test="startDate != null">
+        start_date,
+      </if>
+      <if test="paybackCompletedDate != null">
+        payback_completed_date,
+      </if>
+      <if test="paybackDays != null">
+        payback_days,
+      </if>
+      <if test="dailyAvgQuantity != null">
+        daily_avg_quantity,
+      </if>
+      <if test="predictedCompletionDate != null">
+        predicted_completion_date,
+      </if>
+      <if test="lastOrderDate != null">
+        last_order_date,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productSn != null">
+        #{productSn,jdbcType=VARCHAR},
+      </if>
+      <if test="targetQuantity != null">
+        #{targetQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="targetAmount != null">
+        #{targetAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="currentSoldQuantity != null">
+        #{currentSoldQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="currentSoldAmount != null">
+        #{currentSoldAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="paybackProgress != null">
+        #{paybackProgress,jdbcType=DECIMAL},
+      </if>
+      <if test="paybackStatus != null">
+        #{paybackStatus,jdbcType=TINYINT},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=DATE},
+      </if>
+      <if test="paybackCompletedDate != null">
+        #{paybackCompletedDate,jdbcType=DATE},
+      </if>
+      <if test="paybackDays != null">
+        #{paybackDays,jdbcType=INTEGER},
+      </if>
+      <if test="dailyAvgQuantity != null">
+        #{dailyAvgQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="predictedCompletionDate != null">
+        #{predictedCompletionDate,jdbcType=DATE},
+      </if>
+      <if test="lastOrderDate != null">
+        #{lastOrderDate,jdbcType=DATE},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.PmsProductPaybackAnalysisExample" resultType="java.lang.Long">
+    select count(*) from pms_product_payback_analysis
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pms_product_payback_analysis
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.productId != null">
+        product_id = #{row.productId,jdbcType=BIGINT},
+      </if>
+      <if test="row.productName != null">
+        product_name = #{row.productName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.productSn != null">
+        product_sn = #{row.productSn,jdbcType=VARCHAR},
+      </if>
+      <if test="row.targetQuantity != null">
+        target_quantity = #{row.targetQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="row.targetAmount != null">
+        target_amount = #{row.targetAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.currentSoldQuantity != null">
+        current_sold_quantity = #{row.currentSoldQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="row.currentSoldAmount != null">
+        current_sold_amount = #{row.currentSoldAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.paybackProgress != null">
+        payback_progress = #{row.paybackProgress,jdbcType=DECIMAL},
+      </if>
+      <if test="row.paybackStatus != null">
+        payback_status = #{row.paybackStatus,jdbcType=TINYINT},
+      </if>
+      <if test="row.startDate != null">
+        start_date = #{row.startDate,jdbcType=DATE},
+      </if>
+      <if test="row.paybackCompletedDate != null">
+        payback_completed_date = #{row.paybackCompletedDate,jdbcType=DATE},
+      </if>
+      <if test="row.paybackDays != null">
+        payback_days = #{row.paybackDays,jdbcType=INTEGER},
+      </if>
+      <if test="row.dailyAvgQuantity != null">
+        daily_avg_quantity = #{row.dailyAvgQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="row.predictedCompletionDate != null">
+        predicted_completion_date = #{row.predictedCompletionDate,jdbcType=DATE},
+      </if>
+      <if test="row.lastOrderDate != null">
+        last_order_date = #{row.lastOrderDate,jdbcType=DATE},
+      </if>
+      <if test="row.createdAt != null">
+        created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updatedAt != null">
+        updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pms_product_payback_analysis
+    set id = #{row.id,jdbcType=BIGINT},
+      product_id = #{row.productId,jdbcType=BIGINT},
+      product_name = #{row.productName,jdbcType=VARCHAR},
+      product_sn = #{row.productSn,jdbcType=VARCHAR},
+      target_quantity = #{row.targetQuantity,jdbcType=INTEGER},
+      target_amount = #{row.targetAmount,jdbcType=DECIMAL},
+      current_sold_quantity = #{row.currentSoldQuantity,jdbcType=INTEGER},
+      current_sold_amount = #{row.currentSoldAmount,jdbcType=DECIMAL},
+      payback_progress = #{row.paybackProgress,jdbcType=DECIMAL},
+      payback_status = #{row.paybackStatus,jdbcType=TINYINT},
+      start_date = #{row.startDate,jdbcType=DATE},
+      payback_completed_date = #{row.paybackCompletedDate,jdbcType=DATE},
+      payback_days = #{row.paybackDays,jdbcType=INTEGER},
+      daily_avg_quantity = #{row.dailyAvgQuantity,jdbcType=DECIMAL},
+      predicted_completion_date = #{row.predictedCompletionDate,jdbcType=DATE},
+      last_order_date = #{row.lastOrderDate,jdbcType=DATE},
+      created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsProductPaybackAnalysis">
+    update pms_product_payback_analysis
+    <set>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productSn != null">
+        product_sn = #{productSn,jdbcType=VARCHAR},
+      </if>
+      <if test="targetQuantity != null">
+        target_quantity = #{targetQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="targetAmount != null">
+        target_amount = #{targetAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="currentSoldQuantity != null">
+        current_sold_quantity = #{currentSoldQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="currentSoldAmount != null">
+        current_sold_amount = #{currentSoldAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="paybackProgress != null">
+        payback_progress = #{paybackProgress,jdbcType=DECIMAL},
+      </if>
+      <if test="paybackStatus != null">
+        payback_status = #{paybackStatus,jdbcType=TINYINT},
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=DATE},
+      </if>
+      <if test="paybackCompletedDate != null">
+        payback_completed_date = #{paybackCompletedDate,jdbcType=DATE},
+      </if>
+      <if test="paybackDays != null">
+        payback_days = #{paybackDays,jdbcType=INTEGER},
+      </if>
+      <if test="dailyAvgQuantity != null">
+        daily_avg_quantity = #{dailyAvgQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="predictedCompletionDate != null">
+        predicted_completion_date = #{predictedCompletionDate,jdbcType=DATE},
+      </if>
+      <if test="lastOrderDate != null">
+        last_order_date = #{lastOrderDate,jdbcType=DATE},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsProductPaybackAnalysis">
+    update pms_product_payback_analysis
+    set product_id = #{productId,jdbcType=BIGINT},
+      product_name = #{productName,jdbcType=VARCHAR},
+      product_sn = #{productSn,jdbcType=VARCHAR},
+      target_quantity = #{targetQuantity,jdbcType=INTEGER},
+      target_amount = #{targetAmount,jdbcType=DECIMAL},
+      current_sold_quantity = #{currentSoldQuantity,jdbcType=INTEGER},
+      current_sold_amount = #{currentSoldAmount,jdbcType=DECIMAL},
+      payback_progress = #{paybackProgress,jdbcType=DECIMAL},
+      payback_status = #{paybackStatus,jdbcType=TINYINT},
+      start_date = #{startDate,jdbcType=DATE},
+      payback_completed_date = #{paybackCompletedDate,jdbcType=DATE},
+      payback_days = #{paybackDays,jdbcType=INTEGER},
+      daily_avg_quantity = #{dailyAvgQuantity,jdbcType=DECIMAL},
+      predicted_completion_date = #{predictedCompletionDate,jdbcType=DATE},
+      last_order_date = #{lastOrderDate,jdbcType=DATE},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.PmsInviteWithdrawApplyMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.PmsInviteWithdrawApply">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="withdraw_sn" jdbcType="VARCHAR" property="withdrawSn" />
+    <result column="apply_amount" jdbcType="DECIMAL" property="applyAmount" />
+    <result column="fee_amount" jdbcType="DECIMAL" property="feeAmount" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="withdraw_type" jdbcType="TINYINT" property="withdrawType" />
+    <result column="withdraw_account" jdbcType="VARCHAR" property="withdrawAccount" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
+    <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime" />
+    <result column="process_time" jdbcType="TIMESTAMP" property="processTime" />
+    <result column="expected_arrival_time" jdbcType="TIMESTAMP" property="expectedArrivalTime" />
+    <result column="actual_arrival_time" jdbcType="TIMESTAMP" property="actualArrivalTime" />
+    <result column="audit_user" jdbcType="VARCHAR" property="auditUser" />
+    <result column="process_user" jdbcType="VARCHAR" property="processUser" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
+    <result column="process_remark" jdbcType="VARCHAR" property="processRemark" />
+    <result column="failure_reason" jdbcType="VARCHAR" property="failureReason" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, user_id, withdraw_sn, apply_amount, fee_amount, actual_amount, withdraw_type, 
+    withdraw_account, account_name, status, apply_time, audit_time, process_time, expected_arrival_time, 
+    actual_arrival_time, audit_user, process_user, remark, audit_remark, process_remark, 
+    failure_reason, created_at, updated_at
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.PmsInviteWithdrawApplyExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pms_invite_withdraw_apply
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pms_invite_withdraw_apply
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pms_invite_withdraw_apply
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsInviteWithdrawApplyExample">
+    delete from pms_invite_withdraw_apply
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.PmsInviteWithdrawApply">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_invite_withdraw_apply (user_id, withdraw_sn, apply_amount, 
+      fee_amount, actual_amount, withdraw_type, 
+      withdraw_account, account_name, status, 
+      apply_time, audit_time, process_time, 
+      expected_arrival_time, actual_arrival_time, 
+      audit_user, process_user, remark, 
+      audit_remark, process_remark, failure_reason, 
+      created_at, updated_at)
+    values (#{userId,jdbcType=BIGINT}, #{withdrawSn,jdbcType=VARCHAR}, #{applyAmount,jdbcType=DECIMAL}, 
+      #{feeAmount,jdbcType=DECIMAL}, #{actualAmount,jdbcType=DECIMAL}, #{withdrawType,jdbcType=TINYINT}, 
+      #{withdrawAccount,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{applyTime,jdbcType=TIMESTAMP}, #{auditTime,jdbcType=TIMESTAMP}, #{processTime,jdbcType=TIMESTAMP}, 
+      #{expectedArrivalTime,jdbcType=TIMESTAMP}, #{actualArrivalTime,jdbcType=TIMESTAMP}, 
+      #{auditUser,jdbcType=VARCHAR}, #{processUser,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{auditRemark,jdbcType=VARCHAR}, #{processRemark,jdbcType=VARCHAR}, #{failureReason,jdbcType=VARCHAR}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsInviteWithdrawApply">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_invite_withdraw_apply
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="withdrawSn != null">
+        withdraw_sn,
+      </if>
+      <if test="applyAmount != null">
+        apply_amount,
+      </if>
+      <if test="feeAmount != null">
+        fee_amount,
+      </if>
+      <if test="actualAmount != null">
+        actual_amount,
+      </if>
+      <if test="withdrawType != null">
+        withdraw_type,
+      </if>
+      <if test="withdrawAccount != null">
+        withdraw_account,
+      </if>
+      <if test="accountName != null">
+        account_name,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="applyTime != null">
+        apply_time,
+      </if>
+      <if test="auditTime != null">
+        audit_time,
+      </if>
+      <if test="processTime != null">
+        process_time,
+      </if>
+      <if test="expectedArrivalTime != null">
+        expected_arrival_time,
+      </if>
+      <if test="actualArrivalTime != null">
+        actual_arrival_time,
+      </if>
+      <if test="auditUser != null">
+        audit_user,
+      </if>
+      <if test="processUser != null">
+        process_user,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="auditRemark != null">
+        audit_remark,
+      </if>
+      <if test="processRemark != null">
+        process_remark,
+      </if>
+      <if test="failureReason != null">
+        failure_reason,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="withdrawSn != null">
+        #{withdrawSn,jdbcType=VARCHAR},
+      </if>
+      <if test="applyAmount != null">
+        #{applyAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="feeAmount != null">
+        #{feeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="actualAmount != null">
+        #{actualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="withdrawType != null">
+        #{withdrawType,jdbcType=TINYINT},
+      </if>
+      <if test="withdrawAccount != null">
+        #{withdrawAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="applyTime != null">
+        #{applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditTime != null">
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="processTime != null">
+        #{processTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expectedArrivalTime != null">
+        #{expectedArrivalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualArrivalTime != null">
+        #{actualArrivalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditUser != null">
+        #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="processUser != null">
+        #{processUser,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="auditRemark != null">
+        #{auditRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="processRemark != null">
+        #{processRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="failureReason != null">
+        #{failureReason,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.PmsInviteWithdrawApplyExample" resultType="java.lang.Long">
+    select count(*) from pms_invite_withdraw_apply
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pms_invite_withdraw_apply
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.userId != null">
+        user_id = #{row.userId,jdbcType=BIGINT},
+      </if>
+      <if test="row.withdrawSn != null">
+        withdraw_sn = #{row.withdrawSn,jdbcType=VARCHAR},
+      </if>
+      <if test="row.applyAmount != null">
+        apply_amount = #{row.applyAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.feeAmount != null">
+        fee_amount = #{row.feeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.actualAmount != null">
+        actual_amount = #{row.actualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.withdrawType != null">
+        withdraw_type = #{row.withdrawType,jdbcType=TINYINT},
+      </if>
+      <if test="row.withdrawAccount != null">
+        withdraw_account = #{row.withdrawAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="row.accountName != null">
+        account_name = #{row.accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.status != null">
+        status = #{row.status,jdbcType=TINYINT},
+      </if>
+      <if test="row.applyTime != null">
+        apply_time = #{row.applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.auditTime != null">
+        audit_time = #{row.auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.processTime != null">
+        process_time = #{row.processTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.expectedArrivalTime != null">
+        expected_arrival_time = #{row.expectedArrivalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.actualArrivalTime != null">
+        actual_arrival_time = #{row.actualArrivalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.auditUser != null">
+        audit_user = #{row.auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="row.processUser != null">
+        process_user = #{row.processUser,jdbcType=VARCHAR},
+      </if>
+      <if test="row.remark != null">
+        remark = #{row.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="row.auditRemark != null">
+        audit_remark = #{row.auditRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="row.processRemark != null">
+        process_remark = #{row.processRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="row.failureReason != null">
+        failure_reason = #{row.failureReason,jdbcType=VARCHAR},
+      </if>
+      <if test="row.createdAt != null">
+        created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updatedAt != null">
+        updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pms_invite_withdraw_apply
+    set id = #{row.id,jdbcType=BIGINT},
+      user_id = #{row.userId,jdbcType=BIGINT},
+      withdraw_sn = #{row.withdrawSn,jdbcType=VARCHAR},
+      apply_amount = #{row.applyAmount,jdbcType=DECIMAL},
+      fee_amount = #{row.feeAmount,jdbcType=DECIMAL},
+      actual_amount = #{row.actualAmount,jdbcType=DECIMAL},
+      withdraw_type = #{row.withdrawType,jdbcType=TINYINT},
+      withdraw_account = #{row.withdrawAccount,jdbcType=VARCHAR},
+      account_name = #{row.accountName,jdbcType=VARCHAR},
+      status = #{row.status,jdbcType=TINYINT},
+      apply_time = #{row.applyTime,jdbcType=TIMESTAMP},
+      audit_time = #{row.auditTime,jdbcType=TIMESTAMP},
+      process_time = #{row.processTime,jdbcType=TIMESTAMP},
+      expected_arrival_time = #{row.expectedArrivalTime,jdbcType=TIMESTAMP},
+      actual_arrival_time = #{row.actualArrivalTime,jdbcType=TIMESTAMP},
+      audit_user = #{row.auditUser,jdbcType=VARCHAR},
+      process_user = #{row.processUser,jdbcType=VARCHAR},
+      remark = #{row.remark,jdbcType=VARCHAR},
+      audit_remark = #{row.auditRemark,jdbcType=VARCHAR},
+      process_remark = #{row.processRemark,jdbcType=VARCHAR},
+      failure_reason = #{row.failureReason,jdbcType=VARCHAR},
+      created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsInviteWithdrawApply">
+    update pms_invite_withdraw_apply
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="withdrawSn != null">
+        withdraw_sn = #{withdrawSn,jdbcType=VARCHAR},
+      </if>
+      <if test="applyAmount != null">
+        apply_amount = #{applyAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="feeAmount != null">
+        fee_amount = #{feeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="actualAmount != null">
+        actual_amount = #{actualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="withdrawType != null">
+        withdraw_type = #{withdrawType,jdbcType=TINYINT},
+      </if>
+      <if test="withdrawAccount != null">
+        withdraw_account = #{withdrawAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="applyTime != null">
+        apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditTime != null">
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="processTime != null">
+        process_time = #{processTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expectedArrivalTime != null">
+        expected_arrival_time = #{expectedArrivalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualArrivalTime != null">
+        actual_arrival_time = #{actualArrivalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditUser != null">
+        audit_user = #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="processUser != null">
+        process_user = #{processUser,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="auditRemark != null">
+        audit_remark = #{auditRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="processRemark != null">
+        process_remark = #{processRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="failureReason != null">
+        failure_reason = #{failureReason,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsInviteWithdrawApply">
+    update pms_invite_withdraw_apply
+    set user_id = #{userId,jdbcType=BIGINT},
+      withdraw_sn = #{withdrawSn,jdbcType=VARCHAR},
+      apply_amount = #{applyAmount,jdbcType=DECIMAL},
+      fee_amount = #{feeAmount,jdbcType=DECIMAL},
+      actual_amount = #{actualAmount,jdbcType=DECIMAL},
+      withdraw_type = #{withdrawType,jdbcType=TINYINT},
+      withdraw_account = #{withdrawAccount,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      process_time = #{processTime,jdbcType=TIMESTAMP},
+      expected_arrival_time = #{expectedArrivalTime,jdbcType=TIMESTAMP},
+      actual_arrival_time = #{actualArrivalTime,jdbcType=TIMESTAMP},
+      audit_user = #{auditUser,jdbcType=VARCHAR},
+      process_user = #{processUser,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      audit_remark = #{auditRemark,jdbcType=VARCHAR},
+      process_remark = #{processRemark,jdbcType=VARCHAR},
+      failure_reason = #{failureReason,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

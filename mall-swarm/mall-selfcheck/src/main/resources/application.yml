@@ -1,0 +1,189 @@
+server:
+  port: 8086
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  # 本地开发环境覆盖Docker主机名
+  datasource:
+    url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 321Wssba
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      password: 
+      timeout: 5000ms
+  rabbitmq:
+    host: localhost
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*' #暴露Actuator的监控端点
+  endpoint:
+    health:
+      show-details: always #显示健康的详细信息
+    env:
+      show-values: always #默认Actuator的环境变量会以****显示，这里开启显示
+    configprops:
+      show-values: always #默认Actuator的配置属性会以****显示，这里开启显示
+    info:
+      enabled: true
+
+redis:
+  key:
+    verifyCode: 'selfcheck:verifyCode'
+    memberSession: 'selfcheck:memberSession'
+    paymentCache: 'selfcheck:payment'
+    order: 'selfcheck:order'
+  expire:
+    verifyCode: 300 # 验证码超期时间（5分钟）
+    memberSession: 3600 # 会员会话超期时间（1小时）
+    payment: 600 # 支付缓存超期时间（10分钟）
+
+rabbitmq:
+  queue:
+    name:
+      paymentResult: selfcheckPaymentResultQueue
+      memberActivity: selfcheckMemberActivityQueue
+
+springdoc:
+  swagger-ui:
+    # 修改Swagger UI路径
+    path: /swagger-ui.html
+    # 开启Swagger UI界面
+    enabled: true
+    # 用于配置tag和operation的展开方式，这里配置为都不展开
+    doc-expansion: 'none'
+  api-docs:
+    # 修改api-docs路径
+    path: /v3/api-docs
+    # 开启api-docs
+    enabled: true
+  group-configs:
+    - group: 'mall-selfcheck'
+      packages-to-scan: com.macro.mall.selfcheck.controller
+
+sa-token:
+  # token名称 (同时也是cookie名称)
+  token-name: Authorization
+  # token有效期，单位秒，-1代表永不过期
+  timeout: 3600
+  # token临时有效期 (指定时间内无操作就视为token过期)，单位秒
+  active-timeout: -1
+  # 是否允许同一账号并发登录 (为false时新登录挤掉旧登录)
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个token (为false时每次登录新建一个token)
+  is-share: false
+  # token风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: false
+  # 是否从cookie中读取token
+  is-read-cookie: false
+  # 是否从head中读取token
+  is-read-header: true
+  # token前缀
+  token-prefix: Bearer
+  # jwt秘钥
+  jwt-secret-key: sa-secret-key123
+  # 是否打印banner
+  is-print: false
+
+# 自助结算系统自定义配置
+selfcheck:
+  # 会员配置
+  member:
+    # 验证码发送频率限制（秒）
+    send-rate-limit: 60
+    # 会员会话超时时间（秒）
+    session-timeout: 3600
+    # 支付完成后自动退出延迟时间（秒）
+    auto-logout-delay: 3
+    # 是否自动注册新会员
+    auto-register: true
+    # 会员默认等级ID
+    default-level-id: 1
+  
+  # 安全配置
+  security:
+    # 最大登录尝试次数
+    max-login-attempts: 5
+    # 登录锁定时长（秒）
+    login-lock-duration: 900
+    # IP锁定时长（秒）
+    ip-block-duration: 3600
+    # 频率限制窗口期（秒）
+    rate-limit-window: 300
+    # 窗口期内最大尝试次数
+    max-attempts-per-window: 3
+    # 设备信任期（天）
+    device-trust-days: 30
+    # 异常登录检测开关
+    abnormal-login-detection: true
+    # 地理位置检测开关
+    geo-location-detection: false
+  
+  # 游客配置
+  guest:
+    # 游客会话超时时间（秒）
+    session-timeout: 1800
+    # 游客ID前缀
+    id-prefix: "guest_"
+    # 是否允许游客下单
+    allow-order: true
+  
+  # 短信服务配置
+  sms:
+    # 短信服务提供商（mock, aliyun, tencent, huawei）
+    provider: mock
+    # 模拟模式配置
+    mock:
+      # 是否启用模拟模式
+      enabled: true
+      # 固定验证码（用于测试，生产环境请删除）
+      fixed-code: "123456"
+    # 阿里云SMS配置
+    aliyun:
+      access-key-id: ${SMS_ALIYUN_ACCESS_KEY:}
+      access-key-secret: ${SMS_ALIYUN_ACCESS_SECRET:}
+      sign-name: ${SMS_ALIYUN_SIGN_NAME:自助收银}
+      template-code: ${SMS_ALIYUN_TEMPLATE_CODE:}
+      region: ${SMS_ALIYUN_REGION:cn-hangzhou}
+    # 腾讯云SMS配置
+    tencent:
+      secret-id: ${SMS_TENCENT_SECRET_ID:}
+      secret-key: ${SMS_TENCENT_SECRET_KEY:}
+      sdk-app-id: ${SMS_TENCENT_SDK_APP_ID:}
+      sign-name: ${SMS_TENCENT_SIGN_NAME:自助收银}
+      template-id: ${SMS_TENCENT_TEMPLATE_ID:}
+    # 华为云SMS配置
+    huawei:
+      app-key: ${SMS_HUAWEI_APP_KEY:}
+      app-secret: ${SMS_HUAWEI_APP_SECRET:}
+      sender: ${SMS_HUAWEI_SENDER:}
+      template-id: ${SMS_HUAWEI_TEMPLATE_ID:}
+      signature: ${SMS_HUAWEI_SIGNATURE:自助收银}
+      url: ${SMS_HUAWEI_URL:https://smsapi.cn-north-4.myhuaweicloud.com:443}
+  
+  # 扫码配置
+  scan:
+    # 条码扫描超时时间（秒）
+    scan-timeout: 30
+    # 支持的条码格式
+    supported-formats:
+      - EAN_13
+      - EAN_8
+      - CODE_128
+      - QR_CODE
+    # 扫码结果缓存时间（秒）
+    result-cache-time: 300 

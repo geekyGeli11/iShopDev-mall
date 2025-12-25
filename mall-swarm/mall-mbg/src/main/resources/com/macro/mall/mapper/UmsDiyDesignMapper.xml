@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.UmsDiyDesignMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.UmsDiyDesign">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.macro.mall.model.UmsDiyDesign">
+    <result column="design_data" jdbcType="LONGVARCHAR" property="designData" />
+    <result column="preview_images" jdbcType="LONGVARCHAR" property="previewImages" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, user_id, product_id, template_id, status, create_time, update_time
+  </sql>
+  <sql id="Blob_Column_List">
+    design_data, preview_images
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.model.UmsDiyDesignExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ums_diy_design
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.macro.mall.model.UmsDiyDesignExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ums_diy_design
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ums_diy_design
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ums_diy_design
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.UmsDiyDesignExample">
+    delete from ums_diy_design
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.UmsDiyDesign">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_diy_design (user_id, product_id, template_id, 
+      status, create_time, update_time, 
+      design_data, preview_images)
+    values (#{userId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{templateId,jdbcType=BIGINT}, 
+      #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{designData,jdbcType=LONGVARCHAR}, #{previewImages,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.UmsDiyDesign">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_diy_design
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="designData != null">
+        design_data,
+      </if>
+      <if test="previewImages != null">
+        preview_images,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="templateId != null">
+        #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="designData != null">
+        #{designData,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="previewImages != null">
+        #{previewImages,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.UmsDiyDesignExample" resultType="java.lang.Long">
+    select count(*) from ums_diy_design
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update ums_diy_design
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.userId != null">
+        user_id = #{row.userId,jdbcType=BIGINT},
+      </if>
+      <if test="row.productId != null">
+        product_id = #{row.productId,jdbcType=BIGINT},
+      </if>
+      <if test="row.templateId != null">
+        template_id = #{row.templateId,jdbcType=BIGINT},
+      </if>
+      <if test="row.status != null">
+        status = #{row.status,jdbcType=TINYINT},
+      </if>
+      <if test="row.createTime != null">
+        create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updateTime != null">
+        update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.designData != null">
+        design_data = #{row.designData,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="row.previewImages != null">
+        preview_images = #{row.previewImages,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update ums_diy_design
+    set id = #{row.id,jdbcType=BIGINT},
+      user_id = #{row.userId,jdbcType=BIGINT},
+      product_id = #{row.productId,jdbcType=BIGINT},
+      template_id = #{row.templateId,jdbcType=BIGINT},
+      status = #{row.status,jdbcType=TINYINT},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      design_data = #{row.designData,jdbcType=LONGVARCHAR},
+      preview_images = #{row.previewImages,jdbcType=LONGVARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update ums_diy_design
+    set id = #{row.id,jdbcType=BIGINT},
+      user_id = #{row.userId,jdbcType=BIGINT},
+      product_id = #{row.productId,jdbcType=BIGINT},
+      template_id = #{row.templateId,jdbcType=BIGINT},
+      status = #{row.status,jdbcType=TINYINT},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      update_time = #{row.updateTime,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.UmsDiyDesign">
+    update ums_diy_design
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="designData != null">
+        design_data = #{designData,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="previewImages != null">
+        preview_images = #{previewImages,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.UmsDiyDesign">
+    update ums_diy_design
+    set user_id = #{userId,jdbcType=BIGINT},
+      product_id = #{productId,jdbcType=BIGINT},
+      template_id = #{templateId,jdbcType=BIGINT},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      design_data = #{designData,jdbcType=LONGVARCHAR},
+      preview_images = #{previewImages,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.UmsDiyDesign">
+    update ums_diy_design
+    set user_id = #{userId,jdbcType=BIGINT},
+      product_id = #{productId,jdbcType=BIGINT},
+      template_id = #{templateId,jdbcType=BIGINT},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

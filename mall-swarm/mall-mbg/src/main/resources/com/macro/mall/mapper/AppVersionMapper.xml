@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.AppVersionMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.AppVersion">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="version_name" jdbcType="VARCHAR" property="versionName" />
+    <result column="version_code" jdbcType="INTEGER" property="versionCode" />
+    <result column="apk_file_path" jdbcType="VARCHAR" property="apkFilePath" />
+    <result column="apk_file_size" jdbcType="BIGINT" property="apkFileSize" />
+    <result column="apk_file_md5" jdbcType="VARCHAR" property="apkFileMd5" />
+    <result column="update_type" jdbcType="BIT" property="updateType" />
+    <result column="min_support_version" jdbcType="VARCHAR" property="minSupportVersion" />
+    <result column="target_platform" jdbcType="VARCHAR" property="targetPlatform" />
+    <result column="release_time" jdbcType="TIMESTAMP" property="releaseTime" />
+    <result column="is_active" jdbcType="BIT" property="isActive" />
+    <result column="download_url" jdbcType="VARCHAR" property="downloadUrl" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.macro.mall.model.AppVersion">
+    <result column="update_content" jdbcType="LONGVARCHAR" property="updateContent" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, version_name, version_code, apk_file_path, apk_file_size, apk_file_md5, update_type, 
+    min_support_version, target_platform, release_time, is_active, download_url, created_time, 
+    updated_time
+  </sql>
+  <sql id="Blob_Column_List">
+    update_content
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.model.AppVersionExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from app_version
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.macro.mall.model.AppVersionExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from app_version
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from app_version
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from app_version
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.AppVersionExample">
+    delete from app_version
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.AppVersion">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into app_version (version_name, version_code, apk_file_path, 
+      apk_file_size, apk_file_md5, update_type, 
+      min_support_version, target_platform, release_time, 
+      is_active, download_url, created_time, 
+      updated_time, update_content)
+    values (#{versionName,jdbcType=VARCHAR}, #{versionCode,jdbcType=INTEGER}, #{apkFilePath,jdbcType=VARCHAR}, 
+      #{apkFileSize,jdbcType=BIGINT}, #{apkFileMd5,jdbcType=VARCHAR}, #{updateType,jdbcType=BIT}, 
+      #{minSupportVersion,jdbcType=VARCHAR}, #{targetPlatform,jdbcType=VARCHAR}, #{releaseTime,jdbcType=TIMESTAMP}, 
+      #{isActive,jdbcType=BIT}, #{downloadUrl,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{updateContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.AppVersion">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into app_version
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="versionName != null">
+        version_name,
+      </if>
+      <if test="versionCode != null">
+        version_code,
+      </if>
+      <if test="apkFilePath != null">
+        apk_file_path,
+      </if>
+      <if test="apkFileSize != null">
+        apk_file_size,
+      </if>
+      <if test="apkFileMd5 != null">
+        apk_file_md5,
+      </if>
+      <if test="updateType != null">
+        update_type,
+      </if>
+      <if test="minSupportVersion != null">
+        min_support_version,
+      </if>
+      <if test="targetPlatform != null">
+        target_platform,
+      </if>
+      <if test="releaseTime != null">
+        release_time,
+      </if>
+      <if test="isActive != null">
+        is_active,
+      </if>
+      <if test="downloadUrl != null">
+        download_url,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="updateContent != null">
+        update_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="versionName != null">
+        #{versionName,jdbcType=VARCHAR},
+      </if>
+      <if test="versionCode != null">
+        #{versionCode,jdbcType=INTEGER},
+      </if>
+      <if test="apkFilePath != null">
+        #{apkFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="apkFileSize != null">
+        #{apkFileSize,jdbcType=BIGINT},
+      </if>
+      <if test="apkFileMd5 != null">
+        #{apkFileMd5,jdbcType=VARCHAR},
+      </if>
+      <if test="updateType != null">
+        #{updateType,jdbcType=BIT},
+      </if>
+      <if test="minSupportVersion != null">
+        #{minSupportVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="targetPlatform != null">
+        #{targetPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseTime != null">
+        #{releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isActive != null">
+        #{isActive,jdbcType=BIT},
+      </if>
+      <if test="downloadUrl != null">
+        #{downloadUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateContent != null">
+        #{updateContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.AppVersionExample" resultType="java.lang.Long">
+    select count(*) from app_version
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update app_version
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.versionName != null">
+        version_name = #{row.versionName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.versionCode != null">
+        version_code = #{row.versionCode,jdbcType=INTEGER},
+      </if>
+      <if test="row.apkFilePath != null">
+        apk_file_path = #{row.apkFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="row.apkFileSize != null">
+        apk_file_size = #{row.apkFileSize,jdbcType=BIGINT},
+      </if>
+      <if test="row.apkFileMd5 != null">
+        apk_file_md5 = #{row.apkFileMd5,jdbcType=VARCHAR},
+      </if>
+      <if test="row.updateType != null">
+        update_type = #{row.updateType,jdbcType=BIT},
+      </if>
+      <if test="row.minSupportVersion != null">
+        min_support_version = #{row.minSupportVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="row.targetPlatform != null">
+        target_platform = #{row.targetPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="row.releaseTime != null">
+        release_time = #{row.releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.isActive != null">
+        is_active = #{row.isActive,jdbcType=BIT},
+      </if>
+      <if test="row.downloadUrl != null">
+        download_url = #{row.downloadUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="row.createdTime != null">
+        created_time = #{row.createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updatedTime != null">
+        updated_time = #{row.updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updateContent != null">
+        update_content = #{row.updateContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update app_version
+    set id = #{row.id,jdbcType=BIGINT},
+      version_name = #{row.versionName,jdbcType=VARCHAR},
+      version_code = #{row.versionCode,jdbcType=INTEGER},
+      apk_file_path = #{row.apkFilePath,jdbcType=VARCHAR},
+      apk_file_size = #{row.apkFileSize,jdbcType=BIGINT},
+      apk_file_md5 = #{row.apkFileMd5,jdbcType=VARCHAR},
+      update_type = #{row.updateType,jdbcType=BIT},
+      min_support_version = #{row.minSupportVersion,jdbcType=VARCHAR},
+      target_platform = #{row.targetPlatform,jdbcType=VARCHAR},
+      release_time = #{row.releaseTime,jdbcType=TIMESTAMP},
+      is_active = #{row.isActive,jdbcType=BIT},
+      download_url = #{row.downloadUrl,jdbcType=VARCHAR},
+      created_time = #{row.createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{row.updatedTime,jdbcType=TIMESTAMP},
+      update_content = #{row.updateContent,jdbcType=LONGVARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update app_version
+    set id = #{row.id,jdbcType=BIGINT},
+      version_name = #{row.versionName,jdbcType=VARCHAR},
+      version_code = #{row.versionCode,jdbcType=INTEGER},
+      apk_file_path = #{row.apkFilePath,jdbcType=VARCHAR},
+      apk_file_size = #{row.apkFileSize,jdbcType=BIGINT},
+      apk_file_md5 = #{row.apkFileMd5,jdbcType=VARCHAR},
+      update_type = #{row.updateType,jdbcType=BIT},
+      min_support_version = #{row.minSupportVersion,jdbcType=VARCHAR},
+      target_platform = #{row.targetPlatform,jdbcType=VARCHAR},
+      release_time = #{row.releaseTime,jdbcType=TIMESTAMP},
+      is_active = #{row.isActive,jdbcType=BIT},
+      download_url = #{row.downloadUrl,jdbcType=VARCHAR},
+      created_time = #{row.createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{row.updatedTime,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.AppVersion">
+    update app_version
+    <set>
+      <if test="versionName != null">
+        version_name = #{versionName,jdbcType=VARCHAR},
+      </if>
+      <if test="versionCode != null">
+        version_code = #{versionCode,jdbcType=INTEGER},
+      </if>
+      <if test="apkFilePath != null">
+        apk_file_path = #{apkFilePath,jdbcType=VARCHAR},
+      </if>
+      <if test="apkFileSize != null">
+        apk_file_size = #{apkFileSize,jdbcType=BIGINT},
+      </if>
+      <if test="apkFileMd5 != null">
+        apk_file_md5 = #{apkFileMd5,jdbcType=VARCHAR},
+      </if>
+      <if test="updateType != null">
+        update_type = #{updateType,jdbcType=BIT},
+      </if>
+      <if test="minSupportVersion != null">
+        min_support_version = #{minSupportVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="targetPlatform != null">
+        target_platform = #{targetPlatform,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseTime != null">
+        release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isActive != null">
+        is_active = #{isActive,jdbcType=BIT},
+      </if>
+      <if test="downloadUrl != null">
+        download_url = #{downloadUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateContent != null">
+        update_content = #{updateContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.AppVersion">
+    update app_version
+    set version_name = #{versionName,jdbcType=VARCHAR},
+      version_code = #{versionCode,jdbcType=INTEGER},
+      apk_file_path = #{apkFilePath,jdbcType=VARCHAR},
+      apk_file_size = #{apkFileSize,jdbcType=BIGINT},
+      apk_file_md5 = #{apkFileMd5,jdbcType=VARCHAR},
+      update_type = #{updateType,jdbcType=BIT},
+      min_support_version = #{minSupportVersion,jdbcType=VARCHAR},
+      target_platform = #{targetPlatform,jdbcType=VARCHAR},
+      release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      is_active = #{isActive,jdbcType=BIT},
+      download_url = #{downloadUrl,jdbcType=VARCHAR},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      update_content = #{updateContent,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.AppVersion">
+    update app_version
+    set version_name = #{versionName,jdbcType=VARCHAR},
+      version_code = #{versionCode,jdbcType=INTEGER},
+      apk_file_path = #{apkFilePath,jdbcType=VARCHAR},
+      apk_file_size = #{apkFileSize,jdbcType=BIGINT},
+      apk_file_md5 = #{apkFileMd5,jdbcType=VARCHAR},
+      update_type = #{updateType,jdbcType=BIT},
+      min_support_version = #{minSupportVersion,jdbcType=VARCHAR},
+      target_platform = #{targetPlatform,jdbcType=VARCHAR},
+      release_time = #{releaseTime,jdbcType=TIMESTAMP},
+      is_active = #{isActive,jdbcType=BIT},
+      download_url = #{downloadUrl,jdbcType=VARCHAR},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

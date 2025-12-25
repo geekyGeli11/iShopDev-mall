@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.selfcheck.dao.SelfcheckCouponDao">
+
+    <!-- 会员优惠券VO结果映射 -->
+    <resultMap id="MemberCouponVOMap" type="com.macro.mall.selfcheck.dto.MemberCouponVO">
+        <id column="history_id" property="historyId"/>
+        <result column="coupon_id" property="couponId"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="coupon_code" property="couponCode"/>
+        <result column="amount" property="amount"/>
+        <result column="coupon_type" property="couponType"/>
+        <result column="discount_rate" property="discountRate"/>
+        <result column="min_point" property="minPoint"/>
+        <result column="use_type" property="useType"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="use_status" property="useStatus"/>
+        <result column="create_time" property="createTime"/>
+        <result column="use_time" property="useTime"/>
+        <result column="note" property="note"/>
+        <result column="remaining_days" property="remainingDays"/>
+        <result column="near_expiry" property="nearExpiry"/>
+        <result column="available" property="available"/>
+    </resultMap>
+
+    <!-- 获取会员优惠券列表（关联查询） -->
+    <select id="getMemberCouponList" resultMap="MemberCouponVOMap">
+        SELECT 
+            ch.id AS history_id,
+            ch.coupon_id,
+            c.name,
+            c.type,
+            ch.coupon_code,
+            c.amount,
+            c.min_point,
+            c.use_type,
+            c.start_time,
+            c.end_time,
+            ch.use_status,
+            ch.create_time,
+            ch.use_time,
+            c.note,
+            CASE 
+                WHEN c.end_time IS NULL THEN -1
+                WHEN c.end_time &lt; NOW() THEN -1
+                ELSE DATEDIFF(c.end_time, NOW())
+            END AS remaining_days,
+            CASE 
+                WHEN c.end_time IS NOT NULL 
+                AND c.end_time >= NOW() 
+                AND DATEDIFF(c.end_time, NOW()) &lt;= 3 
+                THEN 1 
+                ELSE 0 
+            END AS near_expiry,
+            CASE 
+                WHEN ch.use_status = 0 
+                AND c.start_time &lt;= NOW() 
+                AND (c.end_time IS NULL OR c.end_time >= NOW())
+                THEN 1 
+                ELSE 0 
+            END AS available
+        FROM sms_coupon_history ch
+        INNER JOIN sms_coupon c ON ch.coupon_id = c.id
+        WHERE ch.member_id = #{memberId}
+        <if test="useStatus != null">
+            AND ch.use_status = #{useStatus}
+        </if>
+        ORDER BY 
+        <choose>
+            <when test="orderBy == 'createTime'">
+                ch.create_time
+            </when>
+            <when test="orderBy == 'endTime'">
+                c.end_time
+            </when>
+            <when test="orderBy == 'amount'">
+                c.amount
+            </when>
+            <otherwise>
+                ch.create_time
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="orderDirection == 'asc'">
+                ASC
+            </when>
+            <otherwise>
+                DESC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 获取会员优惠券总数 -->
+    <select id="getMemberCouponCount" resultType="long">
+        SELECT COUNT(*)
+        FROM sms_coupon_history ch
+        INNER JOIN sms_coupon c ON ch.coupon_id = c.id
+        WHERE ch.member_id = #{memberId}
+        <if test="useStatus != null">
+            AND ch.use_status = #{useStatus}
+        </if>
+    </select>
+
+    <!-- 获取会员可用优惠券数量 -->
+    <select id="getAvailableCouponCount" resultType="int">
+        SELECT COUNT(*)
+        FROM sms_coupon_history ch
+        INNER JOIN sms_coupon c ON ch.coupon_id = c.id
+        WHERE ch.member_id = #{memberId}
+        AND ch.use_status = 0
+        AND c.start_time &lt;= NOW()
+        AND (c.end_time IS NULL OR c.end_time >= NOW())
+        AND c.amount > 0
+        AND c.use_type = 0
+    </select>
+
+    <!-- 获取会员即将过期的优惠券数量（3天内过期） -->
+    <select id="getNearExpiryCouponCount" resultType="int">
+        SELECT COUNT(*)
+        FROM sms_coupon_history ch
+        INNER JOIN sms_coupon c ON ch.coupon_id = c.id
+        WHERE ch.member_id = #{memberId}
+        AND ch.use_status = 0
+        AND c.end_time IS NOT NULL
+        AND c.end_time >= NOW()
+        AND DATEDIFF(c.end_time, NOW()) &lt;= 3
+    </select>
+
+    <!-- 根据优惠券历史ID获取详细信息 -->
+    <select id="getCouponDetail" resultMap="MemberCouponVOMap">
+        SELECT 
+            ch.id AS history_id,
+            ch.coupon_id,
+            c.name,
+            c.type,
+            ch.coupon_code,
+            c.amount,
+            c.min_point,
+            c.use_type,
+            c.start_time,
+            c.end_time,
+            ch.use_status,
+            ch.create_time,
+            ch.use_time,
+            c.note,
+            CASE 
+                WHEN c.end_time IS NULL THEN -1
+                WHEN c.end_time &lt; NOW() THEN -1
+                ELSE DATEDIFF(c.end_time, NOW())
+            END AS remaining_days,
+            CASE 
+                WHEN c.end_time IS NOT NULL 
+                AND c.end_time >= NOW() 
+                AND DATEDIFF(c.end_time, NOW()) &lt;= 3 
+                THEN 1 
+                ELSE 0 
+            END AS near_expiry,
+            CASE 
+                WHEN ch.use_status = 0 
+                AND c.start_time &lt;= NOW() 
+                AND (c.end_time IS NULL OR c.end_time >= NOW())
+                THEN 1 
+                ELSE 0 
+            END AS available
+        FROM sms_coupon_history ch
+        INNER JOIN sms_coupon c ON ch.coupon_id = c.id
+        WHERE ch.id = #{historyId}
+        AND ch.member_id = #{memberId}
+    </select>
+
+    <!-- 获取会员在指定金额下可用的优惠券 -->
+    <select id="getAvailableCouponsForOrder" resultMap="MemberCouponVOMap">
+        SELECT
+            ch.id AS history_id,
+            ch.coupon_id,
+            c.name,
+            c.type,
+            ch.coupon_code,
+            c.amount,
+            c.coupon_type,
+            c.discount_rate,
+            c.min_point,
+            c.use_type,
+            c.start_time,
+            c.end_time,
+            ch.use_status,
+            ch.create_time,
+            ch.use_time,
+            c.note,
+            CASE 
+                WHEN c.end_time IS NULL THEN -1
+                WHEN c.end_time &lt; NOW() THEN -1
+                ELSE DATEDIFF(c.end_time, NOW())
+            END AS remaining_days,
+            CASE 
+                WHEN c.end_time IS NOT NULL 
+                AND c.end_time >= NOW() 
+                AND DATEDIFF(c.end_time, NOW()) &lt;= 3 
+                THEN 1 
+                ELSE 0 
+            END AS near_expiry,
+            1 AS available
+        FROM sms_coupon_history ch
+        INNER JOIN sms_coupon c ON ch.coupon_id = c.id
+        WHERE ch.member_id = #{memberId}
+        AND ch.use_status = 0
+        AND c.start_time &lt;= NOW()
+        AND (c.end_time IS NULL OR c.end_time >= NOW())
+        AND c.min_point &lt;= #{orderAmount}
+        AND (
+            (c.coupon_type = 0 AND c.amount > 0) OR
+            (c.coupon_type = 1 AND c.discount_rate > 0)
+        )
+        ORDER BY c.amount DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 获取会员在指定金额下可用的优惠券总数 -->
+    <select id="getAvailableCouponsCountForOrder" resultType="long">
+        SELECT COUNT(*)
+        FROM sms_coupon_history ch
+        INNER JOIN sms_coupon c ON ch.coupon_id = c.id
+        WHERE ch.member_id = #{memberId}
+        AND ch.use_status = 0
+        AND c.start_time &lt;= NOW()
+        AND (c.end_time IS NULL OR c.end_time >= NOW())
+        AND c.min_point &lt;= #{orderAmount}
+        AND (
+            (c.coupon_type = 0 AND c.amount > 0) OR
+            (c.coupon_type = 1 AND c.discount_rate > 0)
+        )
+    </select>
+
+    <!-- 使用优惠券 -->
+    <update id="useCoupon">
+        UPDATE sms_coupon_history
+        SET use_status = 1,
+            use_time = #{useTime},
+            order_id = #{orderId}
+        WHERE id = #{couponHistoryId}
+        AND use_status = 0
+    </update>
+
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.SmsCouponDao">
+    <resultMap id="couponItemParam" type="com.macro.mall.dto.SmsCouponParam" extends="com.macro.mall.mapper.SmsCouponMapper.BaseResultMap">
+        <collection property="productRelationList" columnPrefix="cpr_" resultMap="com.macro.mall.mapper.SmsCouponProductRelationMapper.BaseResultMap">
+        </collection>
+        <collection property="productCategoryRelationList" columnPrefix="cpcr_" resultMap="com.macro.mall.mapper.SmsCouponProductCategoryRelationMapper.BaseResultMap">
+        </collection>
+        <collection property="productExcludeRelationList" columnPrefix="cper_" resultMap="com.macro.mall.mapper.SmsCouponProductExcludeRelationMapper.BaseResultMap">
+        </collection>
+        <collection property="productCategoryExcludeRelationList" columnPrefix="cpcer_" resultMap="com.macro.mall.mapper.SmsCouponProductCategoryExcludeRelationMapper.BaseResultMap">
+        </collection>
+    </resultMap>
+    <select id="getItem" resultMap="couponItemParam">
+        SELECT
+            c.*,
+            cpr.id                   cpr_id,
+            cpr.product_id           cpr_product_id,
+            cpr.product_name         cpr_product_name,
+            cpr.product_sn           cpr_product_sn,
+            cpcr.id                  cpcr_id,
+            cpcr.product_category_id cpcr_product_category_id,
+            cpcr.product_category_name cpcr_product_category_name,
+            cpcr.parent_category_name cpcr_parent_category_name,
+            cper.id                  cper_id,
+            cper.product_id          cper_product_id,
+            cper.product_name        cper_product_name,
+            cper.product_sn          cper_product_sn,
+            cper.create_time         cper_create_time,
+            cper.update_time         cper_update_time,
+            cpcer.id                 cpcer_id,
+            cpcer.product_category_id cpcer_product_category_id,
+            cpcer.product_category_name cpcer_product_category_name,
+            cpcer.parent_category_name cpcer_parent_category_name,
+            cpcer.create_time        cpcer_create_time,
+            cpcer.update_time        cpcer_update_time
+        FROM
+            sms_coupon c
+            LEFT JOIN sms_coupon_product_relation cpr ON c.id = cpr.coupon_id
+            LEFT JOIN sms_coupon_product_category_relation cpcr ON c.id = cpcr.coupon_id
+            LEFT JOIN sms_coupon_product_exclude_relation cper ON c.id = cper.coupon_id
+            LEFT JOIN sms_coupon_product_category_exclude_relation cpcer ON c.id = cpcer.coupon_id
+        WHERE
+            c.id = #{id}
+    </select>
+</mapper>

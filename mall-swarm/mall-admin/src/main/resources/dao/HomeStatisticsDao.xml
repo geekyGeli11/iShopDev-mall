@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.HomeStatisticsDao">
+    <select id="getTodayOrderCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM oms_order
+        WHERE create_time BETWEEN #{startTime} AND #{endTime}
+          AND status IN (1, 2, 3)  <!-- 只统计待发货(1)、已发货(2)、已完成(3)的订单 -->
+          AND delete_status = 0
+    </select>
+    
+    <select id="getSaleAmountByDate" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(pay_amount), 0)
+        FROM oms_order
+        WHERE create_time BETWEEN #{startTime} AND #{endTime}
+          AND status IN (1, 2, 3)  <!-- 只统计待发货(1)、已发货(2)、已完成(3)的订单 -->
+          AND delete_status = 0
+    </select>
+    
+    <select id="getOrderCountByStatus" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM oms_order
+        WHERE status = #{status}
+          AND delete_status = 0
+    </select>
+    
+    <select id="getPendingRefundCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM oms_order_return_apply
+        WHERE status = 0  <!-- 待处理 -->
+    </select>
+    
+    <select id="getPendingReturnCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM oms_order_return_reason
+        WHERE status = 0  <!-- 待处理 -->
+    </select>
+    
+    <select id="getAdExpiringSoonCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM sms_home_advertise
+        WHERE status = 1  <!-- 上线状态 -->
+          AND end_time BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL #{days} DAY)
+    </select>
+    
+    <select id="getProductCountByPublishStatus" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM pms_product
+        WHERE publish_status = #{publishStatus}
+    </select>
+    
+    <select id="getLowStockProductCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM pms_product
+        WHERE publish_status = 1  <!-- 已上架 -->
+          AND EXISTS (
+              SELECT 1 FROM pms_sku_stock
+              WHERE pms_sku_stock.product_id = pms_product.id
+                AND pms_sku_stock.stock &lt;= #{stock}
+          )
+    </select>
+    
+    <select id="getTotalProductCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM pms_product
+    </select>
+    
+    <select id="getNewMemberCountByDate" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM ums_member
+        WHERE create_time BETWEEN #{startTime} AND #{endTime}
+    </select>
+    
+    <select id="getTotalMemberCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM ums_member
+    </select>
+    
+    <select id="getOrderStatisticsByDate" resultType="java.util.Map">
+        SELECT
+            DATE_FORMAT(create_time, '%Y-%m-%d') AS date,
+            COUNT(*) AS order_count,
+            IFNULL(SUM(pay_amount), 0) AS sale_amount
+        FROM oms_order
+        WHERE create_time BETWEEN #{startTime} AND #{endTime}
+          AND status IN (1, 2, 3)  <!-- 只统计待发货(1)、已发货(2)、已完成(3)的订单 -->
+          AND delete_status = 0
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m-%d')
+        ORDER BY date ASC
+    </select>
+</mapper> 

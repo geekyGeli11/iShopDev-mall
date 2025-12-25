@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.ProductStatisticsDao">
+    
+    <!-- 获取商品销售排行榜（按金额） -->
+    <select id="getTopSellingByAmount" resultType="java.util.Map">
+        SELECT 
+            p.id AS productId,
+            p.name AS productName,
+            ps.sku_code AS skuCode,
+            SUM(oi.product_quantity) AS salesQuantity,
+            SUM(oi.product_quantity * oi.product_price) AS salesAmount
+        FROM pms_product p
+        INNER JOIN pms_sku_stock ps ON p.id = ps.product_id
+        INNER JOIN oms_order_item oi ON ps.id = oi.product_sku_id
+        INNER JOIN oms_order o ON oi.order_id = o.id
+        WHERE DATE(o.create_time) BETWEEN #{startDate} AND #{endDate}
+        AND o.status IN (2, 3, 4)  <!-- 已支付、已发货、已完成 -->
+        <if test="schoolId != null">
+            AND EXISTS (
+                SELECT 1 FROM pms_product_school pps 
+                WHERE pps.product_id = p.id AND pps.school_id = #{schoolId}
+            )
+        </if>
+        GROUP BY p.id, p.name, ps.sku_code
+        ORDER BY salesAmount DESC
+        LIMIT #{topLimit}
+    </select>
+    
+    <!-- 获取商品销售排行榜（按数量） -->
+    <select id="getTopSellingByQuantity" resultType="java.util.Map">
+        SELECT 
+            p.id AS productId,
+            p.name AS productName,
+            ps.sku_code AS skuCode,
+            SUM(oi.product_quantity) AS salesQuantity,
+            SUM(oi.product_quantity * oi.product_price) AS salesAmount
+        FROM pms_product p
+        INNER JOIN pms_sku_stock ps ON p.id = ps.product_id
+        INNER JOIN oms_order_item oi ON ps.id = oi.product_sku_id
+        INNER JOIN oms_order o ON oi.order_id = o.id
+        WHERE DATE(o.create_time) BETWEEN #{startDate} AND #{endDate}
+        AND o.status IN (2, 3, 4)
+        <if test="schoolId != null">
+            AND EXISTS (
+                SELECT 1 FROM pms_product_school pps 
+                WHERE pps.product_id = p.id AND pps.school_id = #{schoolId}
+            )
+        </if>
+        GROUP BY p.id, p.name, ps.sku_code
+        ORDER BY salesQuantity DESC
+        LIMIT #{topLimit}
+    </select>
+    
+    <!-- 获取盈利汇总数据 -->
+    <select id="getProfitSummary" resultType="java.util.Map">
+        SELECT 
+            SUM(oi.product_quantity * oi.product_price) AS totalRevenue
+        FROM pms_product p
+        INNER JOIN pms_sku_stock ps ON p.id = ps.product_id
+        INNER JOIN oms_order_item oi ON ps.id = oi.product_sku_id
+        INNER JOIN oms_order o ON oi.order_id = o.id
+        WHERE DATE(o.create_time) BETWEEN #{startDate} AND #{endDate}
+        AND o.status IN (2, 3, 4)
+        <if test="schoolId != null">
+            AND EXISTS (
+                SELECT 1 FROM pms_product_school pps 
+                WHERE pps.product_id = p.id AND pps.school_id = #{schoolId}
+            )
+        </if>
+    </select>
+    
+    <!-- 获取利润最高的商品 -->
+    <select id="getTopProfitProducts" resultType="java.util.Map">
+        SELECT 
+            p.id AS productId,
+            p.name AS productName,
+            ps.sku_code AS skuCode,
+            SUM(oi.product_quantity) AS salesQuantity,
+            SUM(oi.product_quantity * oi.product_price) AS salesAmount
+        FROM pms_product p
+        INNER JOIN pms_sku_stock ps ON p.id = ps.product_id
+        INNER JOIN oms_order_item oi ON ps.id = oi.product_sku_id
+        INNER JOIN oms_order o ON oi.order_id = o.id
+        WHERE DATE(o.create_time) BETWEEN #{startDate} AND #{endDate}
+        AND o.status IN (2, 3, 4)
+        <if test="schoolId != null">
+            AND EXISTS (
+                SELECT 1 FROM pms_product_school pps 
+                WHERE pps.product_id = p.id AND pps.school_id = #{schoolId}
+            )
+        </if>
+        GROUP BY p.id, p.name, ps.sku_code
+        ORDER BY salesAmount DESC
+        LIMIT #{topLimit}
+    </select>
+    
+    <!-- 获取品类销售分布 -->
+    <select id="getCategoryDistribution" resultType="java.util.Map">
+        SELECT 
+            pc.name AS category,
+            SUM(oi.product_quantity * oi.product_price) AS salesAmount
+        FROM pms_product p
+        INNER JOIN pms_product_category pc ON p.product_category_id = pc.id
+        INNER JOIN pms_sku_stock ps ON p.id = ps.product_id
+        INNER JOIN oms_order_item oi ON ps.id = oi.product_sku_id
+        INNER JOIN oms_order o ON oi.order_id = o.id
+        WHERE DATE(o.create_time) BETWEEN #{startDate} AND #{endDate}
+        AND o.status IN (2, 3, 4)
+        <if test="schoolId != null">
+            AND EXISTS (
+                SELECT 1 FROM pms_product_school pps 
+                WHERE pps.product_id = p.id AND pps.school_id = #{schoolId}
+            )
+        </if>
+        GROUP BY pc.id, pc.name
+        ORDER BY salesAmount DESC
+    </select>
+    
+    <!-- 获取商品总览数据 -->
+    <select id="getProductOverview" resultType="java.util.Map">
+        SELECT 
+            COUNT(DISTINCT p.id) AS totalProducts,
+            SUM(oi.product_quantity * oi.product_price) AS totalSalesAmount,
+            SUM(oi.product_quantity) AS totalSalesQuantity,
+            COUNT(DISTINCT CASE WHEN oi.product_quantity > 10 THEN p.id END) AS hotProducts
+        FROM pms_product p
+        INNER JOIN pms_sku_stock ps ON p.id = ps.product_id
+        INNER JOIN oms_order_item oi ON ps.id = oi.product_sku_id
+        INNER JOIN oms_order o ON oi.order_id = o.id
+        WHERE DATE(o.create_time) BETWEEN #{startDate} AND #{endDate}
+        AND o.status IN (2, 3, 4)
+        <if test="schoolId != null">
+            AND EXISTS (
+                SELECT 1 FROM pms_product_school pps 
+                WHERE pps.product_id = p.id AND pps.school_id = #{schoolId}
+            )
+        </if>
+    </select>
+    
+</mapper>

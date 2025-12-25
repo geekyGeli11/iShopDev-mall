@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.portal.dao.SmsFreightTemplateDao">
+    
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="com.macro.mall.model.SmsFreightTemplate">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="charge_type" jdbcType="TINYINT" property="chargeType" />
+        <result column="delivery_type" jdbcType="TINYINT" property="deliveryType" />
+        <result column="free_type" jdbcType="TINYINT" property="freeType" />
+        <result column="free_amount" jdbcType="DECIMAL" property="freeAmount" />
+        <result column="free_count" jdbcType="INTEGER" property="freeCount" />
+        <result column="free_weight" jdbcType="DECIMAL" property="freeWeight" />
+        <result column="status" jdbcType="TINYINT" property="status" />
+        <result column="is_default" jdbcType="BIT" property="isDefault" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+    
+    <resultMap id="RegionResultMap" type="com.macro.mall.model.SmsFreightTemplateRegion">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="template_id" jdbcType="BIGINT" property="templateId" />
+        <result column="region_type" jdbcType="TINYINT" property="regionType" />
+        <result column="distance_start" jdbcType="DECIMAL" property="distanceStart" />
+        <result column="distance_end" jdbcType="DECIMAL" property="distanceEnd" />
+        <result column="first_amount" jdbcType="DECIMAL" property="firstAmount" />
+        <result column="first_count" jdbcType="DECIMAL" property="firstCount" />
+        <result column="additional_amount" jdbcType="DECIMAL" property="additionalAmount" />
+        <result column="additional_count" jdbcType="DECIMAL" property="additionalCount" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="region_ids" jdbcType="VARCHAR" property="regionIds" />
+        <result column="region_names" jdbcType="VARCHAR" property="regionNames" />
+    </resultMap>
+
+    <!-- 根据ID查询运费模板 -->
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT * FROM sms_freight_template WHERE id = #{id,jdbcType=BIGINT}
+    </select>
+    
+    <!-- 查询所有运费模板 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT * FROM sms_freight_template WHERE status = 1 ORDER BY sort ASC, create_time DESC
+    </select>
+    
+    <!-- 根据省份查询运费模板 -->
+    <select id="selectByProvince" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT DISTINCT t.* FROM sms_freight_template t
+        LEFT JOIN sms_freight_template_region r ON t.id = r.template_id
+        WHERE t.status = 1 
+        AND (r.region_names LIKE CONCAT('%', #{province,jdbcType=VARCHAR}, '%') 
+             OR r.region_names = '全国')
+        ORDER BY t.sort ASC, t.create_time DESC
+    </select>
+    
+    <!-- 查询默认运费模板 -->
+    <select id="selectDefaultTemplate" resultMap="BaseResultMap">
+        SELECT * FROM sms_freight_template 
+        WHERE status = 1 AND is_default = 1
+        ORDER BY sort ASC, create_time ASC 
+        LIMIT 1
+    </select>
+    
+    <!-- 获取模板匹配的区域规则（具体地区规则，region_ids 不为null） -->
+    <select id="getMatchingRegion" resultMap="RegionResultMap">
+        SELECT * FROM sms_freight_template_region 
+        WHERE template_id = #{templateId,jdbcType=BIGINT}
+        AND region_ids IS NOT NULL
+        AND (
+            region_names LIKE CONCAT('%', #{province,jdbcType=VARCHAR}, '%') 
+            OR region_ids LIKE CONCAT('%', #{province,jdbcType=VARCHAR}, '%')
+        )
+        ORDER BY 
+            CASE WHEN region_names = #{province,jdbcType=VARCHAR} THEN 1 ELSE 2 END,
+            sort ASC,
+            id ASC
+        LIMIT 1
+    </select>
+    
+    <!-- 获取模板的默认区域规则（全国通用规则，region_ids 为 null） -->
+    <select id="getDefaultRegion" resultMap="RegionResultMap">
+        SELECT * FROM sms_freight_template_region 
+        WHERE template_id = #{templateId,jdbcType=BIGINT}
+        AND region_ids IS NULL
+        ORDER BY sort ASC, id ASC
+        LIMIT 1
+    </select>
+    
+</mapper> 

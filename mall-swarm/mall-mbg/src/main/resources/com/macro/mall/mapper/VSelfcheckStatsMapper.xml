@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.VSelfcheckStatsMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.VSelfcheckStats">
+    <result column="user_type" jdbcType="VARCHAR" property="userType" />
+    <result column="total_count" jdbcType="BIGINT" property="totalCount" />
+    <result column="active_count" jdbcType="BIGINT" property="activeCount" />
+    <result column="with_order_count" jdbcType="BIGINT" property="withOrderCount" />
+    <result column="recent_active_count" jdbcType="BIGINT" property="recentActiveCount" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    user_type, total_count, active_count, with_order_count, recent_active_count
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.VSelfcheckStatsExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from v_selfcheck_stats
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.VSelfcheckStatsExample">
+    delete from v_selfcheck_stats
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.VSelfcheckStats">
+    insert into v_selfcheck_stats (user_type, total_count, active_count, 
+      with_order_count, recent_active_count)
+    values (#{userType,jdbcType=VARCHAR}, #{totalCount,jdbcType=BIGINT}, #{activeCount,jdbcType=BIGINT}, 
+      #{withOrderCount,jdbcType=BIGINT}, #{recentActiveCount,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.VSelfcheckStats">
+    insert into v_selfcheck_stats
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userType != null">
+        user_type,
+      </if>
+      <if test="totalCount != null">
+        total_count,
+      </if>
+      <if test="activeCount != null">
+        active_count,
+      </if>
+      <if test="withOrderCount != null">
+        with_order_count,
+      </if>
+      <if test="recentActiveCount != null">
+        recent_active_count,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userType != null">
+        #{userType,jdbcType=VARCHAR},
+      </if>
+      <if test="totalCount != null">
+        #{totalCount,jdbcType=BIGINT},
+      </if>
+      <if test="activeCount != null">
+        #{activeCount,jdbcType=BIGINT},
+      </if>
+      <if test="withOrderCount != null">
+        #{withOrderCount,jdbcType=BIGINT},
+      </if>
+      <if test="recentActiveCount != null">
+        #{recentActiveCount,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.VSelfcheckStatsExample" resultType="java.lang.Long">
+    select count(*) from v_selfcheck_stats
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update v_selfcheck_stats
+    <set>
+      <if test="row.userType != null">
+        user_type = #{row.userType,jdbcType=VARCHAR},
+      </if>
+      <if test="row.totalCount != null">
+        total_count = #{row.totalCount,jdbcType=BIGINT},
+      </if>
+      <if test="row.activeCount != null">
+        active_count = #{row.activeCount,jdbcType=BIGINT},
+      </if>
+      <if test="row.withOrderCount != null">
+        with_order_count = #{row.withOrderCount,jdbcType=BIGINT},
+      </if>
+      <if test="row.recentActiveCount != null">
+        recent_active_count = #{row.recentActiveCount,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update v_selfcheck_stats
+    set user_type = #{row.userType,jdbcType=VARCHAR},
+      total_count = #{row.totalCount,jdbcType=BIGINT},
+      active_count = #{row.activeCount,jdbcType=BIGINT},
+      with_order_count = #{row.withOrderCount,jdbcType=BIGINT},
+      recent_active_count = #{row.recentActiveCount,jdbcType=BIGINT}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

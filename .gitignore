@@ -1,0 +1,64 @@
+# ------ 操作系统 ------
+.DS_Store
+Thumbs.db
+
+# ------ Node / 前端 ------
+node_modules/
+dist/
+build/
+.temp/
+.unpackage/
+unpackage/
+# Vite / Webpack 输出
+*.local
+
+# ------ Electron & Capacitor ------
+dist-electron/
+
+# ------ Java / Maven ------
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# ------ Android ------
+android/app/build/
+*.apk
+
+# ------ 环境 & 配置 ------
+.env
+.env.*
+*.keystore
+
+# ------ 日志 & 调试 ------
+logs/
+**/*.log
+
+# ------ IDE / 编辑器 ------
+.idea/
+.vscode/
+*.iml
+*.suo
+*.user
+
+# ------ 测试覆盖率 ------
+coverage/
+
+# ------ 其他 ------
+# 临时文件
+*.tmp
+*.temp
+# macOS
+.Spotlight-V100
+.Trashes 
+shopxo-diy
+
+# ------ 项目特定忽略 ------
+.kiro/
+.vscode/
+支付宝密钥20250724220810/
+docs/
+kiro/
+log/
+scripts/

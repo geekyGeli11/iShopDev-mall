@@ -1,0 +1,49 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: ${MYSQL_PASSWORD:root}
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: mall-port
+    redis:
+      host: localhost
+      database: 0
+      port: 6379
+      password:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    virtual-host: /mall
+    username: mall
+    password: mall
+logging:
+  level:
+    root: info
+    com.macro.mall: debug
+logstash:
+  host: localhost
+alipay:
+  gatewayUrl: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+  appId: ${ALIPAY_APP_ID}
+  alipayPublicKey: ${ALIPAY_PUBLIC_KEY}
+  appPrivateKey: ${ALIPAY_PRIVATE_KEY}
+  returnUrl: http://localhost:8060/#/pages/money/paySuccess
+  notifyUrl:
+template:
+  gift-delivery: ${TEMPLATE_GIFT_DELIVERY}
+
+aliyun:
+  api-key: ${ALIYUN_API_KEY}
+  oss:
+    endpoint: oss-cn-guangzhou.aliyuncs.com
+    accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID:test}
+    accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET:test}
+    bucketName: ${ALIYUN_OSS_BUCKET_NAME}
+    policy:
+      expire: 300
+    maxSize: 10
+    dir:
+      prefix: diy/preview/

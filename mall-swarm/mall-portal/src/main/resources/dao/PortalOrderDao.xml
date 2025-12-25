@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.portal.dao.PortalOrderDao">
+    <resultMap id="orderDetailMap" type="com.macro.mall.portal.domain.OmsOrderDetail"
+               extends="com.macro.mall.mapper.OmsOrderMapper.BaseResultMap">
+        <collection property="orderItemList" columnPrefix="ot_"
+                    resultMap="com.macro.mall.mapper.OmsOrderItemMapper.BaseResultMap">
+        </collection>
+    </resultMap>
+    <select id="getDetail" resultMap="orderDetailMap">
+        SELECT
+            o.id,
+            o.order_sn,
+            o.coupon_id,
+            o.integration,
+            o.member_id,
+            o.is_gift,
+            o.delivery_type,
+            o.store_id,
+            o.store_name,
+            o.store_address,
+            o.store_phone,
+            o.pay_amount,
+            o.total_amount,
+            o.freight_amount,
+            o.promotion_amount,
+            o.integration_amount,
+            o.coupon_amount,
+            o.discount_amount,
+            ot.id ot_id,
+            ot.order_id ot_order_id,
+            ot.order_sn ot_order_sn,
+            ot.product_id ot_product_id,
+            ot.product_name ot_product_name,
+            ot.product_pic ot_product_pic,
+            ot.product_brand ot_product_brand,
+            ot.product_sn ot_product_sn,
+            ot.product_price ot_product_price,
+            ot.product_quantity ot_product_quantity,
+            ot.product_sku_id ot_product_sku_id,
+            ot.product_sku_code ot_product_sku_code,
+            ot.product_attr ot_product_attr,
+            ot.real_amount ot_real_amount,
+            ot.gift_integration ot_gift_integration,
+            ot.gift_growth ot_gift_growth,
+            ot.product_category_id ot_product_category_id,
+            ot.promotion_name ot_promotion_name,
+            ot.promotion_amount ot_promotion_amount,
+            ot.coupon_amount ot_coupon_amount,
+            ot.integration_amount ot_integration_amount
+        FROM
+            oms_order o
+            LEFT JOIN oms_order_item ot ON o.id = ot.order_id
+        WHERE
+            o.id = #{orderId}
+    </select>
+
+    <select id="getTimeOutOrders" resultMap="orderDetailMap">
+        SELECT
+            o.id,
+            o.order_sn,
+            o.coupon_id,
+            o.integration,
+            o.member_id,
+            o.use_integration,
+            o.delivery_type,
+            o.store_id,
+            o.store_name,
+            o.store_address,
+            o.store_phone,
+            ot.id ot_id,
+            ot.order_id ot_order_id,
+            ot.order_sn ot_order_sn,
+            ot.product_id ot_product_id,
+            ot.product_name ot_product_name,
+            ot.product_pic ot_product_pic,
+            ot.product_brand ot_product_brand,
+            ot.product_sn ot_product_sn,
+            ot.product_price ot_product_price,
+            ot.product_quantity ot_product_quantity,
+            ot.product_sku_id ot_product_sku_id,
+            ot.product_sku_code ot_product_sku_code,
+            ot.product_attr ot_product_attr,
+            ot.real_amount ot_real_amount,
+            ot.gift_integration ot_gift_integration,
+            ot.gift_growth ot_gift_growth,
+            ot.product_category_id ot_product_category_id,
+            ot.promotion_name ot_promotion_name,
+            ot.promotion_amount ot_promotion_amount,
+            ot.coupon_amount ot_coupon_amount,
+            ot.integration_amount ot_integration_amount
+        FROM
+            oms_order o
+            LEFT JOIN oms_order_item ot ON o.id = ot.order_id
+        WHERE
+            o.status = 0
+            AND o.create_time &lt; date_add(NOW(), INTERVAL -#{minute} MINUTE);
+    </select>
+
+    <update id="updateSkuStock">
+        UPDATE pms_sku_stock
+        SET
+            stock = CASE id
+            <foreach collection="itemList" item="item">
+              WHEN #{item.productSkuId} THEN stock - #{item.productQuantity}
+            </foreach>
+            END,
+            lock_stock = CASE id
+            <foreach collection="itemList" item="item">
+              WHEN #{item.productSkuId} THEN lock_stock - #{item.productQuantity}
+            </foreach>
+            END
+        WHERE
+            id IN
+        <foreach collection="itemList" item="item" separator="," open="(" close=")">
+            #{item.productSkuId}
+        </foreach>
+    </update>
+
+    <update id="updateStoreSkuStock">
+        UPDATE pms_store_sku_stock
+        SET
+            stock = CASE 
+            <foreach collection="itemList" item="item">
+              WHEN store_id = #{storeId} AND sku_id = #{item.productSkuId} THEN stock - #{item.productQuantity}
+            </foreach>
+            END,
+            locked_stock = CASE 
+            <foreach collection="itemList" item="item">
+              WHEN store_id = #{storeId} AND sku_id = #{item.productSkuId} THEN locked_stock - #{item.productQuantity}
+            </foreach>
+            END,
+            sale_count = CASE 
+            <foreach collection="itemList" item="item">
+              WHEN store_id = #{storeId} AND sku_id = #{item.productSkuId} THEN sale_count + #{item.productQuantity}
+            </foreach>
+            END
+        WHERE
+            store_id = #{storeId}
+            AND sku_id IN
+        <foreach collection="itemList" item="item" separator="," open="(" close=")">
+            #{item.productSkuId}
+        </foreach>
+    </update>
+
+    <update id="updateBothSkuStock">
+        <!-- 更新总库存表 -->
+        UPDATE pms_sku_stock
+        SET
+            stock = CASE id
+            <foreach collection="itemList" item="item">
+              WHEN #{item.productSkuId} THEN stock - #{item.productQuantity}
+            </foreach>
+            END,
+            lock_stock = CASE id
+            <foreach collection="itemList" item="item">
+              WHEN #{item.productSkuId} THEN lock_stock - #{item.productQuantity}
+            </foreach>
+            END,
+            sale = CASE id
+            <foreach collection="itemList" item="item">
+              WHEN #{item.productSkuId} THEN sale + #{item.productQuantity}
+            </foreach>
+            END
+        WHERE
+            id IN
+        <foreach collection="itemList" item="item" separator="," open="(" close=")">
+            #{item.productSkuId}
+        </foreach>;
+        
+        <!-- 更新门店库存表 -->
+        UPDATE pms_store_sku_stock
+        SET
+            stock = CASE 
+            <foreach collection="itemList" item="item">
+              WHEN store_id = #{storeId} AND sku_id = #{item.productSkuId} THEN stock - #{item.productQuantity}
+            </foreach>
+            END,
+            locked_stock = CASE 
+            <foreach collection="itemList" item="item">
+              WHEN store_id = #{storeId} AND sku_id = #{item.productSkuId} THEN locked_stock - #{item.productQuantity}
+            </foreach>
+            END,
+            sale_count = CASE 
+            <foreach collection="itemList" item="item">
+              WHEN store_id = #{storeId} AND sku_id = #{item.productSkuId} THEN sale_count + #{item.productQuantity}
+            </foreach>
+            END
+        WHERE
+            store_id = #{storeId}
+            AND sku_id IN
+        <foreach collection="itemList" item="item" separator="," open="(" close=")">
+            #{item.productSkuId}
+        </foreach>
+    </update>
+
+    <update id="updateProductSale">
+        UPDATE pms_product
+        SET
+            sale = CASE id
+            <foreach collection="itemList" item="item">
+              WHEN #{item.productId} THEN sale + #{item.productQuantity}
+            </foreach>
+            END
+        WHERE
+            id IN
+        <foreach collection="itemList" item="item" separator="," open="(" close=")">
+            #{item.productId}
+        </foreach>
+    </update>
+
+    <!-- 此方法已移除，改为在Java代码中分别调用updateSkuStock、updateStoreSkuStock和updateProductSale -->
+
+    <!-- 此方法已移除，改为在Java代码中分别调用updateSkuStock和updateProductSale -->
+
+    <update id="updateOrderStatus">
+        update oms_order
+        set status=#{status}
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="releaseSkuStockLock">
+        UPDATE pms_sku_stock
+        SET
+        lock_stock = CASE id
+        <foreach collection="itemList" item="item">
+            WHEN #{item.productSkuId} THEN lock_stock - #{item.productQuantity}
+        </foreach>
+        END
+        WHERE
+        id IN
+        <foreach collection="itemList" item="item" separator="," open="(" close=")">
+            #{item.productSkuId}
+        </foreach>
+    </update>
+
+    <update id="releaseStoreSkuStockLock">
+        UPDATE pms_store_sku_stock
+        SET
+        locked_stock = CASE 
+        <foreach collection="itemList" item="item">
+            WHEN store_id = #{storeId} AND sku_id = #{item.productSkuId} THEN locked_stock - #{item.productQuantity}
+        </foreach>
+        END
+        WHERE
+        store_id = #{storeId}
+        AND sku_id IN
+        <foreach collection="itemList" item="item" separator="," open="(" close=")">
+            #{item.productSkuId}
+        </foreach>
+    </update>
+
+    <!-- 此方法已移除，改为在Java代码中分别调用releaseSkuStockLock和releaseStoreSkuStockLock -->
+
+</mapper>

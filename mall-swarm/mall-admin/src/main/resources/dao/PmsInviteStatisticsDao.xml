@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.PmsInviteStatisticsDao">
+    
+    <!-- 获取邀请趋势数据 -->
+    <select id="getInviteTrendData" resultType="map">
+        SELECT 
+            DATE_FORMAT(created_at, '%Y-%m-%d') AS date,
+            <choose>
+                <when test="type == 'register'">
+                    SUM(CASE WHEN status &gt;= 1 THEN 1 ELSE 0 END) AS count
+                </when>
+                <when test="type == 'order'">
+                    SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS count
+                </when>
+                <otherwise>
+                    COUNT(*) AS count
+                </otherwise>
+            </choose>
+        FROM 
+            pms_invite_relation 
+        <where>
+            <if test="startDate != null and startDate != ''">
+                AND created_at &gt;= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND created_at &lt;= #{endDate}
+            </if>
+            <if test="startDate == null and endDate == null">
+                AND created_at &gt;= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            </if>
+        </where>
+        GROUP BY 
+            DATE_FORMAT(created_at, '%Y-%m-%d')
+        ORDER BY 
+            date ASC
+        LIMIT 30
+    </select>
+    
+    <!-- 获取用户邀请排行榜 -->
+    <select id="getUserInviteRanking" resultType="map">
+        SELECT 
+            ir.inviter_id AS userId,
+            u.nickname AS userNickname,
+            u.phone AS userPhone,
+            COUNT(*) AS inviteCount,
+            SUM(CASE WHEN ir.status &gt;= 1 THEN 1 ELSE 0 END) AS registerCount,
+            SUM(CASE WHEN ir.status = 2 THEN 1 ELSE 0 END) AS orderCount,
+            COALESCE(reward_stats.total_reward, 0) AS rewardAmount,
+            CASE 
+                WHEN COUNT(*) &gt; 0 THEN 
+                    ROUND(SUM(CASE WHEN ir.status &gt;= 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 4)
+                ELSE 0 
+            END AS registerRate
+        FROM 
+            pms_invite_relation ir
+        LEFT JOIN 
+            ums_member u ON ir.inviter_id = u.id
+        LEFT JOIN (
+            SELECT 
+                ir2.inviter_id,
+                SUM(CASE WHEN r.reward_type = 3 AND r.status = 1 THEN r.reward_value ELSE 0 END) AS total_reward
+            FROM 
+                pms_invite_relation ir2
+            INNER JOIN 
+                pms_invite_reward r ON ir2.id = r.relation_id
+            GROUP BY 
+                ir2.inviter_id
+        ) reward_stats ON ir.inviter_id = reward_stats.inviter_id
+        GROUP BY 
+            ir.inviter_id, u.nickname, u.phone
+        HAVING 
+            inviteCount &gt; 0
+        ORDER BY 
+            inviteCount DESC, registerCount DESC
+    </select>
+    
+    <!-- 获取转化率分析数据 -->
+    <select id="getConversionAnalysisData" resultType="map">
+        SELECT 
+            COUNT(*) AS totalInvites,
+            SUM(CASE WHEN status &gt;= 1 THEN 1 ELSE 0 END) AS totalRegistered,
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS totalOrdered,
+            CASE 
+                WHEN COUNT(*) &gt; 0 THEN 
+                    ROUND(SUM(CASE WHEN status &gt;= 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 4)
+                ELSE 0 
+            END AS registerRate,
+            CASE 
+                WHEN COUNT(*) &gt; 0 THEN 
+                    ROUND(SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 4)
+                ELSE 0 
+            END AS orderRate,
+            SUM(CASE WHEN scene_type = 1 THEN 1 ELSE 0 END) AS scene1Count,
+            SUM(CASE WHEN scene_type = 2 THEN 1 ELSE 0 END) AS scene2Count
+        FROM 
+            pms_invite_relation
+    </select>
+    
+    <!-- 获取地域分布统计数据 -->
+    <select id="getRegionDistributionData" resultType="map">
+        SELECT 
+            COALESCE(u.city, '未知') AS region,
+            COUNT(DISTINCT ir.inviter_id) AS inviterCount,
+            COUNT(*) AS inviteCount,
+            SUM(CASE WHEN ir.status &gt;= 1 THEN 1 ELSE 0 END) AS registerCount,
+            CASE 
+                WHEN COUNT(*) &gt; 0 THEN 
+                    ROUND(SUM(CASE WHEN ir.status &gt;= 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 4)
+                ELSE 0 
+            END AS registerRate
+        FROM 
+            pms_invite_relation ir
+        LEFT JOIN 
+            ums_member u ON ir.inviter_id = u.id
+        GROUP BY 
+            u.city
+        HAVING 
+            inviteCount &gt; 0
+        ORDER BY 
+            inviteCount DESC
+        LIMIT 20
+    </select>
+
+    <!-- 获取提现金额统计数据 -->
+    <select id="getWithdrawAmountStatistics" resultType="map">
+        SELECT 
+            COALESCE(SUM(apply_amount), 0) AS totalAmount,
+            COALESCE(SUM(CASE WHEN status = 0 THEN apply_amount ELSE 0 END), 0) AS pendingAmount,
+            COALESCE(SUM(CASE WHEN status = 1 THEN apply_amount ELSE 0 END), 0) AS approvedAmount,
+            COALESCE(SUM(CASE WHEN status = 2 THEN actual_amount ELSE 0 END), 0) AS successAmount,
+            COALESCE(SUM(CASE WHEN status = 3 THEN apply_amount ELSE 0 END), 0) AS failedAmount,
+            COALESCE(SUM(CASE WHEN status = 4 THEN apply_amount ELSE 0 END), 0) AS canceledAmount,
+            COALESCE(SUM(CASE WHEN status = 5 THEN apply_amount ELSE 0 END), 0) AS rejectedAmount,
+            COALESCE(SUM(fee_amount), 0) AS totalFeeAmount,
+            COALESCE(AVG(apply_amount), 0) AS avgAmount,
+            COALESCE(MAX(apply_amount), 0) AS maxAmount,
+            COALESCE(MIN(apply_amount), 0) AS minAmount
+        FROM 
+            pms_invite_withdraw_apply
+    </select>
+</mapper> 

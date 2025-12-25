@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.portal.dao.TraceabilityProductRelationDao">
+
+    <!-- 定义 resultMap 映射，继承基础映射并关联商品 -->
+    <resultMap id="traceabilityProductMap" type="com.macro.mall.portal.dto.TraceabilityProduct"
+               extends="com.macro.mall.mapper.CmsTraceabilityProductRelationMapper.BaseResultMap">
+        <association property="product" resultMap="com.macro.mall.mapper.PmsProductMapper.BaseResultMap"
+                     columnPrefix="p_"/>
+    </resultMap>
+
+    <!-- 获取溯源和商品信息的查询 -->
+    <select id="getList" resultMap="traceabilityProductMap">
+        SELECT
+        r.id,
+        r.traceability_id,
+        r.product_id,
+        p.id AS p_id,
+        p.name AS p_name,
+        p.product_sn AS p_product_sn,
+        p.price AS p_price,
+        p.pic AS p_pic,
+        p.stock AS p_stock
+        FROM
+        cms_traceability_product_relation r
+        LEFT JOIN
+        pms_product p
+        ON
+        r.product_id = p.id
+        AND p.delete_status != 1
+        <where>
+            <if test="traceabilityId != null">
+                AND r.traceability_id = #{traceabilityId}
+            </if>
+            <!-- 确保只有当 pms_product 中的记录存在且符合条件时，才返回 cms_traceability_product_relation 的记录 -->
+            AND p.id IS NOT NULL
+        </where>
+    </select>
+</mapper>

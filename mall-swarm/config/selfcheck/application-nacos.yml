@@ -1,0 +1,108 @@
+# Mall Self-check Service Nacos Configuration
+# 数据ID: mall-selfcheck-dev.yaml
+# 分组: DEFAULT_GROUP
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 321Wssba
+    druid:
+      initial-size: 5 #连接池初始化大小
+      min-idle: 10 #最小空闲连接数
+      max-active: 20 #最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
+      stat-view-servlet: #访问监控网页的登录用户名和密码
+        login-username: druid
+        login-password: druid
+  data:
+    mongodb:
+      host: mongo
+      port: 27017
+      database: mall-port
+    redis:
+      host: redis # Redis服务器地址
+      database: 3 # Redis数据库索引（默认为0）
+      port: 6379 # Redis服务器连接端口
+      password: #不设置密码
+      timeout: 3000ms # 连接超时时间（毫秒）
+  rabbitmq:
+    host: rabbit
+    port: 5672
+    virtual-host: /mall
+    username: mall
+    password: mall
+    publisher-confirms: true #如果对异步消息需要回调必须设置为true
+
+# 日志配置
+logging:
+  file:
+    path: /var/logs
+  level:
+    root: info
+    com.macro.mall: info
+
+# Logstash配置
+logstash:
+  host: logstash
+
+# 支付宝配置
+alipay:
+  gatewayUrl: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+  appId: your appId
+  alipayPublicKey: your alipayPublicKey
+  appPrivateKey: your appPrivateKey
+  returnUrl: http://192.168.3.101:8060/#/pages/money/paySuccess
+  notifyUrl: 
+
+# 微信公众号配置
+wechat:
+  app-id: wx342e8c0016ad4dd1
+  app-secret: fda3484e20560fb35171199667a9ae5a
+
+# 微信支付配置
+wx:
+  pay:
+    appId: wx342e8c0016ad4dd1
+    mchId: 1702373884
+    mchKey: 762DE9947599DA93A8EC8FBC9B9C9740
+    notifyUrl: "https://haojiangzhenhao.hello4am.com/mall-portal/wxpay/notify"
+    keyPath: classpath:certs/apiclient_cert.p12
+
+# 自助结算系统支付配置（与上面的微信支付配置整合）
+selfcheck:
+  payment:
+    # 微信支付配置
+    wechat:
+      app-id: wx342e8c0016ad4dd1
+      mch-id: 1702373884
+      mch-key: 762DE9947599DA93A8EC8FBC9B9C9740
+      notify-url: https://haojiangzhenhao.hello4am.com/mall-selfcheck/payment/wechat/notify
+      key-path: classpath:certs/apiclient_cert.p12
+    # 支付宝配置
+    alipay:
+      app-id: your appId
+      private-key: your appPrivateKey
+      public-key: your alipayPublicKey
+      gateway-url: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+      notify-url: https://haojiangzhenhao.hello4am.com/mall-selfcheck/payment/alipay/notify
+      return-url: http://192.168.3.101:8060/#/pages/money/paySuccess
+
+# Redis自定义配置
+redis:
+  key:
+    verifyCode: 'selfcheck:verifyCode'
+    memberSession: 'selfcheck:memberSession'
+    paymentCache: 'selfcheck:payment'
+  expire:
+    verifyCode: 300 # 验证码超期时间（5分钟）
+    memberSession: 3600 # 会员会话超期时间（1小时）
+    payment: 600 # 支付缓存超期时间（10分钟）
+
+# RabbitMQ队列配置
+rabbitmq:
+  queue:
+    name:
+      paymentResult: selfcheckPaymentResultQueue
+      memberActivity: selfcheckMemberActivityQueue 

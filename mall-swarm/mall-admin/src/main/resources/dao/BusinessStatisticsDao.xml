@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.BusinessStatisticsDao">
+    
+    <!-- 获取营业数据统计（聚合所有渠道） -->
+    <select id="getBusinessStatistics" resultType="java.util.Map">
+        SELECT 
+            IFNULL(SUM(pay_amount), 0) AS totalRevenue,
+            COUNT(*) AS orderCount
+        FROM (
+            <!-- 系统订单 -->
+            SELECT pay_amount, source_school_id, store_id, create_time
+            FROM oms_order
+            WHERE status IN (1, 2, 3)  <!-- 待发货(1)、已发货(2)、已完成(3) -->
+              AND delete_status = 0
+            
+            UNION ALL
+            
+            <!-- 非系统销售（已审核） -->
+            SELECT total_amount AS pay_amount, 
+                   (SELECT school_id FROM oms_store_address WHERE id = pns.store_id) AS source_school_id,
+                   store_id, 
+                   create_time
+            FROM pms_non_system_sale pns
+            WHERE status = 2
+        ) unified_orders
+        WHERE DATE(create_time) BETWEEN #{startDate} AND #{endDate}
+        <if test="schoolId != null">
+            AND source_school_id = #{schoolId}
+        </if>
+        <if test="storeId != null">
+            AND store_id = #{storeId}
+        </if>
+    </select>
+    
+    <!-- 获取各销售渠道的数据细分 -->
+    <select id="getChannelBreakdown" resultType="java.util.Map">
+        SELECT 
+            channel,
+            IFNULL(SUM(pay_amount), 0) AS revenue,
+            COUNT(*) AS orderCount
+        FROM (
+            <!-- 系统订单 -->
+            SELECT 
+                CASE 
+                    WHEN source_type = 0 THEN 'pc'
+                    WHEN source_type = 1 THEN 'miniprogram'
+                    WHEN source_type = 2 THEN 'self-checkout'
+                    ELSE 'other'
+                END AS channel,
+                pay_amount,
+                source_school_id,
+                store_id,
+                create_time
+            FROM oms_order
+            WHERE status IN (1, 2, 3)  <!-- 待发货(1)、已发货(2)、已完成(3) -->
+              AND delete_status = 0
+            
+            UNION ALL
+            
+            <!-- 非系统销售（已审核） -->
+            SELECT 
+                'non-system' AS channel,
+                total_amount AS pay_amount,
+                (SELECT school_id FROM oms_store_address WHERE id = pns.store_id) AS source_school_id,
+                store_id,
+                create_time
+            FROM pms_non_system_sale pns
+            WHERE status = 2
+        ) unified_orders
+        WHERE DATE(create_time) BETWEEN #{startDate} AND #{endDate}
+        <if test="schoolId != null">
+            AND source_school_id = #{schoolId}
+        </if>
+        <if test="storeId != null">
+            AND store_id = #{storeId}
+        </if>
+        GROUP BY channel
+        ORDER BY revenue DESC
+    </select>
+    
+    <!-- 获取趋势数据（按日期分组） -->
+    <select id="getTrendData" resultType="java.util.Map">
+        SELECT 
+            DATE_FORMAT(order_date, '%Y-%m-%d') AS date,
+            IFNULL(SUM(pay_amount), 0) AS revenue,
+            COUNT(*) AS orderCount
+        FROM (
+            <!-- 系统订单 -->
+            SELECT 
+                DATE(create_time) AS order_date,
+                pay_amount,
+                source_school_id,
+                store_id
+            FROM oms_order
+            WHERE status IN (1, 2, 3)  <!-- 待发货(1)、已发货(2)、已完成(3) -->
+              AND delete_status = 0
+              AND DATE(create_time) BETWEEN #{startDate} AND #{endDate}
+            
+            UNION ALL
+            
+            <!-- 非系统销售（已审核） -->
+            SELECT 
+                DATE(create_time) AS order_date,
+                total_amount AS pay_amount,
+                (SELECT school_id FROM oms_store_address WHERE id = pns.store_id) AS source_school_id,
+                store_id
+            FROM pms_non_system_sale pns
+            WHERE status = 2
+            AND DATE(create_time) BETWEEN #{startDate} AND #{endDate}
+        ) unified_orders
+        WHERE 1=1
+        <if test="schoolId != null">
+            AND source_school_id = #{schoolId}
+        </if>
+        <if test="storeId != null">
+            AND store_id = #{storeId}
+        </if>
+        GROUP BY order_date
+        ORDER BY order_date ASC
+    </select>
+    
+    <!-- 获取学校营业数据统计 -->
+    <select id="getSchoolStatistics" resultType="java.util.Map">
+        SELECT 
+            os.id AS schoolId,
+            os.school_name AS schoolName,
+            IFNULL(SUM(unified_orders.pay_amount), 0) AS totalAmount,
+            COUNT(*) AS orderCount
+        FROM oms_school os
+        LEFT JOIN (
+            <!-- 系统订单 -->
+            SELECT 
+                source_school_id,
+                pay_amount
+            FROM oms_order
+            WHERE status IN (1, 2, 3)  <!-- 待发货(1)、已发货(2)、已完成(3) -->
+              AND delete_status = 0
+              AND DATE(create_time) BETWEEN #{startDate} AND #{endDate}
+            
+            UNION ALL
+            
+            <!-- 非系统销售（已审核） -->
+            SELECT 
+                (SELECT school_id FROM oms_store_address WHERE id = pns.store_id) AS source_school_id,
+                total_amount AS pay_amount
+            FROM pms_non_system_sale pns
+            WHERE status = 2
+            AND DATE(create_time) BETWEEN #{startDate} AND #{endDate}
+        ) unified_orders ON os.id = unified_orders.source_school_id
+        GROUP BY os.id, os.school_name
+        ORDER BY totalAmount DESC
+    </select>
+    
+    <!-- 获取门店营业数据统计 -->
+    <select id="getStoreStatistics" resultType="java.util.Map">
+        SELECT 
+            osa.id AS storeId,
+            osa.address_name AS storeName,
+            IFNULL(SUM(unified_orders.pay_amount), 0) AS totalAmount,
+            COUNT(*) AS orderCount
+        FROM oms_store_address osa
+        LEFT JOIN (
+            <!-- 系统订单 -->
+            SELECT 
+                store_id,
+                pay_amount
+            FROM oms_order
+            WHERE status IN (1, 2, 3)  <!-- 待发货(1)、已发货(2)、已完成(3) -->
+              AND delete_status = 0
+              AND DATE(create_time) BETWEEN #{startDate} AND #{endDate}
+            
+            UNION ALL
+            
+            <!-- 非系统销售（已审核） -->
+            SELECT 
+                store_id,
+                total_amount AS pay_amount
+            FROM pms_non_system_sale pns
+            WHERE status = 2
+            AND DATE(create_time) BETWEEN #{startDate} AND #{endDate}
+        ) unified_orders ON osa.id = unified_orders.store_id
+        GROUP BY osa.id, osa.address_name
+        ORDER BY totalAmount DESC
+    </select>
+    
+</mapper>

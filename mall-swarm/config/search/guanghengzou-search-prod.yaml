@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  elasticsearch:
+    uris: http://es:9200
+management:
+  health:
+    elasticsearch:
+      response-timeout: 1000ms
+logging:
+  file:
+    path: /var/logs
+  level:
+    root: info
+    com.macro.mall: info
+logstash:
+  host: logstash

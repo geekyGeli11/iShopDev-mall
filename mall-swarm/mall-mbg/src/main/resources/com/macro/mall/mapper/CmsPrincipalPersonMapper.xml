@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.CmsPrincipalPersonMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.CmsPrincipalPerson">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="video" jdbcType="VARCHAR" property="video" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="is_recommend" jdbcType="BIT" property="isRecommend" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.macro.mall.model.CmsPrincipalPerson">
+    <result column="detail" jdbcType="LONGVARCHAR" property="detail" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, name, avatar, position, description, video, sort, status, is_recommend, create_time, 
+    update_time
+  </sql>
+  <sql id="Blob_Column_List">
+    detail
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.model.CmsPrincipalPersonExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from cms_principal_person
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.macro.mall.model.CmsPrincipalPersonExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cms_principal_person
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from cms_principal_person
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from cms_principal_person
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.CmsPrincipalPersonExample">
+    delete from cms_principal_person
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.CmsPrincipalPerson">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into cms_principal_person (name, avatar, position, 
+      description, video, sort, 
+      status, is_recommend, create_time, 
+      update_time, detail)
+    values (#{name,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{video,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, 
+      #{status,jdbcType=BIT}, #{isRecommend,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{detail,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.CmsPrincipalPerson">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into cms_principal_person
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="avatar != null">
+        avatar,
+      </if>
+      <if test="position != null">
+        position,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="video != null">
+        video,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="isRecommend != null">
+        is_recommend,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="detail != null">
+        detail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null">
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="video != null">
+        #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="isRecommend != null">
+        #{isRecommend,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="detail != null">
+        #{detail,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.CmsPrincipalPersonExample" resultType="java.lang.Long">
+    select count(*) from cms_principal_person
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update cms_principal_person
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.name != null">
+        name = #{row.name,jdbcType=VARCHAR},
+      </if>
+      <if test="row.avatar != null">
+        avatar = #{row.avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="row.position != null">
+        position = #{row.position,jdbcType=VARCHAR},
+      </if>
+      <if test="row.description != null">
+        description = #{row.description,jdbcType=VARCHAR},
+      </if>
+      <if test="row.video != null">
+        video = #{row.video,jdbcType=VARCHAR},
+      </if>
+      <if test="row.sort != null">
+        sort = #{row.sort,jdbcType=INTEGER},
+      </if>
+      <if test="row.status != null">
+        status = #{row.status,jdbcType=BIT},
+      </if>
+      <if test="row.isRecommend != null">
+        is_recommend = #{row.isRecommend,jdbcType=BIT},
+      </if>
+      <if test="row.createTime != null">
+        create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updateTime != null">
+        update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.detail != null">
+        detail = #{row.detail,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update cms_principal_person
+    set id = #{row.id,jdbcType=BIGINT},
+      name = #{row.name,jdbcType=VARCHAR},
+      avatar = #{row.avatar,jdbcType=VARCHAR},
+      position = #{row.position,jdbcType=VARCHAR},
+      description = #{row.description,jdbcType=VARCHAR},
+      video = #{row.video,jdbcType=VARCHAR},
+      sort = #{row.sort,jdbcType=INTEGER},
+      status = #{row.status,jdbcType=BIT},
+      is_recommend = #{row.isRecommend,jdbcType=BIT},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      detail = #{row.detail,jdbcType=LONGVARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update cms_principal_person
+    set id = #{row.id,jdbcType=BIGINT},
+      name = #{row.name,jdbcType=VARCHAR},
+      avatar = #{row.avatar,jdbcType=VARCHAR},
+      position = #{row.position,jdbcType=VARCHAR},
+      description = #{row.description,jdbcType=VARCHAR},
+      video = #{row.video,jdbcType=VARCHAR},
+      sort = #{row.sort,jdbcType=INTEGER},
+      status = #{row.status,jdbcType=BIT},
+      is_recommend = #{row.isRecommend,jdbcType=BIT},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      update_time = #{row.updateTime,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.CmsPrincipalPerson">
+    update cms_principal_person
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="avatar != null">
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="video != null">
+        video = #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="isRecommend != null">
+        is_recommend = #{isRecommend,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.CmsPrincipalPerson">
+    update cms_principal_person
+    set name = #{name,jdbcType=VARCHAR},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      position = #{position,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      video = #{video,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      status = #{status,jdbcType=BIT},
+      is_recommend = #{isRecommend,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      detail = #{detail,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.CmsPrincipalPerson">
+    update cms_principal_person
+    set name = #{name,jdbcType=VARCHAR},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      position = #{position,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      video = #{video,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      status = #{status,jdbcType=BIT},
+      is_recommend = #{isRecommend,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

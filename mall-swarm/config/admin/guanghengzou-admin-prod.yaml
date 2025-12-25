@@ -1,0 +1,64 @@
+aliyun:
+  api-key: ${ALIYUN_API_KEY} # 阿里云万相API密钥
+  oss:
+    endpoint: oss-cn-shenzhen.aliyuncs.com # oss对外服务的访问域名
+    accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID} # 访问身份验证中用到用户标识
+    accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET} # 用户用于加密签名字符串和oss用来验证签名字符串的密钥
+    bucketName: ${ALIYUN_OSS_BUCKET_NAME} # oss的存储空间
+    policy:
+      expire: 300 # 签名有效期(S)
+    maxSize: 10 # 上传文件大小(M)
+    callback: ${ALIYUN_OSS_CALLBACK_URL} # 文件上传成功后的回调地址
+    dir:
+      prefix: mall/images/ # 上传文件夹路径前缀
+spring:
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  data:
+    redis:
+      host: redis # Redis服务器地址
+      database: 0 # Redis数据库索引（默认为0）
+      port: 6379 # Redis服务器连接端口
+      password: #不设置密码
+minio:
+  endpoint: ${MINIO_ENDPOINT} #MinIO服务所在地址
+  bucketName: mall #存储桶名称
+  accessKey: ${MINIO_ACCESS_KEY} #访问的key
+  secretKey: ${MINIO_SECRET_KEY} #访问的秘钥
+tencent:
+  cos:
+    secretId: ${TENCENT_COS_SECRET_ID}
+    secretKey: ${TENCENT_COS_SECRET_KEY}
+    bucketName: ${TENCENT_COS_BUCKET_NAME}
+    region: ap-guangzhou
+    dir:
+      prefix: mall/images/
+logging:
+  file:
+    path: /var/logs
+  level:
+    root: info
+    com.macro.mall: info
+logstash:
+  host: logstash
+kuaidi100:
+  key: ${KUAIDI100_KEY}
+  customer: ${KUAIDI100_CUSTOMER}
+  secret: ${KUAIDI100_SECRET}
+  userid: ${KUAIDI100_USERID}
+wechat:
+  app-id: ${WECHAT_APP_ID}
+  app-secret: ${WECHAT_APP_SECRET}
+wx:
+  pay:
+    appId: ${WX_PAY_APP_ID}
+    mchId: ${WX_PAY_MCH_ID}
+    mchKey: ${WX_PAY_MCH_KEY}
+    notifyUrl: ${WX_PAY_NOTIFY_URL}
+    keyPath: classpath:certs/apiclient_cert.p12
+template:
+  order-delivery: ${TEMPLATE_ORDER_DELIVERY}
+  return-apply: ${TEMPLATE_RETURN_APPLY}
+  return-notify: ${TEMPLATE_RETURN_NOTIFY}

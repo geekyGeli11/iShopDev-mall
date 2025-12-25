@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.SmsFreightTemplateRegionMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.SmsFreightTemplateRegion">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="template_id" jdbcType="BIGINT" property="templateId" />
+    <result column="region_type" jdbcType="TINYINT" property="regionType" />
+    <result column="distance_start" jdbcType="DECIMAL" property="distanceStart" />
+    <result column="distance_end" jdbcType="DECIMAL" property="distanceEnd" />
+    <result column="first_amount" jdbcType="DECIMAL" property="firstAmount" />
+    <result column="first_count" jdbcType="DECIMAL" property="firstCount" />
+    <result column="additional_amount" jdbcType="DECIMAL" property="additionalAmount" />
+    <result column="additional_count" jdbcType="DECIMAL" property="additionalCount" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.macro.mall.model.SmsFreightTemplateRegion">
+    <result column="region_ids" jdbcType="LONGVARCHAR" property="regionIds" />
+    <result column="region_names" jdbcType="LONGVARCHAR" property="regionNames" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, template_id, region_type, distance_start, distance_end, first_amount, first_count, 
+    additional_amount, additional_count, sort
+  </sql>
+  <sql id="Blob_Column_List">
+    region_ids, region_names
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.model.SmsFreightTemplateRegionExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sms_freight_template_region
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.macro.mall.model.SmsFreightTemplateRegionExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from sms_freight_template_region
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sms_freight_template_region
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sms_freight_template_region
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.SmsFreightTemplateRegionExample">
+    delete from sms_freight_template_region
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.SmsFreightTemplateRegion">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sms_freight_template_region (template_id, region_type, distance_start, 
+      distance_end, first_amount, first_count, 
+      additional_amount, additional_count, sort, 
+      region_ids, region_names)
+    values (#{templateId,jdbcType=BIGINT}, #{regionType,jdbcType=TINYINT}, #{distanceStart,jdbcType=DECIMAL}, 
+      #{distanceEnd,jdbcType=DECIMAL}, #{firstAmount,jdbcType=DECIMAL}, #{firstCount,jdbcType=DECIMAL}, 
+      #{additionalAmount,jdbcType=DECIMAL}, #{additionalCount,jdbcType=DECIMAL}, #{sort,jdbcType=INTEGER}, 
+      #{regionIds,jdbcType=LONGVARCHAR}, #{regionNames,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.SmsFreightTemplateRegion">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sms_freight_template_region
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="regionType != null">
+        region_type,
+      </if>
+      <if test="distanceStart != null">
+        distance_start,
+      </if>
+      <if test="distanceEnd != null">
+        distance_end,
+      </if>
+      <if test="firstAmount != null">
+        first_amount,
+      </if>
+      <if test="firstCount != null">
+        first_count,
+      </if>
+      <if test="additionalAmount != null">
+        additional_amount,
+      </if>
+      <if test="additionalCount != null">
+        additional_count,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="regionIds != null">
+        region_ids,
+      </if>
+      <if test="regionNames != null">
+        region_names,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="templateId != null">
+        #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="regionType != null">
+        #{regionType,jdbcType=TINYINT},
+      </if>
+      <if test="distanceStart != null">
+        #{distanceStart,jdbcType=DECIMAL},
+      </if>
+      <if test="distanceEnd != null">
+        #{distanceEnd,jdbcType=DECIMAL},
+      </if>
+      <if test="firstAmount != null">
+        #{firstAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="firstCount != null">
+        #{firstCount,jdbcType=DECIMAL},
+      </if>
+      <if test="additionalAmount != null">
+        #{additionalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="additionalCount != null">
+        #{additionalCount,jdbcType=DECIMAL},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="regionIds != null">
+        #{regionIds,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="regionNames != null">
+        #{regionNames,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.SmsFreightTemplateRegionExample" resultType="java.lang.Long">
+    select count(*) from sms_freight_template_region
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update sms_freight_template_region
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.templateId != null">
+        template_id = #{row.templateId,jdbcType=BIGINT},
+      </if>
+      <if test="row.regionType != null">
+        region_type = #{row.regionType,jdbcType=TINYINT},
+      </if>
+      <if test="row.distanceStart != null">
+        distance_start = #{row.distanceStart,jdbcType=DECIMAL},
+      </if>
+      <if test="row.distanceEnd != null">
+        distance_end = #{row.distanceEnd,jdbcType=DECIMAL},
+      </if>
+      <if test="row.firstAmount != null">
+        first_amount = #{row.firstAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.firstCount != null">
+        first_count = #{row.firstCount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.additionalAmount != null">
+        additional_amount = #{row.additionalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.additionalCount != null">
+        additional_count = #{row.additionalCount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.sort != null">
+        sort = #{row.sort,jdbcType=INTEGER},
+      </if>
+      <if test="row.regionIds != null">
+        region_ids = #{row.regionIds,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="row.regionNames != null">
+        region_names = #{row.regionNames,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update sms_freight_template_region
+    set id = #{row.id,jdbcType=BIGINT},
+      template_id = #{row.templateId,jdbcType=BIGINT},
+      region_type = #{row.regionType,jdbcType=TINYINT},
+      distance_start = #{row.distanceStart,jdbcType=DECIMAL},
+      distance_end = #{row.distanceEnd,jdbcType=DECIMAL},
+      first_amount = #{row.firstAmount,jdbcType=DECIMAL},
+      first_count = #{row.firstCount,jdbcType=DECIMAL},
+      additional_amount = #{row.additionalAmount,jdbcType=DECIMAL},
+      additional_count = #{row.additionalCount,jdbcType=DECIMAL},
+      sort = #{row.sort,jdbcType=INTEGER},
+      region_ids = #{row.regionIds,jdbcType=LONGVARCHAR},
+      region_names = #{row.regionNames,jdbcType=LONGVARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update sms_freight_template_region
+    set id = #{row.id,jdbcType=BIGINT},
+      template_id = #{row.templateId,jdbcType=BIGINT},
+      region_type = #{row.regionType,jdbcType=TINYINT},
+      distance_start = #{row.distanceStart,jdbcType=DECIMAL},
+      distance_end = #{row.distanceEnd,jdbcType=DECIMAL},
+      first_amount = #{row.firstAmount,jdbcType=DECIMAL},
+      first_count = #{row.firstCount,jdbcType=DECIMAL},
+      additional_amount = #{row.additionalAmount,jdbcType=DECIMAL},
+      additional_count = #{row.additionalCount,jdbcType=DECIMAL},
+      sort = #{row.sort,jdbcType=INTEGER}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.SmsFreightTemplateRegion">
+    update sms_freight_template_region
+    <set>
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=BIGINT},
+      </if>
+      <if test="regionType != null">
+        region_type = #{regionType,jdbcType=TINYINT},
+      </if>
+      <if test="distanceStart != null">
+        distance_start = #{distanceStart,jdbcType=DECIMAL},
+      </if>
+      <if test="distanceEnd != null">
+        distance_end = #{distanceEnd,jdbcType=DECIMAL},
+      </if>
+      <if test="firstAmount != null">
+        first_amount = #{firstAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="firstCount != null">
+        first_count = #{firstCount,jdbcType=DECIMAL},
+      </if>
+      <if test="additionalAmount != null">
+        additional_amount = #{additionalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="additionalCount != null">
+        additional_count = #{additionalCount,jdbcType=DECIMAL},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="regionIds != null">
+        region_ids = #{regionIds,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="regionNames != null">
+        region_names = #{regionNames,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.SmsFreightTemplateRegion">
+    update sms_freight_template_region
+    set template_id = #{templateId,jdbcType=BIGINT},
+      region_type = #{regionType,jdbcType=TINYINT},
+      distance_start = #{distanceStart,jdbcType=DECIMAL},
+      distance_end = #{distanceEnd,jdbcType=DECIMAL},
+      first_amount = #{firstAmount,jdbcType=DECIMAL},
+      first_count = #{firstCount,jdbcType=DECIMAL},
+      additional_amount = #{additionalAmount,jdbcType=DECIMAL},
+      additional_count = #{additionalCount,jdbcType=DECIMAL},
+      sort = #{sort,jdbcType=INTEGER},
+      region_ids = #{regionIds,jdbcType=LONGVARCHAR},
+      region_names = #{regionNames,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.SmsFreightTemplateRegion">
+    update sms_freight_template_region
+    set template_id = #{templateId,jdbcType=BIGINT},
+      region_type = #{regionType,jdbcType=TINYINT},
+      distance_start = #{distanceStart,jdbcType=DECIMAL},
+      distance_end = #{distanceEnd,jdbcType=DECIMAL},
+      first_amount = #{firstAmount,jdbcType=DECIMAL},
+      first_count = #{firstCount,jdbcType=DECIMAL},
+      additional_amount = #{additionalAmount,jdbcType=DECIMAL},
+      additional_count = #{additionalCount,jdbcType=DECIMAL},
+      sort = #{sort,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

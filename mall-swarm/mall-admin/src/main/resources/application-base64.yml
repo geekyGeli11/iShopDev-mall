@@ -1,0 +1,32 @@
+# Base64大数据传输配置
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  jackson:
+    parser:
+      # 允许解析大的JSON字符串
+      allow-unquoted-field-names: true
+      allow-single-quotes: true
+    # 设置JSON序列化的最大字符串长度
+    generator:
+      write-bigdecimal-as-plain: true
+
+server:
+  # 设置最大HTTP头大小，支持大的base64数据
+  max-http-header-size: 1MB
+  # 设置连接超时
+  connection-timeout: 30000
+  tomcat:
+    # 设置最大POST大小
+    max-http-post-size: 50MB
+    # 设置最大连接数
+    max-connections: 8192
+
+# 日志配置，便于调试base64传输
+logging:
+  level:
+    com.macro.mall.service.impl.WechatMiniProgramServiceImpl: DEBUG
+    com.macro.mall.service.impl.SmsCouponServiceImpl: DEBUG
+    org.springframework.web: DEBUG

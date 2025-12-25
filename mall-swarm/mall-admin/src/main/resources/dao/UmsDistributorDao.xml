@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.UmsDistributorDao">
+    
+    <resultMap id="DistributorListVOMap" type="com.macro.mall.dto.UmsDistributorListVO">
+        <id column="id" property="id"/>
+        <result column="nickname" property="nickname"/>
+        <result column="phone" property="phone"/>
+        <result column="member_code" property="memberCode"/>
+        <result column="icon" property="icon"/>
+        <result column="is_distributor" property="isDistributor"/>
+        <result column="distributor_level" property="distributorLevel"/>
+        <result column="create_time" property="createTime"/>
+        <result column="apply_time" property="applyTime"/>
+        <result column="approved_time" property="approvedTime"/>
+        <result column="total_commission" property="totalCommission"/>
+        <result column="level1_customer_count" property="level1CustomerCount"/>
+        <result column="level2_customer_count" property="level2CustomerCount"/>
+        <result column="total_order_count" property="totalOrderCount"/>
+        <result column="total_order_amount" property="totalOrderAmount"/>
+    </resultMap>
+    
+    <!-- 分页查询分销商列表 -->
+    <select id="selectByPage" resultMap="DistributorListVOMap">
+        SELECT 
+            m.id,
+            m.nickname,
+            m.phone,
+            m.member_code,
+            m.icon,
+            m.is_distributor,
+            m.distributor_level,
+            m.create_time,
+            m.apply_time,
+            m.approved_time,
+            m.total_commission,
+            COALESCE(s.level1_customer_count, 0) as level1_customer_count,
+            COALESCE(s.level2_customer_count, 0) as level2_customer_count,
+            COALESCE(o.total_order_count, 0) as total_order_count,
+            COALESCE(o.total_order_amount, 0) as total_order_amount
+        FROM ums_member m
+        LEFT JOIN pms_invite_statistics s ON m.id = s.user_id
+        LEFT JOIN (
+            SELECT 
+                ir.inviter_id,
+                COUNT(DISTINCT o.id) as total_order_count,
+                COALESCE(SUM(o.pay_amount), 0) as total_order_amount
+            FROM pms_invite_relation ir
+            LEFT JOIN oms_order o ON ir.invitee_id = o.member_id AND o.status = 3
+            GROUP BY ir.inviter_id
+        ) o ON m.id = o.inviter_id
+        <where>
+            <!-- 只查询分销商用户 -->
+            AND m.source_type = 1 AND m.openid IS NOT NULL AND m.is_distributor = 1
+            <if test="param.keyword != null and param.keyword != ''">
+                AND (m.nickname LIKE CONCAT('%', #{param.keyword}, '%') 
+                     OR m.phone LIKE CONCAT('%', #{param.keyword}, '%'))
+            </if>
+            <if test="param.distributorStatus != null">
+                AND m.is_distributor = #{param.distributorStatus}
+            </if>
+            <if test="param.distributorLevel != null">
+                AND m.distributor_level = #{param.distributorLevel}
+            </if>
+            <if test="param.startTime != null and param.startTime != ''">
+                AND m.create_time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null and param.endTime != ''">
+                AND m.create_time &lt;= #{param.endTime}
+            </if>
+            <if test="param.approvedStartTime != null and param.approvedStartTime != ''">
+                AND m.approved_time &gt;= #{param.approvedStartTime}
+            </if>
+            <if test="param.approvedEndTime != null and param.approvedEndTime != ''">
+                AND m.approved_time &lt;= #{param.approvedEndTime}
+            </if>
+            <if test="param.minCommission != null and param.minCommission != ''">
+                AND m.total_commission &gt;= #{param.minCommission}
+            </if>
+            <if test="param.maxCommission != null and param.maxCommission != ''">
+                AND m.total_commission &lt;= #{param.maxCommission}
+            </if>
+        </where>
+        ORDER BY m.total_commission DESC, m.approved_time DESC, m.create_time DESC
+    </select>
+    
+    <!-- 获取分销商详情 -->
+    <select id="selectDetailByUserId" resultMap="DistributorListVOMap">
+        SELECT 
+            m.id,
+            m.nickname,
+            m.phone,
+            m.member_code,
+            m.icon,
+            m.is_distributor,
+            m.distributor_level,
+            m.create_time,
+            m.apply_time,
+            m.approved_time,
+            m.total_commission,
+            COALESCE(s.level1_customer_count, 0) as level1_customer_count,
+            COALESCE(s.level2_customer_count, 0) as level2_customer_count,
+            COALESCE(o.total_order_count, 0) as total_order_count,
+            COALESCE(o.total_order_amount, 0) as total_order_amount
+        FROM ums_member m
+        LEFT JOIN pms_invite_statistics s ON m.id = s.user_id
+        LEFT JOIN (
+            SELECT 
+                ir.inviter_id,
+                COUNT(DISTINCT o.id) as total_order_count,
+                COALESCE(SUM(o.pay_amount), 0) as total_order_amount
+            FROM pms_invite_relation ir
+            LEFT JOIN oms_order o ON ir.invitee_id = o.member_id AND o.status = 3
+            WHERE ir.inviter_id = #{userId}
+            GROUP BY ir.inviter_id
+        ) o ON m.id = o.inviter_id
+        WHERE m.id = #{userId}
+    </select>
+    
+    <!-- 获取分销商统计数据 -->
+    <select id="selectStatistics" resultType="java.util.Map">
+        SELECT 
+            -- 总分销商数量
+            COUNT(CASE WHEN m.is_distributor = 1 THEN 1 END) as totalDistributorCount,
+            -- 活跃分销商数量（30天内有佣金收入的）
+            COUNT(CASE WHEN m.is_distributor = 1 AND EXISTS(
+                SELECT 1 FROM pms_invite_reward r 
+                WHERE r.user_id = m.id AND r.status = 1 
+                AND r.send_time &gt;= DATE_SUB(NOW(), INTERVAL 30 DAY)
+            ) THEN 1 END) as activeDistributorCount,
+            -- 暂停状态分销商数量
+            COUNT(CASE WHEN m.is_distributor = 2 THEN 1 END) as pausedDistributorCount,
+            -- 禁用状态分销商数量
+            COUNT(CASE WHEN m.is_distributor = 3 THEN 1 END) as disabledDistributorCount,
+            -- 总佣金发放金额
+            COALESCE(SUM(m.total_commission), 0) as totalCommissionAmount,
+            -- 本月新增分销商数量
+            COUNT(CASE WHEN m.is_distributor = 1 AND DATE_FORMAT(m.approved_time, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m') THEN 1 END) as thisMonthNewCount,
+            -- 今日新增分销商数量
+            COUNT(CASE WHEN m.is_distributor = 1 AND DATE(m.approved_time) = CURDATE() THEN 1 END) as todayNewCount
+        FROM ums_member m
+        WHERE m.source_type = 1 AND m.openid IS NOT NULL
+    </select>
+    
+    <!-- 更新分销商状态 -->
+    <update id="updateDistributorStatus">
+        UPDATE ums_member 
+        SET is_distributor = #{status}
+        <if test="status == 1">
+            , approved_time = NOW()
+        </if>
+        WHERE id = #{userId}
+    </update>
+    
+    <!-- 更新分销商等级 -->
+    <update id="updateDistributorLevel">
+        UPDATE ums_member 
+        SET distributor_level = #{level}
+        WHERE id = #{userId}
+    </update>
+    
+    <!-- 批量更新分销商状态 -->
+    <update id="batchUpdateStatus">
+        UPDATE ums_member 
+        SET is_distributor = #{status}
+        <if test="status == 1">
+            , approved_time = NOW()
+        </if>
+        WHERE id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+    
+</mapper> 

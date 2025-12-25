@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: mall-gateway
+  cloud:
+    nacos:
+      config:
+        prefix: guanghengzou-gateway

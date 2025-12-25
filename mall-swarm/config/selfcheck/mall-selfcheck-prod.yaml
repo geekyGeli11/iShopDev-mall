@@ -1,0 +1,129 @@
+spring:
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  data:
+    redis:
+      host: redis
+      port: 6379
+      database: 0
+      password: 
+      timeout: 5000ms
+    mongodb:
+      host: mongo
+      port: 27017
+      database: mall-port
+  rabbitmq:
+    host: rabbit
+    port: 5672
+    virtual-host: /mall
+    username: mall
+    password: mall
+    publisher-confirms: true
+
+logging:
+  file:
+    path: /var/logs
+  level:
+    root: info
+    com.macro.mall.selfcheck: info
+
+redis:
+  key:
+    verifyCode: 'selfcheck:verifyCode'
+    memberSession: 'selfcheck:memberSession'
+    paymentCache: 'selfcheck:payment'
+    paymentQR: 'selfcheck:payment:qr'
+    paymentStatus: 'selfcheck:payment:status'
+  expire:
+    verifyCode: 300
+    memberSession: 3600
+    paymentCache: 300
+
+logstash:
+  host: logstash
+
+# 自助收银系统配置
+selfcheck:
+  # 订单配置
+  order:
+    # 订单超时时间（分钟）
+    timeout: 30
+  
+  # 消息队列配置
+  rabbitmq:
+    # 是否启用消息队列
+    enabled: true
+  
+  # 支付配置
+  payment:
+    # 支付超时时间（分钟）
+    timeout: 5
+    # 支付状态轮询间隔（秒）
+    pollInterval: 2
+    # 最大轮询次数
+    maxPollCount: 150
+    # 是否启用模拟支付（生产环境为false）
+    mockEnabled: false
+    
+    # 微信支付配置
+    wechat:
+      appId: ${WX_PAY_APP_ID}
+      appSecret: ${WECHAT_APP_SECRET}
+      mchId: ${WX_PAY_MCH_ID}
+      mchKey: ${WX_PAY_MCH_KEY}
+      notifyUrl: ${WX_PAY_NOTIFY_URL}
+      certPath: classpath:certs/apiclient_cert.p12
+      keyPath: classpath:certs/apiclient_cert.p12
+      expireMinutes: 5
+    
+    # 支付宝支付配置
+    alipay:
+      appId: ${ALIPAY_APP_ID}
+      privateKey: ${ALIPAY_PRIVATE_KEY}
+      appPrivateKey: ${ALIPAY_PRIVATE_KEY}
+      publicKey: ${ALIPAY_PUBLIC_KEY}
+      alipayPublicKey: ${ALIPAY_PUBLIC_KEY}
+      notifyUrl: ${ALIPAY_NOTIFY_URL}
+      returnUrl: ${ALIPAY_RETURN_URL}
+      gatewayUrl: https://openapi.alipay.com/gateway.do
+      charset: UTF-8
+      signType: RSA2
+      expireMinutes: 5
+  
+  # 会员配置
+  member:
+    verifyCodeExpire: 5
+    sessionTimeout: 3600
+    autoLogoutDelay: 3
+  
+  # 扫码配置
+  scan:
+    scanTimeout: 30
+    supportedFormats:
+      - EAN_13
+      - EAN_8
+      - CODE_128
+      - QR_CODE
+  
+  # 短信服务配置
+  sms:
+    provider: aliyun
+    mock:
+      enabled: false
+      fixedCode: '123456'
+    aliyun:
+      accessKeyId: ${ALIYUN_SMS_ACCESS_KEY_ID}
+      accessKeySecret: ${ALIYUN_SMS_ACCESS_KEY_SECRET}
+      signName: ${ALIYUN_SMS_SIGN_NAME}
+      templateCode: ${ALIYUN_SMS_TEMPLATE_CODE}
+      region: cn-hangzhou
+  
+  # 安全配置
+  security:
+    maxLoginAttempts: 5
+    loginLockDuration: 900
+    ipBlockDuration: 3600
+    rateLimitWindow: 300
+    maxAttemptsPerWindow: 3 

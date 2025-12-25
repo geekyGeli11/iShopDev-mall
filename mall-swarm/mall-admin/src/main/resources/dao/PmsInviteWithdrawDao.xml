@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.PmsInviteWithdrawDao">
+    
+    <!-- 分页获取提现申请列表（包含用户信息） -->
+    <select id="getInviteWithdrawsList" resultType="map">
+        SELECT 
+            w.id,
+            w.user_id AS userId,
+            w.withdraw_sn AS withdrawSn,
+            w.apply_amount AS applyAmount,
+            w.fee_amount AS feeAmount,
+            w.actual_amount AS actualAmount,
+            w.withdraw_type AS withdrawType,
+            w.withdraw_account AS withdrawAccount,
+            w.account_name AS accountName,
+            w.status,
+            w.apply_time AS applyTime,
+            w.audit_time AS auditTime,
+            w.process_time AS processTime,
+            w.expected_arrival_time AS expectedArrivalTime,
+            w.actual_arrival_time AS actualArrivalTime,
+            w.audit_user AS auditUser,
+            w.process_user AS processUser,
+            w.remark,
+            w.audit_remark AS auditRemark,
+            w.process_remark AS processRemark,
+            w.failure_reason AS failureReason,
+            w.created_at AS createdAt,
+            w.updated_at AS updatedAt,
+            -- 用户信息
+            u.nickname AS userNickname,
+            u.phone AS userPhone,
+            u.icon AS userIcon,
+            u.member_code AS memberCode,
+            -- 状态文本
+            CASE w.status
+                WHEN 0 THEN '待审核'
+                WHEN 1 THEN '审核通过'
+                WHEN 2 THEN '提现成功'
+                WHEN 3 THEN '提现失败'
+                WHEN 4 THEN '已取消'
+                WHEN 5 THEN '审核拒绝'
+                ELSE '未知状态'
+            END AS statusText,
+            -- 提现方式文本
+            CASE w.withdraw_type
+                WHEN 1 THEN '微信钱包'
+                WHEN 2 THEN '银行卡'
+                ELSE '未知方式'
+            END AS withdrawTypeText
+        FROM 
+            pms_invite_withdraw_apply w
+        LEFT JOIN 
+            ums_member u ON w.user_id = u.id
+        <where>
+            <if test="userId != null">
+                AND w.user_id = #{userId}
+            </if>
+            <if test="status != null">
+                AND w.status = #{status}
+            </if>
+            <if test="sourceType != null">
+                <!-- TODO: 根据sourceType过滤，需要通过关联查询判断资金来源 -->
+                <!-- 暂时跳过sourceType过滤，后续可扩展表结构支持 -->
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND w.created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND w.created_at &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY w.created_at DESC
+    </select>
+    
+    <!-- 获取提现申请详情（包含用户信息） -->
+    <select id="getInviteWithdrawDetail" resultType="map">
+        SELECT 
+            w.id,
+            w.user_id AS userId,
+            w.withdraw_sn AS withdrawSn,
+            w.apply_amount AS applyAmount,
+            w.fee_amount AS feeAmount,
+            w.actual_amount AS actualAmount,
+            w.withdraw_type AS withdrawType,
+            w.withdraw_account AS withdrawAccount,
+            w.account_name AS accountName,
+            w.status,
+            w.apply_time AS applyTime,
+            w.audit_time AS auditTime,
+            w.process_time AS processTime,
+            w.expected_arrival_time AS expectedArrivalTime,
+            w.actual_arrival_time AS actualArrivalTime,
+            w.audit_user AS auditUser,
+            w.process_user AS processUser,
+            w.remark,
+            w.audit_remark AS auditRemark,
+            w.process_remark AS processRemark,
+            w.failure_reason AS failureReason,
+            w.created_at AS createdAt,
+            w.updated_at AS updatedAt,
+            -- 用户信息
+            u.nickname AS userNickname,
+            u.phone AS userPhone,
+            u.icon AS userIcon,
+            u.member_code AS memberCode,
+            u.city AS userCity,
+            u.gender AS userGender,
+            u.create_time AS userRegisterTime,
+            -- 状态文本
+            CASE w.status
+                WHEN 0 THEN '待审核'
+                WHEN 1 THEN '审核通过'
+                WHEN 2 THEN '提现成功'
+                WHEN 3 THEN '提现失败'
+                WHEN 4 THEN '已取消'
+                WHEN 5 THEN '审核拒绝'
+                ELSE '未知状态'
+            END AS statusText,
+            -- 提现方式文本
+            CASE w.withdraw_type
+                WHEN 1 THEN '微信钱包'
+                WHEN 2 THEN '银行卡'
+                ELSE '未知方式'
+            END AS withdrawTypeText
+        FROM 
+            pms_invite_withdraw_apply w
+        LEFT JOIN 
+            ums_member u ON w.user_id = u.id
+        WHERE 
+            w.id = #{id}
+    </select>
+    
+    <!-- 获取提现申请的资金构成明细 -->
+    <select id="getWithdrawComposition" resultType="map">
+        SELECT 
+            w.id,
+            w.withdraw_sn AS withdrawSn,
+            w.apply_amount AS applyAmount,
+            w.fee_amount AS feeAmount,
+            w.actual_amount AS actualAmount,
+            -- 统计该用户的各类奖励金额（模拟资金构成）
+            COALESCE(
+                (SELECT SUM(reward_value) 
+                 FROM pms_invite_reward 
+                 WHERE user_id = w.user_id AND reward_type IN (1,2,4) AND status = 1), 0
+            ) AS inviteRewardAmount,
+            COALESCE(
+                (SELECT SUM(reward_value) 
+                 FROM pms_invite_reward 
+                 WHERE user_id = w.user_id AND reward_type = 3 AND status = 1), 0
+            ) AS distributionCommissionAmount,
+            -- 用户信息
+            u.nickname AS userNickname,
+            u.phone AS userPhone
+        FROM 
+            pms_invite_withdraw_apply w
+        LEFT JOIN 
+            ums_member u ON w.user_id = u.id
+        WHERE 
+            w.id = #{id}
+    </select>
+    
+    <!-- 获取提现申请汇总统计 -->
+    <select id="getWithdrawSummaryStats" resultType="map">
+        SELECT 
+            COUNT(*) AS totalApplies,
+            SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) AS pendingApplies,
+            SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) AS approvedApplies,
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS successApplies,
+            SUM(CASE WHEN status = 3 THEN 1 ELSE 0 END) AS failedApplies,
+            SUM(CASE WHEN status = 4 THEN 1 ELSE 0 END) AS cancelledApplies,
+            SUM(CASE WHEN status = 5 THEN 1 ELSE 0 END) AS rejectedApplies,
+            -- 按提现方式统计
+            SUM(CASE WHEN withdraw_type = 1 THEN 1 ELSE 0 END) AS wechatApplies,
+            SUM(CASE WHEN withdraw_type = 2 THEN 1 ELSE 0 END) AS bankApplies,
+            -- 金额统计
+            SUM(apply_amount) AS totalApplyAmount,
+            SUM(CASE WHEN status = 2 THEN actual_amount ELSE 0 END) AS totalSuccessAmount,
+            SUM(fee_amount) AS totalFeeAmount,
+            -- 成功率统计
+            CASE 
+                WHEN COUNT(*) &gt; 0 THEN 
+                    ROUND(SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 4)
+                ELSE 0 
+            END AS successRate,
+            -- 平均处理时间（小时）
+            AVG(
+                CASE WHEN process_time IS NOT NULL AND apply_time IS NOT NULL THEN 
+                    TIMESTAMPDIFF(HOUR, apply_time, process_time)
+                ELSE NULL 
+                END
+            ) AS avgProcessHours
+        FROM 
+            pms_invite_withdraw_apply
+    </select>
+    
+    <!-- 获取提现资金来源统计 -->
+    <select id="getSourceStatistics" resultType="map">
+        SELECT 
+            -- 邀请奖励提现总额（通过关联奖励记录估算）
+            COALESCE(SUM(
+                CASE WHEN EXISTS (
+                    SELECT 1 FROM pms_invite_reward r 
+                    WHERE r.user_id = w.user_id AND r.reward_type IN (1,2,4) AND r.status = 1
+                ) THEN w.actual_amount * 0.3 ELSE 0 END
+            ), 0) AS inviteRewardTotal,
+            -- 分销佣金提现总额（通过关联奖励记录估算）
+            COALESCE(SUM(
+                CASE WHEN EXISTS (
+                    SELECT 1 FROM pms_invite_reward r 
+                    WHERE r.user_id = w.user_id AND r.reward_type = 3 AND r.status = 1
+                ) THEN w.actual_amount * 0.7 ELSE 0 END
+            ), 0) AS distributionCommissionTotal,
+            -- 混合来源提现总额
+            COALESCE(SUM(
+                CASE WHEN EXISTS (
+                    SELECT 1 FROM pms_invite_reward r1 
+                    WHERE r1.user_id = w.user_id AND r1.reward_type IN (1,2,4) AND r1.status = 1
+                ) AND EXISTS (
+                    SELECT 1 FROM pms_invite_reward r2 
+                    WHERE r2.user_id = w.user_id AND r2.reward_type = 3 AND r2.status = 1
+                ) THEN w.actual_amount ELSE 0 END
+            ), 0) AS mixedTotal,
+            -- 总提现金额
+            COALESCE(SUM(CASE WHEN status = 2 THEN actual_amount ELSE 0 END), 0) AS totalAmount
+        FROM 
+            pms_invite_withdraw_apply w
+        <where>
+            status = 2
+            <if test="startTime != null and startTime != ''">
+                AND created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND created_at &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+    
+    <!-- 获取用户可提现金额详情 -->
+    <select id="getUserAvailableAmount" resultType="map">
+        SELECT 
+            #{userId} AS userId,
+            -- 总收益金额
+            COALESCE(
+                (SELECT SUM(reward_value) 
+                 FROM pms_invite_reward 
+                 WHERE user_id = #{userId} AND status = 1), 0
+            ) AS totalEarnings,
+            -- 已提现金额
+            COALESCE(
+                (SELECT SUM(actual_amount) 
+                 FROM pms_invite_withdraw_apply 
+                 WHERE user_id = #{userId} AND status = 2), 0
+            ) AS withdrawnAmount,
+            -- 待审核金额
+            COALESCE(
+                (SELECT SUM(apply_amount) 
+                 FROM pms_invite_withdraw_apply 
+                 WHERE user_id = #{userId} AND status IN (0, 1)), 0
+            ) AS pendingAmount,
+            -- 可提现金额（总收益 - 已提现 - 待审核）
+            COALESCE(
+                (SELECT SUM(reward_value) 
+                 FROM pms_invite_reward 
+                 WHERE user_id = #{userId} AND status = 1), 0
+            ) - COALESCE(
+                (SELECT SUM(actual_amount) 
+                 FROM pms_invite_withdraw_apply 
+                 WHERE user_id = #{userId} AND status = 2), 0
+            ) - COALESCE(
+                (SELECT SUM(apply_amount) 
+                 FROM pms_invite_withdraw_apply 
+                 WHERE user_id = #{userId} AND status IN (0, 1)), 0
+            ) AS availableAmount,
+            -- 邀请奖励金额
+            COALESCE(
+                (SELECT SUM(reward_value) 
+                 FROM pms_invite_reward 
+                 WHERE user_id = #{userId} AND reward_type IN (1,2,4) AND status = 1), 0
+            ) AS inviteRewardAmount,
+            -- 分销佣金金额
+            COALESCE(
+                (SELECT SUM(reward_value) 
+                 FROM pms_invite_reward 
+                 WHERE user_id = #{userId} AND reward_type = 3 AND status = 1), 0
+            ) AS distributionCommissionAmount
+    </select>
+    
+    <!-- 获取提现趋势分析数据 -->
+    <select id="getWithdrawTrend" resultType="map">
+        SELECT 
+            <choose>
+                <when test="granularity == 'day'">
+                    DATE(created_at) AS dateKey,
+                    DATE_FORMAT(created_at, '%Y-%m-%d') AS dateLabel
+                </when>
+                <when test="granularity == 'week'">
+                    DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY) AS dateKey,
+                    CONCAT(DATE_FORMAT(DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY), '%Y-%m-%d'), ' 至 ', 
+                           DATE_FORMAT(DATE_ADD(DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY), INTERVAL 6 DAY), '%Y-%m-%d')) AS dateLabel
+                </when>
+                <otherwise>
+                    DATE_FORMAT(created_at, '%Y-%m') AS dateKey,
+                    DATE_FORMAT(created_at, '%Y年%m月') AS dateLabel
+                </otherwise>
+            </choose>,
+            COUNT(*) AS totalCount,
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS successCount,
+            SUM(CASE WHEN status = 2 THEN actual_amount ELSE 0 END) AS successAmount,
+            AVG(CASE WHEN status = 2 THEN actual_amount ELSE NULL END) AS avgAmount,
+            SUM(apply_amount) AS totalApplyAmount,
+            SUM(fee_amount) AS totalFeeAmount
+        FROM 
+            pms_invite_withdraw_apply
+        <where>
+            <if test="sourceType != null">
+                <!-- TODO: 根据sourceType过滤，需要通过关联查询判断资金来源 -->
+                <!-- 暂时跳过sourceType过滤，后续可扩展表结构支持 -->
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND created_at &lt;= #{endTime}
+            </if>
+        </where>
+        GROUP BY dateKey
+        ORDER BY dateKey ASC
+    </select>
+
+    <!-- 统计提现申请记录数量 -->
+    <select id="countInviteWithdrawList" resultType="long">
+        SELECT COUNT(*)
+        FROM 
+            pms_invite_withdraw_apply w
+        LEFT JOIN 
+            ums_member u ON w.user_id = u.id
+        <where>
+            <if test="userId != null">
+                AND w.user_id = #{userId}
+            </if>
+            <if test="status != null">
+                AND w.status = #{status}
+            </if>
+            <if test="sourceType != null">
+                <!-- TODO: 根据sourceType过滤，需要通过关联查询判断资金来源 -->
+                <!-- 暂时跳过sourceType过滤，后续可扩展表结构支持 -->
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND w.created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND w.created_at &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+    
+</mapper> 

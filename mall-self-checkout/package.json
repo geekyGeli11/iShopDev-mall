@@ -1,0 +1,169 @@
+{
+  "name": "mall-self-checkout",
+  "version": "1.1.0",
+  "description": "基于Electron + Vue3的跨平台自助收银系统",
+  "author": "Mall Self Checkout Inc.",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev": "vite --mode development",
+    "dev:staging": "vite --mode staging",
+    "dev:renderer": "vite --mode development",
+    "dev:main": "electron-vite dev",
+    "dev:electron": "concurrently \"npm run dev:renderer\" \"npm run dev:main\"",
+    "build": "npm run build:renderer && npm run build:main",
+    "build:dev": "npm run build:renderer:dev && npm run build:main",
+    "build:staging": "npm run build:renderer:staging && npm run build:main",
+    "build:prod": "npm run build:renderer:prod && npm run build:main",
+    "build:renderer": "vite build --mode production",
+    "build:renderer:dev": "vite build --mode development",
+    "build:renderer:staging": "vite build --mode staging",
+    "build:renderer:prod": "vite build --mode production",
+    "build:main": "electron-vite build",
+    "build:win": "npm run build:prod && electron-builder --win",
+    "build:win:dev": "npm run build:dev && electron-builder --win",
+    "build:win:staging": "npm run build:staging && electron-builder --win",
+    "build:win:msi": "npm run build:prod && electron-builder --win --config.win.target=msi",
+    "build:win:exe": "npm run build:prod && electron-builder --win --config.win.target=nsis",
+    "build:win:both": "npm run build:prod && electron-builder --win",
+    "dist": "npm run build:prod && electron-builder",
+    "dist:win": "npm run build:prod && electron-builder --win",
+    "dist:staging": "npm run build:staging && electron-builder --win",
+    "build:android": "npm run build:capacitor && npx cap sync android && npx cap build android",
+    "build:android:dev": "npm run build:capacitor:dev && npx cap sync android && npx cap build android",
+    "build:android:staging": "npm run build:capacitor:staging && npx cap sync android && npx cap build android",
+    "build:capacitor": "vite build --config vite.config.capacitor.ts --mode production",
+    "build:capacitor:dev": "vite build --config vite.config.capacitor.ts --mode development",
+    "build:capacitor:staging": "vite build --config vite.config.capacitor.ts --mode staging",
+    "build:capacitor:legacy": "vite build --config vite.config.capacitor.legacy.ts --mode production",
+    "build:capacitor:minimal": "vite build --config vite.config.capacitor.minimal.ts --mode production",
+    "android:env": "scripts\\check-android-env.bat",
+    "android:debug": "scripts\\build-android.bat",
+    "android:release": "scripts\\build-android-release.bat",
+    "apk:debug": "scripts\\build-apk-with-debug.bat",
+    "apk:release": "scripts\\build-apk-release.bat",
+    "apk:all": "scripts\\build-all-apk.bat",
+    "cap:sync": "npx cap sync android",
+    "cap:open": "npx cap open android",
+    "preview": "vite preview",
+    "preview:staging": "vite preview --mode staging",
+    "lint": "eslint src --ext .vue,.ts,.js --fix",
+    "format": "prettier --write src/**/*.{vue,ts,js}",
+    "test:unit": "vitest",
+    "test:e2e": "echo 'E2E tests temporarily disabled'",
+    "type-check": "vue-tsc --noEmit",
+    "reorganize": "node -e \"process.platform === 'win32' ? require('child_process').exec('scripts\\\\reorganize-structure.bat') : require('child_process').exec('chmod +x scripts/reorganize-structure.sh && ./scripts/reorganize-structure.sh')\"",
+    "reorganize:win": "scripts\\reorganize-structure.bat",
+    "reorganize:unix": "chmod +x scripts/reorganize-structure.sh && ./scripts/reorganize-structure.sh"
+  },
+  "dependencies": {
+    "@capacitor-community/text-to-speech": "^3.0.0",
+    "@capacitor/app": "^5.0.0",
+    "@capacitor/camera": "^5.0.0",
+    "@capacitor/core": "^5.5.0",
+    "@capacitor/device": "^5.0.0",
+    "@capacitor/status-bar": "^5.0.0",
+    "@vant/icons": "^1.8.0",
+    "@zxing/library": "^0.20.0",
+    "axios": "^1.6.0",
+    "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.0",
+    "lodash-es": "^4.17.0",
+    "pinia": "^2.1.0",
+    "pinia-plugin-persistedstate": "^3.2.3",
+    "simple-keyboard": "^3.8.59",
+    "vant": "^4.9.19",
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^5.5.0",
+    "@capacitor/cli": "^5.5.0",
+    "@types/crypto-js": "^4.2.0",
+    "@types/lodash-es": "^4.17.0",
+    "@types/node": "^20.17.57",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vitejs/plugin-legacy": "^5.4.3",
+    "@vitejs/plugin-vue": "^4.6.2",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^12.0.0",
+    "@vue/tsconfig": "^0.5.0",
+    "concurrently": "^8.2.0",
+    "electron": "^27.1.0",
+    "electron-builder": "^24.6.0",
+    "electron-vite": "^2.0.0",
+    "eslint": "^8.55.0",
+    "eslint-plugin-vue": "^9.19.0",
+    "prettier": "^3.1.0",
+    "sass": "^1.79.0",
+    "terser": "^5.44.0",
+    "typescript": "^5.8.3",
+    "vite": "^5.4.19",
+    "vitest": "^1.0.0",
+    "vue-tsc": "^2.2.10"
+  },
+  "build": {
+    "appId": "com.mall.self-checkout",
+    "productName": "Mall自助收银系统",
+    "copyright": "Copyright © 2024 Mall Self Checkout",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}",
+      "requestedExecutionLevel": "asInvoker",
+      "verifyUpdateCodeSignature": false,
+      "publisherName": "Mall Self Checkout Inc.",
+      "forceCodeSigning": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Mall自助收银系统"
+    },
+    "msi": {
+      "oneClick": false,
+      "artifactName": "${productName}-${version}-${platform}-${arch}.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.business"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "compression": "maximum",
+    "extends": null
+  }
+}

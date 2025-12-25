@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.CmsLocalGoodsRelationDao">
+    <resultMap id="relatedProductMap" type="com.macro.mall.dto.CmsLocalGoodsDetail$RelatedProduct">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="price" jdbcType="DECIMAL" property="price" />
+        <result column="pic" jdbcType="VARCHAR" property="pic" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+    </resultMap>
+    
+    <select id="getRelatedProducts" resultMap="relatedProductMap">
+        SELECT 
+            p.id,
+            p.name AS title,
+            p.price,
+            p.pic,
+            r.sort
+        FROM 
+            cms_local_goods_relation r
+        LEFT JOIN 
+            pms_product p ON r.product_id = p.id
+        WHERE 
+            r.local_goods_id = #{goodsId}
+        ORDER BY 
+            r.sort ASC
+    </select>
+</mapper> 

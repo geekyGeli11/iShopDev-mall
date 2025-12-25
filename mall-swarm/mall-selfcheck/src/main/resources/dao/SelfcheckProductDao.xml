@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.selfcheck.dao.SelfcheckProductDao">
+
+    <!-- 商品扫码结果映射 -->
+    <resultMap id="ProductScanVOMap" type="com.macro.mall.selfcheck.dto.ProductScanVO">
+        <id column="product_id" property="productId"/>
+        <result column="sku_id" property="skuId"/>
+        <result column="product_name" property="productName"/>
+        <result column="product_pic" property="productPic"/>
+        <result column="brand_name" property="brandName"/>
+        <result column="category_name" property="categoryName"/>
+        <result column="product_sn" property="productSn"/>
+        <result column="sku_code" property="skuCode"/>
+        <result column="sp_data" property="spData"/>
+        <result column="unit" property="unit"/>
+        <result column="weight" property="weight"/>
+        <result column="original_price" property="originalPrice"/>
+        <result column="current_price" property="currentPrice"/>
+        <result column="promotion_price" property="promotionPrice"/>
+        <result column="promotion_type" property="promotionType"/>
+        <result column="promotion_start_time" property="promotionStartTime"/>
+        <result column="promotion_end_time" property="promotionEndTime"/>
+        <result column="stock" property="stock"/>
+        <result column="stock_status" property="stockStatus"/>
+        <result column="low_stock" property="lowStock"/>
+        <result column="sale" property="sale"/>
+        <result column="product_status" property="productStatus"/>
+        <result column="publish_status" property="publishStatus"/>
+        <result column="saleable" property="saleable"/>
+        <result column="gift_point" property="giftPoint"/>
+        <result column="gift_growth" property="giftGrowth"/>
+        <result column="sub_title" property="subTitle"/>
+        <result column="scan_type" property="scanType"/>
+        <result column="scan_time" property="scanTime"/>
+    </resultMap>
+
+    <!-- 基础商品信息查询SQL片段 -->
+    <sql id="BaseProductColumns">
+        p.id as product_id,
+        p.name as product_name,
+        p.pic as product_pic,
+        p.product_sn,
+        p.unit,
+        p.weight,
+        p.price as original_price,
+        p.sale,
+        p.publish_status,
+        p.gift_point,
+        p.gift_growth,
+        p.sub_title,
+        pb.name as brand_name,
+        pc.name as category_name,
+        CASE 
+            WHEN p.publish_status = 1 AND p.delete_status = 0 THEN 'NORMAL'
+            WHEN p.publish_status = 0 THEN 'OFF_SHELF'
+            WHEN p.delete_status = 1 THEN 'DELETED'
+            ELSE 'UNKNOWN'
+        END as product_status,
+        CASE 
+            WHEN p.publish_status = 1 AND p.delete_status = 0 THEN true
+            ELSE false
+        END as saleable
+    </sql>
+
+    <!-- SKU信息查询SQL片段 -->
+    <sql id="SkuColumns">
+        ps.id as sku_id,
+        ps.sku_code,
+        ps.price as current_price,
+        ps.stock,
+        ps.low_stock,
+        ps.sp_data,
+        CASE
+            WHEN ps.stock > ps.low_stock THEN 'SUFFICIENT'
+            WHEN ps.stock > 0 THEN 'LOW'
+            ELSE 'OUT_OF_STOCK'
+        END as stock_status
+    </sql>
+
+    <!-- 根据商品条码查询商品信息 -->
+    <select id="getProductByBarcode" resultMap="ProductScanVOMap">
+        SELECT
+            <include refid="BaseProductColumns"/>,
+            <include refid="SkuColumns"/>,
+            CASE
+                WHEN ps.price IS NOT NULL THEN ps.price
+                ELSE p.price
+            END as current_price,
+            0 as promotion_type,
+            'SKU_CODE' as scan_type,
+            UNIX_TIMESTAMP(NOW()) * 1000 as scan_time
+        FROM pms_product p
+        LEFT JOIN pms_brand pb ON p.brand_id = pb.id
+        LEFT JOIN pms_product_category pc ON p.product_category_id = pc.id
+        INNER JOIN pms_sku_stock ps ON p.id = ps.product_id
+        WHERE p.delete_status = 0
+        AND ps.sku_code = #{barcode}
+        LIMIT 1
+    </select>
+
+    <!-- 根据SKU编码查询商品信息 -->
+    <select id="getProductBySkuCode" resultMap="ProductScanVOMap">
+        SELECT
+            <include refid="BaseProductColumns"/>,
+            <include refid="SkuColumns"/>,
+            0 as promotion_type,
+            'SKU_CODE' as scan_type,
+            UNIX_TIMESTAMP(NOW()) * 1000 as scan_time
+        FROM pms_product p
+        LEFT JOIN pms_brand pb ON p.brand_id = pb.id
+        LEFT JOIN pms_product_category pc ON p.product_category_id = pc.id
+        INNER JOIN pms_sku_stock ps ON p.id = ps.product_id
+        WHERE ps.sku_code = #{skuCode}
+           OR (LENGTH(#{skuCode}) &lt; 15 AND ps.sku_code LIKE CONCAT('%', #{skuCode}))
+        ORDER BY
+            CASE WHEN ps.sku_code = #{skuCode} THEN 1 ELSE 2 END,
+            ps.id ASC
+        LIMIT 1
+    </select>
+
+    <!-- 根据商品货号查询商品信息 -->
+    <select id="getProductByProductSn" resultMap="ProductScanVOMap">
+        SELECT 
+            <include refid="BaseProductColumns"/>,
+            p.price as current_price,
+            0 as stock,
+            0 as low_stock,
+            'SUFFICIENT' as stock_status,
+            0 as promotion_type,
+            'PRODUCT_SN' as scan_type,
+            UNIX_TIMESTAMP(NOW()) * 1000 as scan_time
+        FROM pms_product p
+        LEFT JOIN pms_brand pb ON p.brand_id = pb.id
+        LEFT JOIN pms_product_category pc ON p.product_category_id = pc.id
+        WHERE p.product_sn = #{productSn}
+        LIMIT 1
+    </select>
+
+    <!-- 根据商品ID查询商品详细信息 -->
+    <select id="getProductDetailById" resultMap="ProductScanVOMap">
+        SELECT 
+            <include refid="BaseProductColumns"/>,
+            p.price as current_price,
+            COALESCE(SUM(ps.stock), 0) as stock,
+            COALESCE(MIN(ps.low_stock), 0) as low_stock,
+            CASE 
+                WHEN COALESCE(SUM(ps.stock), 0) > COALESCE(MIN(ps.low_stock), 0) THEN 'SUFFICIENT'
+                WHEN COALESCE(SUM(ps.stock), 0) > 0 THEN 'LOW'
+                ELSE 'OUT_OF_STOCK'
+            END as stock_status,
+            0 as promotion_type,
+            'PRODUCT_ID' as scan_type,
+            UNIX_TIMESTAMP(NOW()) * 1000 as scan_time
+        FROM pms_product p
+        LEFT JOIN pms_brand pb ON p.brand_id = pb.id
+        LEFT JOIN pms_product_category pc ON p.product_category_id = pc.id
+        LEFT JOIN pms_sku_stock ps ON p.id = ps.product_id
+        WHERE p.id = #{productId}
+        GROUP BY p.id
+    </select>
+
+    <!-- 根据SKU ID查询SKU详细信息 -->
+    <select id="getSkuDetailById" resultMap="ProductScanVOMap">
+        SELECT 
+            <include refid="BaseProductColumns"/>,
+            <include refid="SkuColumns"/>,
+            0 as promotion_type,
+            'SKU_ID' as scan_type,
+            UNIX_TIMESTAMP(NOW()) * 1000 as scan_time
+        FROM pms_product p
+        LEFT JOIN pms_brand pb ON p.brand_id = pb.id
+        LEFT JOIN pms_product_category pc ON p.product_category_id = pc.id
+        INNER JOIN pms_sku_stock ps ON p.id = ps.product_id
+        WHERE ps.id = #{skuId}
+        LIMIT 1
+    </select>
+
+    <!-- 检查商品库存状态 -->
+    <select id="checkProductStock" resultMap="ProductScanVOMap">
+        SELECT 
+            p.id as product_id,
+            <if test="skuId != null">
+                ps.id as sku_id,
+                ps.sku_code,
+                ps.stock,
+                ps.low_stock,
+                CASE 
+                    WHEN ps.stock > ps.low_stock THEN 'SUFFICIENT'
+                    WHEN ps.stock > 0 THEN 'LOW'
+                    ELSE 'OUT_OF_STOCK'
+                END as stock_status
+            </if>
+            <if test="skuId == null">
+                COALESCE(SUM(ps.stock), 0) as stock,
+                COALESCE(MIN(ps.low_stock), 0) as low_stock,
+                CASE 
+                    WHEN COALESCE(SUM(ps.stock), 0) > COALESCE(MIN(ps.low_stock), 0) THEN 'SUFFICIENT'
+                    WHEN COALESCE(SUM(ps.stock), 0) > 0 THEN 'LOW'
+                    ELSE 'OUT_OF_STOCK'
+                END as stock_status
+            </if>
+        FROM pms_product p
+        LEFT JOIN pms_sku_stock ps ON p.id = ps.product_id
+        WHERE p.id = #{productId}
+        <if test="skuId != null">
+            AND ps.id = #{skuId}
+        </if>
+        <if test="skuId == null">
+            GROUP BY p.id
+        </if>
+    </select>
+
+    <!-- 获取商品促销信息 -->
+    <select id="getProductPromotionInfo" resultMap="ProductScanVOMap">
+        SELECT
+            p.id as product_id,
+            p.name as product_name,
+            p.price as original_price,
+            p.price as current_price,
+            0 as promotion_price,
+            0 as promotion_type,
+            NULL as promotion_start_time,
+            NULL as promotion_end_time
+        FROM pms_product p
+        WHERE p.id = #{productId}
+        <!-- 这里可以扩展促销相关的表关联查询 -->
+    </select>
+
+    <!-- 根据SKU编码精确搜索商品 -->
+    <select id="getProductByKeyword" resultMap="ProductScanVOMap">
+        SELECT
+            <include refid="BaseProductColumns"/>,
+            <include refid="SkuColumns"/>,
+            CASE
+                WHEN ps.price IS NOT NULL THEN ps.price
+                ELSE p.price
+            END as current_price,
+            0 as promotion_type,
+            'SKU_CODE' as scan_type,
+            UNIX_TIMESTAMP(NOW()) * 1000 as scan_time
+        FROM pms_product p
+        LEFT JOIN pms_brand pb ON p.brand_id = pb.id
+        LEFT JOIN pms_product_category pc ON p.product_category_id = pc.id
+        INNER JOIN pms_sku_stock ps ON p.id = ps.product_id
+        WHERE p.delete_status = 0
+        AND ps.sku_code = #{keyword}
+        LIMIT 1
+    </select>
+
+</mapper>

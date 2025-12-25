@@ -1,0 +1,68 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/mall_test?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: root
+    druid:
+      initial-size: 5
+      min-idle: 10
+      max-active: 20
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+      stat-view-servlet:
+        login-username: druid
+        login-password: druid
+  data:
+    redis:
+      host: localhost
+      database: 0
+      port: 6379
+      password: 
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-idle: 8
+          min-idle: 0
+          max-active: 8
+          max-wait: -1ms
+    mongodb:
+      host: localhost
+      port: 27017
+      database: mall-port
+
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
+
+logging:
+  level:
+    com.macro.mall.portal: DEBUG
+    com.macro.mall.mapper: DEBUG
+    com.macro.mall.portal.service.impl.PortalDiyServiceImpl: DEBUG
+
+# 阿里云配置
+aliyun:
+  oss:
+    endpoint: oss-cn-guangzhou.aliyuncs.com
+    accessKeyId: test
+    accessKeySecret: test
+    bucketName: test
+    policy:
+      expire: 300
+    maxSize: 10
+    callback: http://localhost:8085/aliyun/oss/callback
+    dir:
+      prefix: mall/images/
+  wanx:
+    apiKey: test
+    enabled: false
+
+# 微信小程序配置
+wechat:
+  miniapp:
+    appid: test
+    secret: test
+    token: test
+    aesKey: test
+    msgDataFormat: JSON

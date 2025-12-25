@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.CmsActivityMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.CmsActivity">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="pic" jdbcType="VARCHAR" property="pic" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="longitude" jdbcType="DECIMAL" property="longitude" />
+    <result column="latitude" jdbcType="DECIMAL" property="latitude" />
+    <result column="video" jdbcType="VARCHAR" property="video" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.macro.mall.model.CmsActivity">
+    <result column="detail" jdbcType="LONGVARCHAR" property="detail" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, name, introduction, pic, location, start_time, end_time, status, create_time, 
+    update_time, longitude, latitude, video
+  </sql>
+  <sql id="Blob_Column_List">
+    detail
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.model.CmsActivityExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from cms_activity
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.macro.mall.model.CmsActivityExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from cms_activity
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from cms_activity
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from cms_activity
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.CmsActivityExample">
+    delete from cms_activity
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.CmsActivity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into cms_activity (name, introduction, pic, 
+      location, start_time, end_time, 
+      status, create_time, update_time, 
+      longitude, latitude, video, 
+      detail)
+    values (#{name,jdbcType=VARCHAR}, #{introduction,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, 
+      #{location,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}, #{video,jdbcType=VARCHAR}, 
+      #{detail,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.CmsActivity">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into cms_activity
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="introduction != null">
+        introduction,
+      </if>
+      <if test="pic != null">
+        pic,
+      </if>
+      <if test="location != null">
+        location,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="longitude != null">
+        longitude,
+      </if>
+      <if test="latitude != null">
+        latitude,
+      </if>
+      <if test="video != null">
+        video,
+      </if>
+      <if test="detail != null">
+        detail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null">
+        #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="pic != null">
+        #{pic,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="longitude != null">
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="video != null">
+        #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        #{detail,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.CmsActivityExample" resultType="java.lang.Long">
+    select count(*) from cms_activity
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update cms_activity
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.name != null">
+        name = #{row.name,jdbcType=VARCHAR},
+      </if>
+      <if test="row.introduction != null">
+        introduction = #{row.introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="row.pic != null">
+        pic = #{row.pic,jdbcType=VARCHAR},
+      </if>
+      <if test="row.location != null">
+        location = #{row.location,jdbcType=VARCHAR},
+      </if>
+      <if test="row.startTime != null">
+        start_time = #{row.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.endTime != null">
+        end_time = #{row.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.status != null">
+        status = #{row.status,jdbcType=BIT},
+      </if>
+      <if test="row.createTime != null">
+        create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updateTime != null">
+        update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.longitude != null">
+        longitude = #{row.longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="row.latitude != null">
+        latitude = #{row.latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="row.video != null">
+        video = #{row.video,jdbcType=VARCHAR},
+      </if>
+      <if test="row.detail != null">
+        detail = #{row.detail,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update cms_activity
+    set id = #{row.id,jdbcType=BIGINT},
+      name = #{row.name,jdbcType=VARCHAR},
+      introduction = #{row.introduction,jdbcType=VARCHAR},
+      pic = #{row.pic,jdbcType=VARCHAR},
+      location = #{row.location,jdbcType=VARCHAR},
+      start_time = #{row.startTime,jdbcType=TIMESTAMP},
+      end_time = #{row.endTime,jdbcType=TIMESTAMP},
+      status = #{row.status,jdbcType=BIT},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      longitude = #{row.longitude,jdbcType=DECIMAL},
+      latitude = #{row.latitude,jdbcType=DECIMAL},
+      video = #{row.video,jdbcType=VARCHAR},
+      detail = #{row.detail,jdbcType=LONGVARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update cms_activity
+    set id = #{row.id,jdbcType=BIGINT},
+      name = #{row.name,jdbcType=VARCHAR},
+      introduction = #{row.introduction,jdbcType=VARCHAR},
+      pic = #{row.pic,jdbcType=VARCHAR},
+      location = #{row.location,jdbcType=VARCHAR},
+      start_time = #{row.startTime,jdbcType=TIMESTAMP},
+      end_time = #{row.endTime,jdbcType=TIMESTAMP},
+      status = #{row.status,jdbcType=BIT},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      longitude = #{row.longitude,jdbcType=DECIMAL},
+      latitude = #{row.latitude,jdbcType=DECIMAL},
+      video = #{row.video,jdbcType=VARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.CmsActivity">
+    update cms_activity
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null">
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="pic != null">
+        pic = #{pic,jdbcType=VARCHAR},
+      </if>
+      <if test="location != null">
+        location = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="longitude != null">
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null">
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+      <if test="video != null">
+        video = #{video,jdbcType=VARCHAR},
+      </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.CmsActivity">
+    update cms_activity
+    set name = #{name,jdbcType=VARCHAR},
+      introduction = #{introduction,jdbcType=VARCHAR},
+      pic = #{pic,jdbcType=VARCHAR},
+      location = #{location,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      video = #{video,jdbcType=VARCHAR},
+      detail = #{detail,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.CmsActivity">
+    update cms_activity
+    set name = #{name,jdbcType=VARCHAR},
+      introduction = #{introduction,jdbcType=VARCHAR},
+      pic = #{pic,jdbcType=VARCHAR},
+      location = #{location,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL},
+      video = #{video,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

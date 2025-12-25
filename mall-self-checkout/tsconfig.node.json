@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "typeRoots": ["node_modules/@types"]
+  },
+  "include": [
+    "vite.config.ts",
+    "electron.vite.config.ts",
+    "capacitor.config.ts",
+    "scripts/**/*"
+  ]
+} 

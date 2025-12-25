@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.UmsGuestAdminDao">
+
+    <select id="getGuestList" resultType="com.macro.mall.dto.UmsGuestListVO">
+        SELECT
+            g.guest_id as guestId,
+            g.device_id as deviceId,
+            g.device_type as deviceType,
+            g.last_access_ip as loginIp,
+            g.status,
+            g.create_time as createTime,
+            g.last_active_time as lastActiveTime,
+            g.school_id as schoolId,
+            s.school_name as schoolName,
+            (SELECT COUNT(*) FROM oms_order o WHERE o.note LIKE CONCAT('%游客ID：', g.guest_id, '%') AND o.status IN (1, 2, 3)) as orderCount,
+            (SELECT COALESCE(SUM(o.total_amount), 0) FROM oms_order o WHERE o.note LIKE CONCAT('%游客ID：', g.guest_id, '%') AND o.status IN (1, 2, 3)) as orderAmount,
+            CASE 
+                WHEN g.last_active_time IS NOT NULL AND g.create_time IS NOT NULL 
+                THEN TIMESTAMPDIFF(MINUTE, g.create_time, g.last_active_time)
+                ELSE 0 
+            END as sessionDuration
+        FROM ums_guest g
+        LEFT JOIN oms_school s ON g.school_id = s.id
+        <where>
+            <if test="queryParam.keyword != null and queryParam.keyword != ''">
+                AND (g.guest_id LIKE CONCAT('%', #{queryParam.keyword}, '%') 
+                     OR g.device_id LIKE CONCAT('%', #{queryParam.keyword}, '%'))
+            </if>
+            
+            <if test="queryParam.deviceType != null and queryParam.deviceType != ''">
+                AND g.device_type = #{queryParam.deviceType}
+            </if>
+            
+            <if test="queryParam.status != null">
+                AND g.status = #{queryParam.status}
+            </if>
+            
+            <if test="queryParam.schoolId != null">
+                AND g.school_id = #{queryParam.schoolId}
+            </if>
+            
+            <if test="queryParam.startTime != null and queryParam.startTime != ''">
+                AND DATE(g.create_time) &gt;= #{queryParam.startTime}
+            </if>
+            
+            <if test="queryParam.endTime != null and queryParam.endTime != ''">
+                AND DATE(g.create_time) &lt;= #{queryParam.endTime}
+            </if>
+        </where>
+        ORDER BY g.create_time DESC
+    </select>
+
+    <delete id="cleanExpiredGuests">
+        DELETE FROM ums_guest 
+        WHERE last_active_time &lt; DATE_SUB(NOW(), INTERVAL #{expiredDays} DAY)
+           OR (last_active_time IS NULL AND create_time &lt; DATE_SUB(NOW(), INTERVAL #{expiredDays} DAY))
+    </delete>
+
+</mapper>

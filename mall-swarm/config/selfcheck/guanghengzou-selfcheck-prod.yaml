@@ -1,0 +1,152 @@
+spring:
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  data:
+    redis:
+      host: redis
+      port: 6379
+      database: 0
+      password: 
+      timeout: 5000ms
+    mongodb:
+      host: mongo
+      port: 27017
+      database: mall-port
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    virtual-host: /mall
+    username: mall
+    password: mall
+    publisher-confirms: true
+logging:
+  file:
+    path: /var/logs
+  level:
+    root: info
+    com.macro.mall.selfcheck: info
+redis:
+  key:
+    verifyCode: 'selfcheck:verifyCode'
+    memberSession: 'selfcheck:memberSession'
+    paymentCache: 'selfcheck:payment'
+    paymentQR: 'selfcheck:payment:qr'
+    paymentStatus: 'selfcheck:payment:status'
+  expire:
+    verifyCode: 300
+    memberSession: 3600
+    paymentCache: 300
+logstash:
+  host: logstash  
+# 自助收银系统配置
+selfcheck:
+  # 支付配置
+  payment:
+    # 支付超时时间（分钟）
+    timeout: 5
+    # 支付状态轮询间隔（秒）
+    pollInterval: 2
+    # 最大轮询次数
+    maxPollCount: 150
+    # 是否启用模拟支付（开发环境建议为true，生产环境为false）
+    mockEnabled: true
+    
+    # 微信支付配置
+    wechat:
+      # 微信支付应用ID
+      appId: ${WX_PAY_APP_ID}
+      # 微信支付应用密钥
+      appSecret: ${WECHAT_APP_SECRET}
+      # 微信支付商户号
+      mchId: ${WX_PAY_MCH_ID}
+      # 微信支付商户密钥
+      mchKey: ${WX_PAY_MCH_KEY}
+      # 支付回调通知地址
+      notifyUrl: ${WX_PAY_NOTIFY_URL}
+      # 证书路径（用于退款等操作）
+      certPath: classpath:certs/apiclient_cert.p12
+      # 证书密钥路径（PKCS12格式）
+      keyPath: classpath:certs/apiclient_cert.p12
+      # 支付超时时间（分钟）
+      expireMinutes: 5
+    
+    # 支付宝支付配置
+    alipay:
+      # 支付宝应用ID
+      appId: ${ALIPAY_APP_ID}
+      # 支付宝私钥（应用私钥）
+      privateKey: ${ALIPAY_PRIVATE_KEY}
+      appPrivateKey: ${ALIPAY_PRIVATE_KEY}
+      # 支付宝公钥
+      publicKey: ${ALIPAY_PUBLIC_KEY}
+      alipayPublicKey: ${ALIPAY_PUBLIC_KEY}
+      # 支付回调通知地址
+      notifyUrl: ${ALIPAY_NOTIFY_URL}
+      # 支付完成后跳转地址
+      returnUrl: ${ALIPAY_RETURN_URL}
+      # 支付宝网关地址（沙箱环境）
+      gatewayUrl: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+      # 字符编码
+      charset: UTF-8
+      # 签名类型
+      signType: RSA2
+      # 支付超时时间（分钟）
+      expireMinutes: 5
+  
+  # 会员配置
+  member:
+    # 验证码有效期（分钟）
+    verifyCodeExpire: 5
+    # 会话超时时间（秒）
+    sessionTimeout: 3600
+    # 自动退出延迟时间（秒）
+    autoLogoutDelay: 3
+  
+  # 扫码配置
+  scan:
+    # 扫描超时时间（秒）
+    scanTimeout: 30
+    # 支持的条码格式
+    supportedFormats:
+      - EAN_13
+      - EAN_8
+      - CODE_128
+      - QR_CODE
+  
+  # 短信服务配置
+  sms:
+    # 短信服务提供商(mock/aliyun/tencent/huawei)
+    provider: aliyun
+    
+    # 模拟模式配置（开发测试用）
+    mock:
+      enabled: false
+      fixedCode: '123456'
+    
+    # 阿里云短信配置
+    aliyun:
+      # 阿里云Access Key ID
+      accessKeyId: ${ALIYUN_SMS_ACCESS_KEY_ID}
+      # 阿里云Access Key Secret
+      accessKeySecret: ${ALIYUN_SMS_ACCESS_KEY_SECRET}
+      # 短信签名
+      signName: ${ALIYUN_SMS_SIGN_NAME}
+      # 短信模板代码
+      templateCode: ${ALIYUN_SMS_TEMPLATE_CODE}
+      # 阿里云区域
+      region: cn-hangzhou
+  
+  # 安全配置
+  security:
+    # 最大登录尝试次数
+    maxLoginAttempts: 5
+    # 登录锁定持续时间（秒）
+    loginLockDuration: 900
+    # IP封禁持续时间（秒）
+    ipBlockDuration: 3600
+    # 频率限制时间窗口（秒）
+    rateLimitWindow: 300
+    # 时间窗口内最大尝试次数
+    maxAttemptsPerWindow: 3 

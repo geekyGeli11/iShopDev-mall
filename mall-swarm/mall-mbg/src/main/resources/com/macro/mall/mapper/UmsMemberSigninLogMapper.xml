@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.UmsMemberSigninLogMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.UmsMemberSigninLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="member_username" jdbcType="VARCHAR" property="memberUsername" />
+    <result column="signin_date" jdbcType="DATE" property="signinDate" />
+    <result column="signin_time" jdbcType="TIMESTAMP" property="signinTime" />
+    <result column="points_earned" jdbcType="INTEGER" property="pointsEarned" />
+    <result column="continuous_days" jdbcType="INTEGER" property="continuousDays" />
+    <result column="cycle_signin_days" jdbcType="INTEGER" property="cycleSigninDays" />
+    <result column="is_reward_claimed" jdbcType="TINYINT" property="isRewardClaimed" />
+    <result column="reward_coupon_id" jdbcType="BIGINT" property="rewardCouponId" />
+    <result column="signin_month" jdbcType="VARCHAR" property="signinMonth" />
+    <result column="client_ip" jdbcType="VARCHAR" property="clientIp" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, member_id, member_username, signin_date, signin_time, points_earned, continuous_days, 
+    cycle_signin_days, is_reward_claimed, reward_coupon_id, signin_month, client_ip
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.UmsMemberSigninLogExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ums_member_signin_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ums_member_signin_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ums_member_signin_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.UmsMemberSigninLogExample">
+    delete from ums_member_signin_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.UmsMemberSigninLog">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_member_signin_log (member_id, member_username, signin_date, 
+      signin_time, points_earned, continuous_days, 
+      cycle_signin_days, is_reward_claimed, reward_coupon_id, 
+      signin_month, client_ip)
+    values (#{memberId,jdbcType=BIGINT}, #{memberUsername,jdbcType=VARCHAR}, #{signinDate,jdbcType=DATE}, 
+      #{signinTime,jdbcType=TIMESTAMP}, #{pointsEarned,jdbcType=INTEGER}, #{continuousDays,jdbcType=INTEGER}, 
+      #{cycleSigninDays,jdbcType=INTEGER}, #{isRewardClaimed,jdbcType=TINYINT}, #{rewardCouponId,jdbcType=BIGINT}, 
+      #{signinMonth,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.UmsMemberSigninLog">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_member_signin_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="memberId != null">
+        member_id,
+      </if>
+      <if test="memberUsername != null">
+        member_username,
+      </if>
+      <if test="signinDate != null">
+        signin_date,
+      </if>
+      <if test="signinTime != null">
+        signin_time,
+      </if>
+      <if test="pointsEarned != null">
+        points_earned,
+      </if>
+      <if test="continuousDays != null">
+        continuous_days,
+      </if>
+      <if test="cycleSigninDays != null">
+        cycle_signin_days,
+      </if>
+      <if test="isRewardClaimed != null">
+        is_reward_claimed,
+      </if>
+      <if test="rewardCouponId != null">
+        reward_coupon_id,
+      </if>
+      <if test="signinMonth != null">
+        signin_month,
+      </if>
+      <if test="clientIp != null">
+        client_ip,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="memberId != null">
+        #{memberId,jdbcType=BIGINT},
+      </if>
+      <if test="memberUsername != null">
+        #{memberUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="signinDate != null">
+        #{signinDate,jdbcType=DATE},
+      </if>
+      <if test="signinTime != null">
+        #{signinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pointsEarned != null">
+        #{pointsEarned,jdbcType=INTEGER},
+      </if>
+      <if test="continuousDays != null">
+        #{continuousDays,jdbcType=INTEGER},
+      </if>
+      <if test="cycleSigninDays != null">
+        #{cycleSigninDays,jdbcType=INTEGER},
+      </if>
+      <if test="isRewardClaimed != null">
+        #{isRewardClaimed,jdbcType=TINYINT},
+      </if>
+      <if test="rewardCouponId != null">
+        #{rewardCouponId,jdbcType=BIGINT},
+      </if>
+      <if test="signinMonth != null">
+        #{signinMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="clientIp != null">
+        #{clientIp,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.UmsMemberSigninLogExample" resultType="java.lang.Long">
+    select count(*) from ums_member_signin_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update ums_member_signin_log
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.memberId != null">
+        member_id = #{row.memberId,jdbcType=BIGINT},
+      </if>
+      <if test="row.memberUsername != null">
+        member_username = #{row.memberUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="row.signinDate != null">
+        signin_date = #{row.signinDate,jdbcType=DATE},
+      </if>
+      <if test="row.signinTime != null">
+        signin_time = #{row.signinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.pointsEarned != null">
+        points_earned = #{row.pointsEarned,jdbcType=INTEGER},
+      </if>
+      <if test="row.continuousDays != null">
+        continuous_days = #{row.continuousDays,jdbcType=INTEGER},
+      </if>
+      <if test="row.cycleSigninDays != null">
+        cycle_signin_days = #{row.cycleSigninDays,jdbcType=INTEGER},
+      </if>
+      <if test="row.isRewardClaimed != null">
+        is_reward_claimed = #{row.isRewardClaimed,jdbcType=TINYINT},
+      </if>
+      <if test="row.rewardCouponId != null">
+        reward_coupon_id = #{row.rewardCouponId,jdbcType=BIGINT},
+      </if>
+      <if test="row.signinMonth != null">
+        signin_month = #{row.signinMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="row.clientIp != null">
+        client_ip = #{row.clientIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update ums_member_signin_log
+    set id = #{row.id,jdbcType=BIGINT},
+      member_id = #{row.memberId,jdbcType=BIGINT},
+      member_username = #{row.memberUsername,jdbcType=VARCHAR},
+      signin_date = #{row.signinDate,jdbcType=DATE},
+      signin_time = #{row.signinTime,jdbcType=TIMESTAMP},
+      points_earned = #{row.pointsEarned,jdbcType=INTEGER},
+      continuous_days = #{row.continuousDays,jdbcType=INTEGER},
+      cycle_signin_days = #{row.cycleSigninDays,jdbcType=INTEGER},
+      is_reward_claimed = #{row.isRewardClaimed,jdbcType=TINYINT},
+      reward_coupon_id = #{row.rewardCouponId,jdbcType=BIGINT},
+      signin_month = #{row.signinMonth,jdbcType=VARCHAR},
+      client_ip = #{row.clientIp,jdbcType=VARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.UmsMemberSigninLog">
+    update ums_member_signin_log
+    <set>
+      <if test="memberId != null">
+        member_id = #{memberId,jdbcType=BIGINT},
+      </if>
+      <if test="memberUsername != null">
+        member_username = #{memberUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="signinDate != null">
+        signin_date = #{signinDate,jdbcType=DATE},
+      </if>
+      <if test="signinTime != null">
+        signin_time = #{signinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="pointsEarned != null">
+        points_earned = #{pointsEarned,jdbcType=INTEGER},
+      </if>
+      <if test="continuousDays != null">
+        continuous_days = #{continuousDays,jdbcType=INTEGER},
+      </if>
+      <if test="cycleSigninDays != null">
+        cycle_signin_days = #{cycleSigninDays,jdbcType=INTEGER},
+      </if>
+      <if test="isRewardClaimed != null">
+        is_reward_claimed = #{isRewardClaimed,jdbcType=TINYINT},
+      </if>
+      <if test="rewardCouponId != null">
+        reward_coupon_id = #{rewardCouponId,jdbcType=BIGINT},
+      </if>
+      <if test="signinMonth != null">
+        signin_month = #{signinMonth,jdbcType=VARCHAR},
+      </if>
+      <if test="clientIp != null">
+        client_ip = #{clientIp,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.UmsMemberSigninLog">
+    update ums_member_signin_log
+    set member_id = #{memberId,jdbcType=BIGINT},
+      member_username = #{memberUsername,jdbcType=VARCHAR},
+      signin_date = #{signinDate,jdbcType=DATE},
+      signin_time = #{signinTime,jdbcType=TIMESTAMP},
+      points_earned = #{pointsEarned,jdbcType=INTEGER},
+      continuous_days = #{continuousDays,jdbcType=INTEGER},
+      cycle_signin_days = #{cycleSigninDays,jdbcType=INTEGER},
+      is_reward_claimed = #{isRewardClaimed,jdbcType=TINYINT},
+      reward_coupon_id = #{rewardCouponId,jdbcType=BIGINT},
+      signin_month = #{signinMonth,jdbcType=VARCHAR},
+      client_ip = #{clientIp,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,40 @@
+/* 全局隐藏swiper默认指示器 - 小程序兼容 */
+
+/* uni-app swiper组件默认指示器隐藏 */
+.uni-swiper-dots {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.uni-swiper-dot {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 针对特定容器的指示器隐藏 */
+.preview-swiper .uni-swiper-dots,
+.preview-swiper .uni-swiper-dot {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* H5端可能的指示器样式 */
+.swiper-pagination-bullets,
+.swiper-pagination-fraction,
+.swiper-pagination-custom,
+.swiper-pagination {
+  display: none !important;
+}
+
+/* 确保在preview页面中完全隐藏 */
+.diy-preview-container .uni-swiper-dots,
+.diy-preview-container .uni-swiper-dot {
+  display: none !important;
+}

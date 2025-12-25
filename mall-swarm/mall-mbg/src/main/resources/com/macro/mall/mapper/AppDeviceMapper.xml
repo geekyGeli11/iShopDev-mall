@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.AppDeviceMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.AppDevice">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="device_name" jdbcType="VARCHAR" property="deviceName" />
+    <result column="device_model" jdbcType="VARCHAR" property="deviceModel" />
+    <result column="android_version" jdbcType="VARCHAR" property="androidVersion" />
+    <result column="app_version_name" jdbcType="VARCHAR" property="appVersionName" />
+    <result column="app_version_code" jdbcType="INTEGER" property="appVersionCode" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="store_name" jdbcType="VARCHAR" property="storeName" />
+    <result column="last_check_time" jdbcType="TIMESTAMP" property="lastCheckTime" />
+    <result column="last_update_time" jdbcType="TIMESTAMP" property="lastUpdateTime" />
+    <result column="update_status" jdbcType="BIT" property="updateStatus" />
+    <result column="is_online" jdbcType="BIT" property="isOnline" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, device_id, device_name, device_model, android_version, app_version_name, app_version_code, 
+    store_id, store_name, last_check_time, last_update_time, update_status, is_online, 
+    created_time, updated_time
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.AppDeviceExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from app_device
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from app_device
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from app_device
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.AppDeviceExample">
+    delete from app_device
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.AppDevice">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into app_device (device_id, device_name, device_model, 
+      android_version, app_version_name, app_version_code, 
+      store_id, store_name, last_check_time, 
+      last_update_time, update_status, is_online, 
+      created_time, updated_time)
+    values (#{deviceId,jdbcType=VARCHAR}, #{deviceName,jdbcType=VARCHAR}, #{deviceModel,jdbcType=VARCHAR}, 
+      #{androidVersion,jdbcType=VARCHAR}, #{appVersionName,jdbcType=VARCHAR}, #{appVersionCode,jdbcType=INTEGER}, 
+      #{storeId,jdbcType=BIGINT}, #{storeName,jdbcType=VARCHAR}, #{lastCheckTime,jdbcType=TIMESTAMP}, 
+      #{lastUpdateTime,jdbcType=TIMESTAMP}, #{updateStatus,jdbcType=BIT}, #{isOnline,jdbcType=BIT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.AppDevice">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into app_device
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="deviceName != null">
+        device_name,
+      </if>
+      <if test="deviceModel != null">
+        device_model,
+      </if>
+      <if test="androidVersion != null">
+        android_version,
+      </if>
+      <if test="appVersionName != null">
+        app_version_name,
+      </if>
+      <if test="appVersionCode != null">
+        app_version_code,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="storeName != null">
+        store_name,
+      </if>
+      <if test="lastCheckTime != null">
+        last_check_time,
+      </if>
+      <if test="lastUpdateTime != null">
+        last_update_time,
+      </if>
+      <if test="updateStatus != null">
+        update_status,
+      </if>
+      <if test="isOnline != null">
+        is_online,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null">
+        #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceModel != null">
+        #{deviceModel,jdbcType=VARCHAR},
+      </if>
+      <if test="androidVersion != null">
+        #{androidVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="appVersionName != null">
+        #{appVersionName,jdbcType=VARCHAR},
+      </if>
+      <if test="appVersionCode != null">
+        #{appVersionCode,jdbcType=INTEGER},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="storeName != null">
+        #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="lastCheckTime != null">
+        #{lastCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null">
+        #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateStatus != null">
+        #{updateStatus,jdbcType=BIT},
+      </if>
+      <if test="isOnline != null">
+        #{isOnline,jdbcType=BIT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.AppDeviceExample" resultType="java.lang.Long">
+    select count(*) from app_device
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update app_device
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.deviceId != null">
+        device_id = #{row.deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="row.deviceName != null">
+        device_name = #{row.deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.deviceModel != null">
+        device_model = #{row.deviceModel,jdbcType=VARCHAR},
+      </if>
+      <if test="row.androidVersion != null">
+        android_version = #{row.androidVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="row.appVersionName != null">
+        app_version_name = #{row.appVersionName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.appVersionCode != null">
+        app_version_code = #{row.appVersionCode,jdbcType=INTEGER},
+      </if>
+      <if test="row.storeId != null">
+        store_id = #{row.storeId,jdbcType=BIGINT},
+      </if>
+      <if test="row.storeName != null">
+        store_name = #{row.storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.lastCheckTime != null">
+        last_check_time = #{row.lastCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.lastUpdateTime != null">
+        last_update_time = #{row.lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updateStatus != null">
+        update_status = #{row.updateStatus,jdbcType=BIT},
+      </if>
+      <if test="row.isOnline != null">
+        is_online = #{row.isOnline,jdbcType=BIT},
+      </if>
+      <if test="row.createdTime != null">
+        created_time = #{row.createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updatedTime != null">
+        updated_time = #{row.updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update app_device
+    set id = #{row.id,jdbcType=BIGINT},
+      device_id = #{row.deviceId,jdbcType=VARCHAR},
+      device_name = #{row.deviceName,jdbcType=VARCHAR},
+      device_model = #{row.deviceModel,jdbcType=VARCHAR},
+      android_version = #{row.androidVersion,jdbcType=VARCHAR},
+      app_version_name = #{row.appVersionName,jdbcType=VARCHAR},
+      app_version_code = #{row.appVersionCode,jdbcType=INTEGER},
+      store_id = #{row.storeId,jdbcType=BIGINT},
+      store_name = #{row.storeName,jdbcType=VARCHAR},
+      last_check_time = #{row.lastCheckTime,jdbcType=TIMESTAMP},
+      last_update_time = #{row.lastUpdateTime,jdbcType=TIMESTAMP},
+      update_status = #{row.updateStatus,jdbcType=BIT},
+      is_online = #{row.isOnline,jdbcType=BIT},
+      created_time = #{row.createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{row.updatedTime,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.AppDevice">
+    update app_device
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceName != null">
+        device_name = #{deviceName,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceModel != null">
+        device_model = #{deviceModel,jdbcType=VARCHAR},
+      </if>
+      <if test="androidVersion != null">
+        android_version = #{androidVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="appVersionName != null">
+        app_version_name = #{appVersionName,jdbcType=VARCHAR},
+      </if>
+      <if test="appVersionCode != null">
+        app_version_code = #{appVersionCode,jdbcType=INTEGER},
+      </if>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="storeName != null">
+        store_name = #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="lastCheckTime != null">
+        last_check_time = #{lastCheckTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdateTime != null">
+        last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateStatus != null">
+        update_status = #{updateStatus,jdbcType=BIT},
+      </if>
+      <if test="isOnline != null">
+        is_online = #{isOnline,jdbcType=BIT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.AppDevice">
+    update app_device
+    set device_id = #{deviceId,jdbcType=VARCHAR},
+      device_name = #{deviceName,jdbcType=VARCHAR},
+      device_model = #{deviceModel,jdbcType=VARCHAR},
+      android_version = #{androidVersion,jdbcType=VARCHAR},
+      app_version_name = #{appVersionName,jdbcType=VARCHAR},
+      app_version_code = #{appVersionCode,jdbcType=INTEGER},
+      store_id = #{storeId,jdbcType=BIGINT},
+      store_name = #{storeName,jdbcType=VARCHAR},
+      last_check_time = #{lastCheckTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      update_status = #{updateStatus,jdbcType=BIT},
+      is_online = #{isOnline,jdbcType=BIT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

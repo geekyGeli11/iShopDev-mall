@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.PmsSystemConfigHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.PmsSystemConfigHistory">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="config_id" jdbcType="BIGINT" property="configId" />
+    <result column="config_key" jdbcType="VARCHAR" property="configKey" />
+    <result column="config_desc" jdbcType="VARCHAR" property="configDesc" />
+    <result column="change_user" jdbcType="VARCHAR" property="changeUser" />
+    <result column="change_reason" jdbcType="VARCHAR" property="changeReason" />
+    <result column="change_time" jdbcType="TIMESTAMP" property="changeTime" />
+    <result column="operation_type" jdbcType="VARCHAR" property="operationType" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.macro.mall.model.PmsSystemConfigHistory">
+    <result column="old_value" jdbcType="LONGVARCHAR" property="oldValue" />
+    <result column="new_value" jdbcType="LONGVARCHAR" property="newValue" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, config_id, config_key, config_desc, change_user, change_reason, change_time, 
+    operation_type
+  </sql>
+  <sql id="Blob_Column_List">
+    old_value, new_value
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.model.PmsSystemConfigHistoryExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pms_system_config_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.macro.mall.model.PmsSystemConfigHistoryExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pms_system_config_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pms_system_config_history
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pms_system_config_history
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsSystemConfigHistoryExample">
+    delete from pms_system_config_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.PmsSystemConfigHistory">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_system_config_history (config_id, config_key, config_desc, 
+      change_user, change_reason, change_time, 
+      operation_type, old_value, new_value
+      )
+    values (#{configId,jdbcType=BIGINT}, #{configKey,jdbcType=VARCHAR}, #{configDesc,jdbcType=VARCHAR}, 
+      #{changeUser,jdbcType=VARCHAR}, #{changeReason,jdbcType=VARCHAR}, #{changeTime,jdbcType=TIMESTAMP}, 
+      #{operationType,jdbcType=VARCHAR}, #{oldValue,jdbcType=LONGVARCHAR}, #{newValue,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsSystemConfigHistory">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_system_config_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="configId != null">
+        config_id,
+      </if>
+      <if test="configKey != null">
+        config_key,
+      </if>
+      <if test="configDesc != null">
+        config_desc,
+      </if>
+      <if test="changeUser != null">
+        change_user,
+      </if>
+      <if test="changeReason != null">
+        change_reason,
+      </if>
+      <if test="changeTime != null">
+        change_time,
+      </if>
+      <if test="operationType != null">
+        operation_type,
+      </if>
+      <if test="oldValue != null">
+        old_value,
+      </if>
+      <if test="newValue != null">
+        new_value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="configId != null">
+        #{configId,jdbcType=BIGINT},
+      </if>
+      <if test="configKey != null">
+        #{configKey,jdbcType=VARCHAR},
+      </if>
+      <if test="configDesc != null">
+        #{configDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="changeUser != null">
+        #{changeUser,jdbcType=VARCHAR},
+      </if>
+      <if test="changeReason != null">
+        #{changeReason,jdbcType=VARCHAR},
+      </if>
+      <if test="changeTime != null">
+        #{changeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operationType != null">
+        #{operationType,jdbcType=VARCHAR},
+      </if>
+      <if test="oldValue != null">
+        #{oldValue,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="newValue != null">
+        #{newValue,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.PmsSystemConfigHistoryExample" resultType="java.lang.Long">
+    select count(*) from pms_system_config_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pms_system_config_history
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.configId != null">
+        config_id = #{row.configId,jdbcType=BIGINT},
+      </if>
+      <if test="row.configKey != null">
+        config_key = #{row.configKey,jdbcType=VARCHAR},
+      </if>
+      <if test="row.configDesc != null">
+        config_desc = #{row.configDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="row.changeUser != null">
+        change_user = #{row.changeUser,jdbcType=VARCHAR},
+      </if>
+      <if test="row.changeReason != null">
+        change_reason = #{row.changeReason,jdbcType=VARCHAR},
+      </if>
+      <if test="row.changeTime != null">
+        change_time = #{row.changeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.operationType != null">
+        operation_type = #{row.operationType,jdbcType=VARCHAR},
+      </if>
+      <if test="row.oldValue != null">
+        old_value = #{row.oldValue,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="row.newValue != null">
+        new_value = #{row.newValue,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update pms_system_config_history
+    set id = #{row.id,jdbcType=BIGINT},
+      config_id = #{row.configId,jdbcType=BIGINT},
+      config_key = #{row.configKey,jdbcType=VARCHAR},
+      config_desc = #{row.configDesc,jdbcType=VARCHAR},
+      change_user = #{row.changeUser,jdbcType=VARCHAR},
+      change_reason = #{row.changeReason,jdbcType=VARCHAR},
+      change_time = #{row.changeTime,jdbcType=TIMESTAMP},
+      operation_type = #{row.operationType,jdbcType=VARCHAR},
+      old_value = #{row.oldValue,jdbcType=LONGVARCHAR},
+      new_value = #{row.newValue,jdbcType=LONGVARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pms_system_config_history
+    set id = #{row.id,jdbcType=BIGINT},
+      config_id = #{row.configId,jdbcType=BIGINT},
+      config_key = #{row.configKey,jdbcType=VARCHAR},
+      config_desc = #{row.configDesc,jdbcType=VARCHAR},
+      change_user = #{row.changeUser,jdbcType=VARCHAR},
+      change_reason = #{row.changeReason,jdbcType=VARCHAR},
+      change_time = #{row.changeTime,jdbcType=TIMESTAMP},
+      operation_type = #{row.operationType,jdbcType=VARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsSystemConfigHistory">
+    update pms_system_config_history
+    <set>
+      <if test="configId != null">
+        config_id = #{configId,jdbcType=BIGINT},
+      </if>
+      <if test="configKey != null">
+        config_key = #{configKey,jdbcType=VARCHAR},
+      </if>
+      <if test="configDesc != null">
+        config_desc = #{configDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="changeUser != null">
+        change_user = #{changeUser,jdbcType=VARCHAR},
+      </if>
+      <if test="changeReason != null">
+        change_reason = #{changeReason,jdbcType=VARCHAR},
+      </if>
+      <if test="changeTime != null">
+        change_time = #{changeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="operationType != null">
+        operation_type = #{operationType,jdbcType=VARCHAR},
+      </if>
+      <if test="oldValue != null">
+        old_value = #{oldValue,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="newValue != null">
+        new_value = #{newValue,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.PmsSystemConfigHistory">
+    update pms_system_config_history
+    set config_id = #{configId,jdbcType=BIGINT},
+      config_key = #{configKey,jdbcType=VARCHAR},
+      config_desc = #{configDesc,jdbcType=VARCHAR},
+      change_user = #{changeUser,jdbcType=VARCHAR},
+      change_reason = #{changeReason,jdbcType=VARCHAR},
+      change_time = #{changeTime,jdbcType=TIMESTAMP},
+      operation_type = #{operationType,jdbcType=VARCHAR},
+      old_value = #{oldValue,jdbcType=LONGVARCHAR},
+      new_value = #{newValue,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsSystemConfigHistory">
+    update pms_system_config_history
+    set config_id = #{configId,jdbcType=BIGINT},
+      config_key = #{configKey,jdbcType=VARCHAR},
+      config_desc = #{configDesc,jdbcType=VARCHAR},
+      change_user = #{changeUser,jdbcType=VARCHAR},
+      change_reason = #{changeReason,jdbcType=VARCHAR},
+      change_time = #{changeTime,jdbcType=TIMESTAMP},
+      operation_type = #{operationType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

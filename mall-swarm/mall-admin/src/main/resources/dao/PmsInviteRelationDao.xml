@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.PmsInviteRelationDao">
+    
+    <!-- 分页获取邀请关系列表（包含用户信息） -->
+    <select id="getInviteRelationsList" resultType="map">
+        SELECT 
+            r.id,
+            r.inviter_id AS inviterId,
+            r.invitee_id AS inviteeId,
+            r.invite_param AS inviteParam,
+            r.invite_time AS inviteTime,
+            r.register_time AS registerTime,
+            r.first_order_time AS firstOrderTime,
+            r.first_order_amount AS firstOrderAmount,
+            r.status,
+            r.reward_status AS rewardStatus,
+            r.device_info AS deviceInfo,
+            r.ip_address AS ipAddress,
+            r.scene_type AS sceneType,
+            r.source_page AS sourcePage,
+            r.created_at AS createdAt,
+            r.updated_at AS updatedAt,
+            -- 邀请者信息
+            inviter.nickname AS inviterNickname,
+            inviter.phone AS inviterPhone,
+            -- 被邀请者信息
+            invitee.nickname AS inviteeNickname,
+            invitee.phone AS inviteePhone,
+            -- 状态文本
+            CASE r.status
+                WHEN 0 THEN '已邀请未注册'
+                WHEN 1 THEN '已注册未首单' 
+                WHEN 2 THEN '已完成首单'
+                ELSE '未知状态'
+            END AS statusText,
+            -- 奖励状态文本
+            CASE r.reward_status
+                WHEN 0 THEN '未发放'
+                WHEN 1 THEN '注册奖励已发放'
+                WHEN 2 THEN '首单奖励已发放'
+                WHEN 3 THEN '全部奖励已发放'
+                ELSE '未知状态'
+            END AS rewardStatusText,
+            -- 场景类型文本
+            CASE r.scene_type
+                WHEN 1 THEN '小程序卡片分享'
+                WHEN 2 THEN '小程序码扫码'
+                ELSE '未知场景'
+            END AS sceneTypeText
+        FROM 
+            pms_invite_relation r
+        LEFT JOIN 
+            ums_member inviter ON r.inviter_id = inviter.id
+        LEFT JOIN 
+            ums_member invitee ON r.invitee_id = invitee.id
+        <where>
+            <if test="inviterId != null">
+                AND r.inviter_id = #{inviterId}
+            </if>
+            <if test="inviteeId != null">
+                AND r.invitee_id = #{inviteeId}
+            </if>
+            <if test="status != null">
+                AND r.status = #{status}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND r.created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND r.created_at &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY r.created_at DESC
+    </select>
+    
+    <!-- 获取邀请关系详情（包含用户信息） -->
+    <select id="getInviteRelationDetail" resultType="map">
+        SELECT 
+            r.id,
+            r.inviter_id AS inviterId,
+            r.invitee_id AS inviteeId,
+            r.invite_param AS inviteParam,
+            r.invite_time AS inviteTime,
+            r.register_time AS registerTime,
+            r.first_order_time AS firstOrderTime,
+            r.first_order_amount AS firstOrderAmount,
+            r.status,
+            r.reward_status AS rewardStatus,
+            r.device_info AS deviceInfo,
+            r.ip_address AS ipAddress,
+            r.scene_type AS sceneType,
+            r.source_page AS sourcePage,
+            r.created_at AS createdAt,
+            r.updated_at AS updatedAt,
+            -- 邀请者信息
+            inviter.nickname AS inviterNickname,
+            inviter.phone AS inviterPhone,
+            inviter.icon AS inviterIcon,
+            -- 被邀请者信息
+            invitee.nickname AS inviteeNickname,
+            invitee.phone AS inviteePhone,
+            invitee.icon AS inviteeIcon,
+            -- 状态文本
+            CASE r.status
+                WHEN 0 THEN '已邀请未注册'
+                WHEN 1 THEN '已注册未首单' 
+                WHEN 2 THEN '已完成首单'
+                ELSE '未知状态'
+            END AS statusText,
+            -- 奖励状态文本
+            CASE r.reward_status
+                WHEN 0 THEN '未发放'
+                WHEN 1 THEN '注册奖励已发放'
+                WHEN 2 THEN '首单奖励已发放'
+                WHEN 3 THEN '全部奖励已发放'
+                ELSE '未知状态'
+            END AS rewardStatusText,
+            -- 场景类型文本
+            CASE r.scene_type
+                WHEN 1 THEN '小程序卡片分享'
+                WHEN 2 THEN '小程序码扫码'
+                ELSE '未知场景'
+            END AS sceneTypeText
+        FROM 
+            pms_invite_relation r
+        LEFT JOIN 
+            ums_member inviter ON r.inviter_id = inviter.id
+        LEFT JOIN 
+            ums_member invitee ON r.invitee_id = invitee.id
+        WHERE 
+            r.id = #{id}
+    </select>
+    
+    <!-- 获取邀请统计概览 -->
+    <select id="getInviteOverviewStats" resultType="map">
+        SELECT 
+            COUNT(*) AS totalRelations,
+            SUM(CASE WHEN status &gt;= 1 THEN 1 ELSE 0 END) AS registeredCount,
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS completedCount,
+            SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) AS pendingCount,
+                        CASE 
+                WHEN COUNT(*) &gt; 0 THEN
+                    ROUND(SUM(CASE WHEN status &gt;= 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 4)
+                ELSE 0 
+            END AS registerRate
+        FROM 
+            pms_invite_relation
+    </select>
+</mapper> 

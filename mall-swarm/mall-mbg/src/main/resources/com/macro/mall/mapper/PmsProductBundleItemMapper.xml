@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.PmsProductBundleItemMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.PmsProductBundleItem">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="bundle_id" jdbcType="BIGINT" property="bundleId" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_pic" jdbcType="VARCHAR" property="productPic" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, bundle_id, product_id, product_name, product_pic, quantity, sort
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.PmsProductBundleItemExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pms_product_bundle_item
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pms_product_bundle_item
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pms_product_bundle_item
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsProductBundleItemExample">
+    delete from pms_product_bundle_item
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.PmsProductBundleItem">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_product_bundle_item (bundle_id, product_id, product_name, 
+      product_pic, quantity, sort
+      )
+    values (#{bundleId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{productName,jdbcType=VARCHAR}, 
+      #{productPic,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsProductBundleItem">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_product_bundle_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="bundleId != null">
+        bundle_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="productPic != null">
+        product_pic,
+      </if>
+      <if test="quantity != null">
+        quantity,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="bundleId != null">
+        #{bundleId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productPic != null">
+        #{productPic,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null">
+        #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.PmsProductBundleItemExample" resultType="java.lang.Long">
+    select count(*) from pms_product_bundle_item
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pms_product_bundle_item
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.bundleId != null">
+        bundle_id = #{row.bundleId,jdbcType=BIGINT},
+      </if>
+      <if test="row.productId != null">
+        product_id = #{row.productId,jdbcType=BIGINT},
+      </if>
+      <if test="row.productName != null">
+        product_name = #{row.productName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.productPic != null">
+        product_pic = #{row.productPic,jdbcType=VARCHAR},
+      </if>
+      <if test="row.quantity != null">
+        quantity = #{row.quantity,jdbcType=INTEGER},
+      </if>
+      <if test="row.sort != null">
+        sort = #{row.sort,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pms_product_bundle_item
+    set id = #{row.id,jdbcType=BIGINT},
+      bundle_id = #{row.bundleId,jdbcType=BIGINT},
+      product_id = #{row.productId,jdbcType=BIGINT},
+      product_name = #{row.productName,jdbcType=VARCHAR},
+      product_pic = #{row.productPic,jdbcType=VARCHAR},
+      quantity = #{row.quantity,jdbcType=INTEGER},
+      sort = #{row.sort,jdbcType=INTEGER}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsProductBundleItem">
+    update pms_product_bundle_item
+    <set>
+      <if test="bundleId != null">
+        bundle_id = #{bundleId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productPic != null">
+        product_pic = #{productPic,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null">
+        quantity = #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsProductBundleItem">
+    update pms_product_bundle_item
+    set bundle_id = #{bundleId,jdbcType=BIGINT},
+      product_id = #{productId,jdbcType=BIGINT},
+      product_name = #{productName,jdbcType=VARCHAR},
+      product_pic = #{productPic,jdbcType=VARCHAR},
+      quantity = #{quantity,jdbcType=INTEGER},
+      sort = #{sort,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

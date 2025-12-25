@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.UmsPointsProductConfigMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.UmsPointsProductConfig">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_pic" jdbcType="VARCHAR" property="productPic" />
+    <result column="original_price" jdbcType="DECIMAL" property="originalPrice" />
+    <result column="cash_price" jdbcType="DECIMAL" property="cashPrice" />
+    <result column="points_price" jdbcType="INTEGER" property="pointsPrice" />
+    <result column="total_stock" jdbcType="INTEGER" property="totalStock" />
+    <result column="remaining_stock" jdbcType="INTEGER" property="remainingStock" />
+    <result column="per_person_limit" jdbcType="INTEGER" property="perPersonLimit" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="sort_order" jdbcType="INTEGER" property="sortOrder" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.macro.mall.model.UmsPointsProductConfig">
+    <result column="description" jdbcType="LONGVARCHAR" property="description" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, product_id, product_name, product_pic, original_price, cash_price, points_price, 
+    total_stock, remaining_stock, per_person_limit, status, start_time, end_time, sort_order, 
+    created_at, updated_at
+  </sql>
+  <sql id="Blob_Column_List">
+    description
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.model.UmsPointsProductConfigExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ums_points_product_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.macro.mall.model.UmsPointsProductConfigExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ums_points_product_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ums_points_product_config
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ums_points_product_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.UmsPointsProductConfigExample">
+    delete from ums_points_product_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.UmsPointsProductConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_points_product_config (product_id, product_name, product_pic, 
+      original_price, cash_price, points_price, 
+      total_stock, remaining_stock, per_person_limit, 
+      status, start_time, end_time, 
+      sort_order, created_at, updated_at, 
+      description)
+    values (#{productId,jdbcType=BIGINT}, #{productName,jdbcType=VARCHAR}, #{productPic,jdbcType=VARCHAR}, 
+      #{originalPrice,jdbcType=DECIMAL}, #{cashPrice,jdbcType=DECIMAL}, #{pointsPrice,jdbcType=INTEGER}, 
+      #{totalStock,jdbcType=INTEGER}, #{remainingStock,jdbcType=INTEGER}, #{perPersonLimit,jdbcType=INTEGER}, 
+      #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{sortOrder,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{description,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.UmsPointsProductConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_points_product_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="productPic != null">
+        product_pic,
+      </if>
+      <if test="originalPrice != null">
+        original_price,
+      </if>
+      <if test="cashPrice != null">
+        cash_price,
+      </if>
+      <if test="pointsPrice != null">
+        points_price,
+      </if>
+      <if test="totalStock != null">
+        total_stock,
+      </if>
+      <if test="remainingStock != null">
+        remaining_stock,
+      </if>
+      <if test="perPersonLimit != null">
+        per_person_limit,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="sortOrder != null">
+        sort_order,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productPic != null">
+        #{productPic,jdbcType=VARCHAR},
+      </if>
+      <if test="originalPrice != null">
+        #{originalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="cashPrice != null">
+        #{cashPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="pointsPrice != null">
+        #{pointsPrice,jdbcType=INTEGER},
+      </if>
+      <if test="totalStock != null">
+        #{totalStock,jdbcType=INTEGER},
+      </if>
+      <if test="remainingStock != null">
+        #{remainingStock,jdbcType=INTEGER},
+      </if>
+      <if test="perPersonLimit != null">
+        #{perPersonLimit,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sortOrder != null">
+        #{sortOrder,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.UmsPointsProductConfigExample" resultType="java.lang.Long">
+    select count(*) from ums_points_product_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update ums_points_product_config
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.productId != null">
+        product_id = #{row.productId,jdbcType=BIGINT},
+      </if>
+      <if test="row.productName != null">
+        product_name = #{row.productName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.productPic != null">
+        product_pic = #{row.productPic,jdbcType=VARCHAR},
+      </if>
+      <if test="row.originalPrice != null">
+        original_price = #{row.originalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="row.cashPrice != null">
+        cash_price = #{row.cashPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="row.pointsPrice != null">
+        points_price = #{row.pointsPrice,jdbcType=INTEGER},
+      </if>
+      <if test="row.totalStock != null">
+        total_stock = #{row.totalStock,jdbcType=INTEGER},
+      </if>
+      <if test="row.remainingStock != null">
+        remaining_stock = #{row.remainingStock,jdbcType=INTEGER},
+      </if>
+      <if test="row.perPersonLimit != null">
+        per_person_limit = #{row.perPersonLimit,jdbcType=INTEGER},
+      </if>
+      <if test="row.status != null">
+        status = #{row.status,jdbcType=TINYINT},
+      </if>
+      <if test="row.startTime != null">
+        start_time = #{row.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.endTime != null">
+        end_time = #{row.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.sortOrder != null">
+        sort_order = #{row.sortOrder,jdbcType=INTEGER},
+      </if>
+      <if test="row.createdAt != null">
+        created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updatedAt != null">
+        updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.description != null">
+        description = #{row.description,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update ums_points_product_config
+    set id = #{row.id,jdbcType=BIGINT},
+      product_id = #{row.productId,jdbcType=BIGINT},
+      product_name = #{row.productName,jdbcType=VARCHAR},
+      product_pic = #{row.productPic,jdbcType=VARCHAR},
+      original_price = #{row.originalPrice,jdbcType=DECIMAL},
+      cash_price = #{row.cashPrice,jdbcType=DECIMAL},
+      points_price = #{row.pointsPrice,jdbcType=INTEGER},
+      total_stock = #{row.totalStock,jdbcType=INTEGER},
+      remaining_stock = #{row.remainingStock,jdbcType=INTEGER},
+      per_person_limit = #{row.perPersonLimit,jdbcType=INTEGER},
+      status = #{row.status,jdbcType=TINYINT},
+      start_time = #{row.startTime,jdbcType=TIMESTAMP},
+      end_time = #{row.endTime,jdbcType=TIMESTAMP},
+      sort_order = #{row.sortOrder,jdbcType=INTEGER},
+      created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
+      description = #{row.description,jdbcType=LONGVARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update ums_points_product_config
+    set id = #{row.id,jdbcType=BIGINT},
+      product_id = #{row.productId,jdbcType=BIGINT},
+      product_name = #{row.productName,jdbcType=VARCHAR},
+      product_pic = #{row.productPic,jdbcType=VARCHAR},
+      original_price = #{row.originalPrice,jdbcType=DECIMAL},
+      cash_price = #{row.cashPrice,jdbcType=DECIMAL},
+      points_price = #{row.pointsPrice,jdbcType=INTEGER},
+      total_stock = #{row.totalStock,jdbcType=INTEGER},
+      remaining_stock = #{row.remainingStock,jdbcType=INTEGER},
+      per_person_limit = #{row.perPersonLimit,jdbcType=INTEGER},
+      status = #{row.status,jdbcType=TINYINT},
+      start_time = #{row.startTime,jdbcType=TIMESTAMP},
+      end_time = #{row.endTime,jdbcType=TIMESTAMP},
+      sort_order = #{row.sortOrder,jdbcType=INTEGER},
+      created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.UmsPointsProductConfig">
+    update ums_points_product_config
+    <set>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productPic != null">
+        product_pic = #{productPic,jdbcType=VARCHAR},
+      </if>
+      <if test="originalPrice != null">
+        original_price = #{originalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="cashPrice != null">
+        cash_price = #{cashPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="pointsPrice != null">
+        points_price = #{pointsPrice,jdbcType=INTEGER},
+      </if>
+      <if test="totalStock != null">
+        total_stock = #{totalStock,jdbcType=INTEGER},
+      </if>
+      <if test="remainingStock != null">
+        remaining_stock = #{remainingStock,jdbcType=INTEGER},
+      </if>
+      <if test="perPersonLimit != null">
+        per_person_limit = #{perPersonLimit,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sortOrder != null">
+        sort_order = #{sortOrder,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.UmsPointsProductConfig">
+    update ums_points_product_config
+    set product_id = #{productId,jdbcType=BIGINT},
+      product_name = #{productName,jdbcType=VARCHAR},
+      product_pic = #{productPic,jdbcType=VARCHAR},
+      original_price = #{originalPrice,jdbcType=DECIMAL},
+      cash_price = #{cashPrice,jdbcType=DECIMAL},
+      points_price = #{pointsPrice,jdbcType=INTEGER},
+      total_stock = #{totalStock,jdbcType=INTEGER},
+      remaining_stock = #{remainingStock,jdbcType=INTEGER},
+      per_person_limit = #{perPersonLimit,jdbcType=INTEGER},
+      status = #{status,jdbcType=TINYINT},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      sort_order = #{sortOrder,jdbcType=INTEGER},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      description = #{description,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.UmsPointsProductConfig">
+    update ums_points_product_config
+    set product_id = #{productId,jdbcType=BIGINT},
+      product_name = #{productName,jdbcType=VARCHAR},
+      product_pic = #{productPic,jdbcType=VARCHAR},
+      original_price = #{originalPrice,jdbcType=DECIMAL},
+      cash_price = #{cashPrice,jdbcType=DECIMAL},
+      points_price = #{pointsPrice,jdbcType=INTEGER},
+      total_stock = #{totalStock,jdbcType=INTEGER},
+      remaining_stock = #{remainingStock,jdbcType=INTEGER},
+      per_person_limit = #{perPersonLimit,jdbcType=INTEGER},
+      status = #{status,jdbcType=TINYINT},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      sort_order = #{sortOrder,jdbcType=INTEGER},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

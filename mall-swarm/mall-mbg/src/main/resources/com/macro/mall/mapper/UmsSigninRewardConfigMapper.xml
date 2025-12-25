@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.UmsSigninRewardConfigMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.UmsSigninRewardConfig">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="config_name" jdbcType="VARCHAR" property="configName" />
+    <result column="base_points" jdbcType="INTEGER" property="basePoints" />
+    <result column="increment_points" jdbcType="INTEGER" property="incrementPoints" />
+    <result column="max_daily_points" jdbcType="INTEGER" property="maxDailyPoints" />
+    <result column="continuous_days_for_reward" jdbcType="INTEGER" property="continuousDaysForReward" />
+    <result column="reward_coupon_id" jdbcType="BIGINT" property="rewardCouponId" />
+    <result column="cycle_days" jdbcType="INTEGER" property="cycleDays" />
+    <result column="is_active" jdbcType="TINYINT" property="isActive" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, config_name, base_points, increment_points, max_daily_points, continuous_days_for_reward, 
+    reward_coupon_id, cycle_days, is_active, created_at, updated_at
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.UmsSigninRewardConfigExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ums_signin_reward_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ums_signin_reward_config
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ums_signin_reward_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.UmsSigninRewardConfigExample">
+    delete from ums_signin_reward_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.UmsSigninRewardConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_signin_reward_config (config_name, base_points, increment_points, 
+      max_daily_points, continuous_days_for_reward, 
+      reward_coupon_id, cycle_days, is_active, 
+      created_at, updated_at)
+    values (#{configName,jdbcType=VARCHAR}, #{basePoints,jdbcType=INTEGER}, #{incrementPoints,jdbcType=INTEGER}, 
+      #{maxDailyPoints,jdbcType=INTEGER}, #{continuousDaysForReward,jdbcType=INTEGER}, 
+      #{rewardCouponId,jdbcType=BIGINT}, #{cycleDays,jdbcType=INTEGER}, #{isActive,jdbcType=TINYINT}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.UmsSigninRewardConfig">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_signin_reward_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="configName != null">
+        config_name,
+      </if>
+      <if test="basePoints != null">
+        base_points,
+      </if>
+      <if test="incrementPoints != null">
+        increment_points,
+      </if>
+      <if test="maxDailyPoints != null">
+        max_daily_points,
+      </if>
+      <if test="continuousDaysForReward != null">
+        continuous_days_for_reward,
+      </if>
+      <if test="rewardCouponId != null">
+        reward_coupon_id,
+      </if>
+      <if test="cycleDays != null">
+        cycle_days,
+      </if>
+      <if test="isActive != null">
+        is_active,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="configName != null">
+        #{configName,jdbcType=VARCHAR},
+      </if>
+      <if test="basePoints != null">
+        #{basePoints,jdbcType=INTEGER},
+      </if>
+      <if test="incrementPoints != null">
+        #{incrementPoints,jdbcType=INTEGER},
+      </if>
+      <if test="maxDailyPoints != null">
+        #{maxDailyPoints,jdbcType=INTEGER},
+      </if>
+      <if test="continuousDaysForReward != null">
+        #{continuousDaysForReward,jdbcType=INTEGER},
+      </if>
+      <if test="rewardCouponId != null">
+        #{rewardCouponId,jdbcType=BIGINT},
+      </if>
+      <if test="cycleDays != null">
+        #{cycleDays,jdbcType=INTEGER},
+      </if>
+      <if test="isActive != null">
+        #{isActive,jdbcType=TINYINT},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.UmsSigninRewardConfigExample" resultType="java.lang.Long">
+    select count(*) from ums_signin_reward_config
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update ums_signin_reward_config
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.configName != null">
+        config_name = #{row.configName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.basePoints != null">
+        base_points = #{row.basePoints,jdbcType=INTEGER},
+      </if>
+      <if test="row.incrementPoints != null">
+        increment_points = #{row.incrementPoints,jdbcType=INTEGER},
+      </if>
+      <if test="row.maxDailyPoints != null">
+        max_daily_points = #{row.maxDailyPoints,jdbcType=INTEGER},
+      </if>
+      <if test="row.continuousDaysForReward != null">
+        continuous_days_for_reward = #{row.continuousDaysForReward,jdbcType=INTEGER},
+      </if>
+      <if test="row.rewardCouponId != null">
+        reward_coupon_id = #{row.rewardCouponId,jdbcType=BIGINT},
+      </if>
+      <if test="row.cycleDays != null">
+        cycle_days = #{row.cycleDays,jdbcType=INTEGER},
+      </if>
+      <if test="row.isActive != null">
+        is_active = #{row.isActive,jdbcType=TINYINT},
+      </if>
+      <if test="row.createdAt != null">
+        created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updatedAt != null">
+        updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update ums_signin_reward_config
+    set id = #{row.id,jdbcType=BIGINT},
+      config_name = #{row.configName,jdbcType=VARCHAR},
+      base_points = #{row.basePoints,jdbcType=INTEGER},
+      increment_points = #{row.incrementPoints,jdbcType=INTEGER},
+      max_daily_points = #{row.maxDailyPoints,jdbcType=INTEGER},
+      continuous_days_for_reward = #{row.continuousDaysForReward,jdbcType=INTEGER},
+      reward_coupon_id = #{row.rewardCouponId,jdbcType=BIGINT},
+      cycle_days = #{row.cycleDays,jdbcType=INTEGER},
+      is_active = #{row.isActive,jdbcType=TINYINT},
+      created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.UmsSigninRewardConfig">
+    update ums_signin_reward_config
+    <set>
+      <if test="configName != null">
+        config_name = #{configName,jdbcType=VARCHAR},
+      </if>
+      <if test="basePoints != null">
+        base_points = #{basePoints,jdbcType=INTEGER},
+      </if>
+      <if test="incrementPoints != null">
+        increment_points = #{incrementPoints,jdbcType=INTEGER},
+      </if>
+      <if test="maxDailyPoints != null">
+        max_daily_points = #{maxDailyPoints,jdbcType=INTEGER},
+      </if>
+      <if test="continuousDaysForReward != null">
+        continuous_days_for_reward = #{continuousDaysForReward,jdbcType=INTEGER},
+      </if>
+      <if test="rewardCouponId != null">
+        reward_coupon_id = #{rewardCouponId,jdbcType=BIGINT},
+      </if>
+      <if test="cycleDays != null">
+        cycle_days = #{cycleDays,jdbcType=INTEGER},
+      </if>
+      <if test="isActive != null">
+        is_active = #{isActive,jdbcType=TINYINT},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.UmsSigninRewardConfig">
+    update ums_signin_reward_config
+    set config_name = #{configName,jdbcType=VARCHAR},
+      base_points = #{basePoints,jdbcType=INTEGER},
+      increment_points = #{incrementPoints,jdbcType=INTEGER},
+      max_daily_points = #{maxDailyPoints,jdbcType=INTEGER},
+      continuous_days_for_reward = #{continuousDaysForReward,jdbcType=INTEGER},
+      reward_coupon_id = #{rewardCouponId,jdbcType=BIGINT},
+      cycle_days = #{cycleDays,jdbcType=INTEGER},
+      is_active = #{isActive,jdbcType=TINYINT},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

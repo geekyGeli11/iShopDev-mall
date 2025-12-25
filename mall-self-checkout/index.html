@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./vite.svg" />
+    <!-- Android WebView自动缩放viewport配置 -->
+    <meta name="viewport" content="width=1080, initial-scale=1.0, user-scalable=no" />
+    <!-- 防止Android WebView缩放 -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <!-- 状态栏样式 -->
+    <meta name="theme-color" content="#a9ff00" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>Mall 自助收银系统</title>
+    <style>
+      /* WebView自适应配置 */
+      html, body {
+        height: 100vh;
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+      #app {
+        height: 100vh;
+        width: 100vw;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/renderer/main.ts"></script>
+  </body>
+</html>

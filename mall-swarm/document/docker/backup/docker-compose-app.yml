@@ -1,0 +1,99 @@
+version: '3'
+networks:
+  mall-network:
+    name: mall-network
+    external: true
+services:
+  mall-admin:
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-admin:1.0-SNAPSHOT
+    container_name: mall-admin
+    ports:
+      - 8080:8080
+    volumes:
+      - /mydata/app/mall-admin/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=-Xms128m -Xmx256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200  # 堆内存限制为 128MB~256MB
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mall-network
+  mall-portal:
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-portal:1.0-SNAPSHOT
+    container_name: mall-portal
+    ports:
+      - 8085:8085
+    volumes:
+      - /mydata/app/mall-portal/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=-Xms128m -Xmx256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8085/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mall-network
+  mall-selfcheck:
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-selfcheck:1.0-SNAPSHOT
+    container_name: mall-selfcheck
+    ports:
+      - 8086:8086
+    volumes:
+      - /mydata/app/mall-selfcheck/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=-Xms64m -Xmx128m -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mall-network
+  mall-auth:
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-auth:1.0-SNAPSHOT
+    container_name: mall-auth
+    ports:
+      - 8401:8401
+    volumes:
+      - /mydata/app/mall-auth/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=-Xms128m -Xmx256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+    networks:
+      - mall-network
+  mall-gateway:
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-gateway:1.0-SNAPSHOT
+    container_name: mall-gateway
+    ports:
+      - 8201:8201
+    volumes:
+      - /mydata/app/mall-gateway/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=-Xms128m -Xmx256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+    networks:
+      - mall-network
+  mall-monitor:
+    image: registry.cn-hangzhou.aliyuncs.com/yinshi/guanghengzou-mall-monitor:1.0-SNAPSHOT
+    container_name: mall-monitor
+    ports:
+      - 8101:8101
+    volumes:
+      - /mydata/app/mall-monitor/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=-Xms128m -Xmx256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200
+    networks:
+      - mall-network

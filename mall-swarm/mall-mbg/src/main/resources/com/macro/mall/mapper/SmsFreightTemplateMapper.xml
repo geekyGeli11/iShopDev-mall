@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.SmsFreightTemplateMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.SmsFreightTemplate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="charge_type" jdbcType="TINYINT" property="chargeType" />
+    <result column="delivery_type" jdbcType="TINYINT" property="deliveryType" />
+    <result column="free_type" jdbcType="TINYINT" property="freeType" />
+    <result column="free_amount" jdbcType="DECIMAL" property="freeAmount" />
+    <result column="free_count" jdbcType="INTEGER" property="freeCount" />
+    <result column="free_weight" jdbcType="DECIMAL" property="freeWeight" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="is_default" jdbcType="BIT" property="isDefault" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, name, charge_type, delivery_type, free_type, free_amount, free_count, free_weight, 
+    status, is_default, sort, remark, create_time, update_time
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.SmsFreightTemplateExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from sms_freight_template
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sms_freight_template
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sms_freight_template
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.SmsFreightTemplateExample">
+    delete from sms_freight_template
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.SmsFreightTemplate">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sms_freight_template (name, charge_type, delivery_type, 
+      free_type, free_amount, free_count, 
+      free_weight, status, is_default, 
+      sort, remark, create_time, 
+      update_time)
+    values (#{name,jdbcType=VARCHAR}, #{chargeType,jdbcType=TINYINT}, #{deliveryType,jdbcType=TINYINT}, 
+      #{freeType,jdbcType=TINYINT}, #{freeAmount,jdbcType=DECIMAL}, #{freeCount,jdbcType=INTEGER}, 
+      #{freeWeight,jdbcType=DECIMAL}, #{status,jdbcType=TINYINT}, #{isDefault,jdbcType=BIT}, 
+      #{sort,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.SmsFreightTemplate">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sms_freight_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name,
+      </if>
+      <if test="chargeType != null">
+        charge_type,
+      </if>
+      <if test="deliveryType != null">
+        delivery_type,
+      </if>
+      <if test="freeType != null">
+        free_type,
+      </if>
+      <if test="freeAmount != null">
+        free_amount,
+      </if>
+      <if test="freeCount != null">
+        free_count,
+      </if>
+      <if test="freeWeight != null">
+        free_weight,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="isDefault != null">
+        is_default,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeType != null">
+        #{chargeType,jdbcType=TINYINT},
+      </if>
+      <if test="deliveryType != null">
+        #{deliveryType,jdbcType=TINYINT},
+      </if>
+      <if test="freeType != null">
+        #{freeType,jdbcType=TINYINT},
+      </if>
+      <if test="freeAmount != null">
+        #{freeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="freeCount != null">
+        #{freeCount,jdbcType=INTEGER},
+      </if>
+      <if test="freeWeight != null">
+        #{freeWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isDefault != null">
+        #{isDefault,jdbcType=BIT},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.SmsFreightTemplateExample" resultType="java.lang.Long">
+    select count(*) from sms_freight_template
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update sms_freight_template
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.name != null">
+        name = #{row.name,jdbcType=VARCHAR},
+      </if>
+      <if test="row.chargeType != null">
+        charge_type = #{row.chargeType,jdbcType=TINYINT},
+      </if>
+      <if test="row.deliveryType != null">
+        delivery_type = #{row.deliveryType,jdbcType=TINYINT},
+      </if>
+      <if test="row.freeType != null">
+        free_type = #{row.freeType,jdbcType=TINYINT},
+      </if>
+      <if test="row.freeAmount != null">
+        free_amount = #{row.freeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.freeCount != null">
+        free_count = #{row.freeCount,jdbcType=INTEGER},
+      </if>
+      <if test="row.freeWeight != null">
+        free_weight = #{row.freeWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="row.status != null">
+        status = #{row.status,jdbcType=TINYINT},
+      </if>
+      <if test="row.isDefault != null">
+        is_default = #{row.isDefault,jdbcType=BIT},
+      </if>
+      <if test="row.sort != null">
+        sort = #{row.sort,jdbcType=INTEGER},
+      </if>
+      <if test="row.remark != null">
+        remark = #{row.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="row.createTime != null">
+        create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updateTime != null">
+        update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update sms_freight_template
+    set id = #{row.id,jdbcType=BIGINT},
+      name = #{row.name,jdbcType=VARCHAR},
+      charge_type = #{row.chargeType,jdbcType=TINYINT},
+      delivery_type = #{row.deliveryType,jdbcType=TINYINT},
+      free_type = #{row.freeType,jdbcType=TINYINT},
+      free_amount = #{row.freeAmount,jdbcType=DECIMAL},
+      free_count = #{row.freeCount,jdbcType=INTEGER},
+      free_weight = #{row.freeWeight,jdbcType=DECIMAL},
+      status = #{row.status,jdbcType=TINYINT},
+      is_default = #{row.isDefault,jdbcType=BIT},
+      sort = #{row.sort,jdbcType=INTEGER},
+      remark = #{row.remark,jdbcType=VARCHAR},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      update_time = #{row.updateTime,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.SmsFreightTemplate">
+    update sms_freight_template
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeType != null">
+        charge_type = #{chargeType,jdbcType=TINYINT},
+      </if>
+      <if test="deliveryType != null">
+        delivery_type = #{deliveryType,jdbcType=TINYINT},
+      </if>
+      <if test="freeType != null">
+        free_type = #{freeType,jdbcType=TINYINT},
+      </if>
+      <if test="freeAmount != null">
+        free_amount = #{freeAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="freeCount != null">
+        free_count = #{freeCount,jdbcType=INTEGER},
+      </if>
+      <if test="freeWeight != null">
+        free_weight = #{freeWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="isDefault != null">
+        is_default = #{isDefault,jdbcType=BIT},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.SmsFreightTemplate">
+    update sms_freight_template
+    set name = #{name,jdbcType=VARCHAR},
+      charge_type = #{chargeType,jdbcType=TINYINT},
+      delivery_type = #{deliveryType,jdbcType=TINYINT},
+      free_type = #{freeType,jdbcType=TINYINT},
+      free_amount = #{freeAmount,jdbcType=DECIMAL},
+      free_count = #{freeCount,jdbcType=INTEGER},
+      free_weight = #{freeWeight,jdbcType=DECIMAL},
+      status = #{status,jdbcType=TINYINT},
+      is_default = #{isDefault,jdbcType=BIT},
+      sort = #{sort,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

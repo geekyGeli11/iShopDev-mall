@@ -1,0 +1,56 @@
+spring:
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  data:
+    mongodb:
+      host: mongo
+      port: 27017
+      database: mall-port
+    redis:
+      host: redis
+      database: 0
+      port: 6379
+      password:
+  rabbitmq:
+    host: rabbit
+    port: 5672
+    virtual-host: /mall
+    username: mall
+    password: mall
+    publisher-confirms: true
+logging:
+  file:
+    path: /var/logs
+  level:
+    root: info
+    com.macro.mall: info
+logstash:
+  host: logstash
+alipay:
+  gatewayUrl: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+  appId: ${ALIPAY_APP_ID}
+  alipayPublicKey: ${ALIPAY_PUBLIC_KEY}
+  appPrivateKey: ${ALIPAY_PRIVATE_KEY}
+  returnUrl: ${ALIPAY_RETURN_URL}
+  notifyUrl: ${ALIPAY_NOTIFY_URL}
+template:
+  gift-delivery: ${TEMPLATE_GIFT_DELIVERY}
+
+wechat:
+  app-id: ${WECHAT_APP_ID}
+  app-secret: ${WECHAT_APP_SECRET}
+
+aliyun:
+  api-key: ${ALIYUN_API_KEY}
+  oss:
+    endpoint: oss-cn-guangzhou.aliyuncs.com
+    accessKeyId: ${ALIYUN_OSS_ACCESS_KEY_ID}
+    accessKeySecret: ${ALIYUN_OSS_ACCESS_KEY_SECRET}
+    bucketName: ${ALIYUN_OSS_BUCKET_NAME}
+    policy:
+      expire: 300
+    maxSize: 10
+    dir:
+      prefix: portal/diy/preview/

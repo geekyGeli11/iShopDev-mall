@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.OmsGiftRecordMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.OmsGiftRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_pic" jdbcType="VARCHAR" property="productPic" />
+    <result column="gift_amount" jdbcType="DECIMAL" property="giftAmount" />
+    <result column="sender_id" jdbcType="BIGINT" property="senderId" />
+    <result column="receiver_id" jdbcType="BIGINT" property="receiverId" />
+    <result column="sender_name" jdbcType="VARCHAR" property="senderName" />
+    <result column="gift_message" jdbcType="VARCHAR" property="giftMessage" />
+    <result column="gift_time" jdbcType="TIMESTAMP" property="giftTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="gift_image" jdbcType="VARCHAR" property="giftImage" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, order_id, order_sn, product_id, product_pic, gift_amount, sender_id, receiver_id, 
+    sender_name, gift_message, gift_time, create_time, update_time, product_name, gift_image
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.OmsGiftRecordExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from oms_gift_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from oms_gift_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oms_gift_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.OmsGiftRecordExample">
+    delete from oms_gift_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.OmsGiftRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into oms_gift_record (order_id, order_sn, product_id, 
+      product_pic, gift_amount, sender_id, 
+      receiver_id, sender_name, gift_message, 
+      gift_time, create_time, update_time, 
+      product_name, gift_image)
+    values (#{orderId,jdbcType=BIGINT}, #{orderSn,jdbcType=VARCHAR}, #{productId,jdbcType=BIGINT}, 
+      #{productPic,jdbcType=VARCHAR}, #{giftAmount,jdbcType=DECIMAL}, #{senderId,jdbcType=BIGINT}, 
+      #{receiverId,jdbcType=BIGINT}, #{senderName,jdbcType=VARCHAR}, #{giftMessage,jdbcType=VARCHAR}, 
+      #{giftTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{productName,jdbcType=VARCHAR}, #{giftImage,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.OmsGiftRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into oms_gift_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="orderSn != null">
+        order_sn,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productPic != null">
+        product_pic,
+      </if>
+      <if test="giftAmount != null">
+        gift_amount,
+      </if>
+      <if test="senderId != null">
+        sender_id,
+      </if>
+      <if test="receiverId != null">
+        receiver_id,
+      </if>
+      <if test="senderName != null">
+        sender_name,
+      </if>
+      <if test="giftMessage != null">
+        gift_message,
+      </if>
+      <if test="giftTime != null">
+        gift_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="giftImage != null">
+        gift_image,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">
+        #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="orderSn != null">
+        #{orderSn,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productPic != null">
+        #{productPic,jdbcType=VARCHAR},
+      </if>
+      <if test="giftAmount != null">
+        #{giftAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="senderId != null">
+        #{senderId,jdbcType=BIGINT},
+      </if>
+      <if test="receiverId != null">
+        #{receiverId,jdbcType=BIGINT},
+      </if>
+      <if test="senderName != null">
+        #{senderName,jdbcType=VARCHAR},
+      </if>
+      <if test="giftMessage != null">
+        #{giftMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="giftTime != null">
+        #{giftTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="giftImage != null">
+        #{giftImage,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.OmsGiftRecordExample" resultType="java.lang.Long">
+    select count(*) from oms_gift_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update oms_gift_record
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.orderId != null">
+        order_id = #{row.orderId,jdbcType=BIGINT},
+      </if>
+      <if test="row.orderSn != null">
+        order_sn = #{row.orderSn,jdbcType=VARCHAR},
+      </if>
+      <if test="row.productId != null">
+        product_id = #{row.productId,jdbcType=BIGINT},
+      </if>
+      <if test="row.productPic != null">
+        product_pic = #{row.productPic,jdbcType=VARCHAR},
+      </if>
+      <if test="row.giftAmount != null">
+        gift_amount = #{row.giftAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.senderId != null">
+        sender_id = #{row.senderId,jdbcType=BIGINT},
+      </if>
+      <if test="row.receiverId != null">
+        receiver_id = #{row.receiverId,jdbcType=BIGINT},
+      </if>
+      <if test="row.senderName != null">
+        sender_name = #{row.senderName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.giftMessage != null">
+        gift_message = #{row.giftMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="row.giftTime != null">
+        gift_time = #{row.giftTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.createTime != null">
+        create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updateTime != null">
+        update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.productName != null">
+        product_name = #{row.productName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.giftImage != null">
+        gift_image = #{row.giftImage,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update oms_gift_record
+    set id = #{row.id,jdbcType=BIGINT},
+      order_id = #{row.orderId,jdbcType=BIGINT},
+      order_sn = #{row.orderSn,jdbcType=VARCHAR},
+      product_id = #{row.productId,jdbcType=BIGINT},
+      product_pic = #{row.productPic,jdbcType=VARCHAR},
+      gift_amount = #{row.giftAmount,jdbcType=DECIMAL},
+      sender_id = #{row.senderId,jdbcType=BIGINT},
+      receiver_id = #{row.receiverId,jdbcType=BIGINT},
+      sender_name = #{row.senderName,jdbcType=VARCHAR},
+      gift_message = #{row.giftMessage,jdbcType=VARCHAR},
+      gift_time = #{row.giftTime,jdbcType=TIMESTAMP},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      product_name = #{row.productName,jdbcType=VARCHAR},
+      gift_image = #{row.giftImage,jdbcType=VARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.OmsGiftRecord">
+    update oms_gift_record
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="orderSn != null">
+        order_sn = #{orderSn,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productPic != null">
+        product_pic = #{productPic,jdbcType=VARCHAR},
+      </if>
+      <if test="giftAmount != null">
+        gift_amount = #{giftAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="senderId != null">
+        sender_id = #{senderId,jdbcType=BIGINT},
+      </if>
+      <if test="receiverId != null">
+        receiver_id = #{receiverId,jdbcType=BIGINT},
+      </if>
+      <if test="senderName != null">
+        sender_name = #{senderName,jdbcType=VARCHAR},
+      </if>
+      <if test="giftMessage != null">
+        gift_message = #{giftMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="giftTime != null">
+        gift_time = #{giftTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="giftImage != null">
+        gift_image = #{giftImage,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.OmsGiftRecord">
+    update oms_gift_record
+    set order_id = #{orderId,jdbcType=BIGINT},
+      order_sn = #{orderSn,jdbcType=VARCHAR},
+      product_id = #{productId,jdbcType=BIGINT},
+      product_pic = #{productPic,jdbcType=VARCHAR},
+      gift_amount = #{giftAmount,jdbcType=DECIMAL},
+      sender_id = #{senderId,jdbcType=BIGINT},
+      receiver_id = #{receiverId,jdbcType=BIGINT},
+      sender_name = #{senderName,jdbcType=VARCHAR},
+      gift_message = #{giftMessage,jdbcType=VARCHAR},
+      gift_time = #{giftTime,jdbcType=TIMESTAMP},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      product_name = #{productName,jdbcType=VARCHAR},
+      gift_image = #{giftImage,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

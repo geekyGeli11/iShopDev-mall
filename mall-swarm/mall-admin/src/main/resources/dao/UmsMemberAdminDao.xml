@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.UmsMemberAdminDao">
+
+    <select id="selectMemberList" resultType="com.macro.mall.dto.UmsMemberListVO">
+        SELECT
+            m.id,
+            m.username,
+            m.nickname,
+            m.phone,
+            m.member_code as memberCode,
+            m.icon,
+            m.gender,
+            m.city,
+            m.source_type as sourceType,
+            m.status,
+            m.create_time as createTime,
+            m.member_level_id as memberLevelId,
+            ml.name as memberLevelName,
+            COALESCE(m.integration, 0) as integration,
+            COALESCE(m.growth, 0) as growth,
+            COALESCE(m.history_integration, 0) as historyIntegration,
+            m.school_id as schoolId,
+            s.school_name as schoolName,
+            (SELECT COUNT(*) FROM oms_order o WHERE o.member_id = m.id AND o.status IN (1, 2, 3)) as orderCount,
+            (SELECT COALESCE(SUM(o.total_amount), 0) FROM oms_order o WHERE o.member_id = m.id AND o.status IN (1, 2, 3)) as orderAmount
+        FROM ums_member m
+        LEFT JOIN ums_member_level ml ON m.member_level_id = ml.id
+        LEFT JOIN oms_school s ON m.school_id = s.id
+        <where>
+            m.source_type = 1
+            
+            <if test="queryParam.keyword != null and queryParam.keyword != ''">
+                AND (
+                    m.username LIKE CONCAT('%', #{queryParam.keyword}, '%')
+                    OR m.nickname LIKE CONCAT('%', #{queryParam.keyword}, '%')
+                    OR m.phone LIKE CONCAT('%', #{queryParam.keyword}, '%')
+                    OR m.member_code LIKE CONCAT('%', #{queryParam.keyword}, '%')
+                )
+            </if>
+            
+            <if test="queryParam.status != null">
+                AND m.status = #{queryParam.status}
+            </if>
+            
+            <if test="queryParam.memberLevelId != null">
+                AND m.member_level_id = #{queryParam.memberLevelId}
+            </if>
+            
+            <if test="queryParam.city != null and queryParam.city != ''">
+                AND m.city LIKE CONCAT('%', #{queryParam.city}, '%')
+            </if>
+            
+            <if test="queryParam.gender != null">
+                AND m.gender = #{queryParam.gender}
+            </if>
+
+            <if test="queryParam.schoolId != null">
+                AND m.school_id = #{queryParam.schoolId}
+            </if>
+
+            <if test="queryParam.startTime != null and queryParam.startTime != ''">
+                AND DATE(m.create_time) &gt;= #{queryParam.startTime}
+            </if>
+            
+            <if test="queryParam.endTime != null and queryParam.endTime != ''">
+                AND DATE(m.create_time) &lt;= #{queryParam.endTime}
+            </if>
+        </where>
+        ORDER BY m.create_time DESC
+    </select>
+
+    <select id="selectMemberDetail" resultType="com.macro.mall.dto.UmsMemberDetailVO">
+        SELECT 
+            m.id,
+            m.username,
+            m.nickname,
+            m.phone,
+            m.member_code as memberCode,
+            m.password,
+            m.icon,
+            m.gender,
+            m.birthday,
+            m.city,
+            m.job,
+            m.personalized_signature as personalizedSignature,
+            m.source_type as sourceType,
+            m.status,
+            m.create_time as createTime,
+            m.member_level_id as memberLevelId,
+            ml.name as memberLevelName,
+            COALESCE(m.integration, 0) as integration,
+            COALESCE(m.growth, 0) as growth,
+            COALESCE(m.history_integration, 0) as historyIntegration,
+            (SELECT COUNT(*) FROM oms_order o WHERE o.member_id = m.id AND o.status IN (1, 2, 3)) as orderCount,
+            (SELECT COALESCE(SUM(o.total_amount), 0) FROM oms_order o WHERE o.member_id = m.id AND o.status IN (1, 2, 3)) as orderAmount,
+            (SELECT COUNT(*) FROM sms_coupon_history ch WHERE ch.member_id = m.id AND ch.use_status = 0) as couponCount
+        FROM ums_member m
+        LEFT JOIN ums_member_level ml ON m.member_level_id = ml.id
+        WHERE m.id = #{id}
+    </select>
+
+    <!-- 优惠券历史详情映射 -->
+    <resultMap id="CouponHistoryDetailMap" type="com.macro.mall.dto.SmsCouponHistoryDetailVO">
+        <id column="id" property="id"/>
+        <result column="coupon_id" property="couponId"/>
+        <result column="member_id" property="memberId"/>
+        <result column="coupon_code" property="couponCode"/>
+        <result column="member_nickname" property="memberNickname"/>
+        <result column="get_type" property="getType"/>
+        <result column="use_status" property="useStatus"/>
+        <result column="create_time" property="createTime"/>
+        <result column="use_time" property="useTime"/>
+        <result column="order_sn" property="orderSn"/>
+        <result column="coupon_name" property="couponName"/>
+        <result column="coupon_type" property="couponType"/>
+        <result column="amount" property="amount"/>
+        <result column="min_point" property="minPoint"/>
+        <result column="use_type" property="useType"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="note" property="note"/>
+        <result column="near_expiry" property="nearExpiry"/>
+        <result column="remaining_days" property="remainingDays"/>
+    </resultMap>
+
+    <select id="selectCouponHistoryDetail" resultMap="CouponHistoryDetailMap">
+        SELECT 
+            ch.id,
+            ch.coupon_id,
+            ch.member_id,
+            ch.coupon_code,
+            ch.member_nickname,
+            ch.get_type,
+            ch.use_status,
+            ch.create_time,
+            ch.use_time,
+            ch.order_sn,
+            c.name as coupon_name,
+            c.type as coupon_type,
+            c.amount,
+            c.min_point,
+            c.use_type,
+            c.start_time,
+            c.end_time,
+            c.note,
+            CASE 
+                WHEN c.end_time IS NOT NULL 
+                AND c.end_time &gt;= NOW() 
+                AND DATEDIFF(c.end_time, NOW()) &lt;= 3 
+                THEN 1 
+                ELSE 0 
+            END AS near_expiry,
+            CASE 
+                WHEN c.end_time IS NULL THEN -1
+                WHEN c.end_time &lt; NOW() THEN -1
+                ELSE DATEDIFF(c.end_time, NOW())
+            END AS remaining_days
+        FROM sms_coupon_history ch
+        INNER JOIN sms_coupon c ON ch.coupon_id = c.id
+        WHERE ch.member_id = #{memberId}
+        ORDER BY ch.create_time DESC
+    </select>
+
+    <select id="countMemberTotal" resultType="int">
+        SELECT COUNT(1)
+        FROM ums_member m
+        <where>
+            <if test="queryParam.sourceType != null">
+                AND m.source_type = #{queryParam.sourceType}
+            </if>
+            
+            <if test="queryParam.sourceType == 1">
+                <!-- 小程序用户筛选，已移除openid条件以支持导入用户 -->
+            </if>
+            
+            <if test="queryParam.keyword != null and queryParam.keyword != ''">
+                AND (
+                    m.username LIKE CONCAT('%', #{queryParam.keyword}, '%')
+                    OR m.nickname LIKE CONCAT('%', #{queryParam.keyword}, '%')
+                    OR m.phone LIKE CONCAT('%', #{queryParam.keyword}, '%')
+                    OR m.member_code LIKE CONCAT('%', #{queryParam.keyword}, '%')
+                )
+            </if>
+            
+            <if test="queryParam.status != null">
+                AND m.status = #{queryParam.status}
+            </if>
+            
+            <if test="queryParam.memberLevelId != null">
+                AND m.member_level_id = #{queryParam.memberLevelId}
+            </if>
+            
+            <if test="queryParam.city != null and queryParam.city != ''">
+                AND m.city LIKE CONCAT('%', #{queryParam.city}, '%')
+            </if>
+            
+            <if test="queryParam.gender != null">
+                AND m.gender = #{queryParam.gender}
+            </if>
+            
+            <if test="queryParam.startTime != null and queryParam.startTime != ''">
+                AND DATE(m.create_time) &gt;= #{queryParam.startTime}
+            </if>
+            
+            <if test="queryParam.endTime != null and queryParam.endTime != ''">
+                AND DATE(m.create_time) &lt;= #{queryParam.endTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 获取用户邀请关系详情列表（包含被邀请人信息） -->
+    <select id="selectInviteRelationsWithDetail" resultType="com.macro.mall.dto.PmsInviteRelationDetailVO">
+        SELECT 
+            r.id,
+            r.inviter_id as inviterId,
+            r.invitee_id as inviteeId,
+            r.invite_param as inviteParam,
+            r.invite_time as inviteTime,
+            r.register_time as registerTime,
+            r.first_order_time as firstOrderTime,
+            r.first_order_amount as firstOrderAmount,
+            r.status,
+            r.reward_status as rewardStatus,
+            r.device_info as deviceInfo,
+            r.ip_address as ipAddress,
+            r.scene_type as sceneType,
+            r.source_page as sourcePage,
+            r.created_at as createdAt,
+            r.updated_at as updatedAt,
+            COALESCE(m.nickname, '未设置') as inviteeNickname,
+            m.phone as inviteePhone,
+            (CASE WHEN r.status &gt;= 1 THEN 1 ELSE 0 END) as isValid
+        FROM pms_invite_relation r
+        LEFT JOIN ums_member m ON r.invitee_id = m.id
+        WHERE r.inviter_id = #{memberId}
+        ORDER BY r.invite_time DESC
+    </select>
+
+    <!-- 获取用户邀请奖励记录详情列表（包含被邀请人信息） -->
+    <select id="selectInviteRewardsWithDetail" resultType="com.macro.mall.dto.PmsInviteRewardDetailVO">
+        SELECT 
+            rw.id,
+            rw.relation_id as relationId,
+            rw.user_id as userId,
+            rw.user_type as userType,
+            rw.reward_type as rewardType,
+            rw.reward_value as rewardValue,
+            rw.reward_desc as rewardDesc,
+            rw.trigger_type as triggerType,
+            rw.trigger_amount as triggerAmount,
+            rw.status,
+            rw.coupon_id as couponId,
+            rw.expire_time as expireTime,
+            rw.send_time as sendTime,
+            rw.send_result as sendResult,
+            rw.created_at as createdAt,
+            rw.updated_at as updatedAt,
+            COALESCE(m.nickname, '未设置') as inviteeNickname
+        FROM pms_invite_reward rw
+        LEFT JOIN pms_invite_relation r ON rw.relation_id = r.id
+        LEFT JOIN ums_member m ON r.invitee_id = m.id
+        WHERE rw.user_id = #{memberId}
+        ORDER BY rw.send_time DESC
+    </select>
+
+</mapper> 

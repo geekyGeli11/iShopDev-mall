@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.PmsCommissionConfigDao">
+    
+    <resultMap id="CommissionConfigVOMap" type="com.macro.mall.dto.PmsCommissionConfigVO">
+        <id column="id" property="id"/>
+        <result column="config_name" property="configName"/>
+        <result column="product_category_id" property="productCategoryId"/>
+        <result column="product_category_name" property="productCategoryName"/>
+        <result column="level1_rate" property="level1Rate"/>
+        <result column="level2_rate" property="level2Rate"/>
+        <result column="level1_amount" property="level1Amount"/>
+        <result column="level2_amount" property="level2Amount"/>
+        <result column="commission_type" property="commissionType"/>
+        <result column="min_order_amount" property="minOrderAmount"/>
+        <result column="max_commission" property="maxCommission"/>
+        <result column="is_active" property="isActive"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="product_count" property="productCount"/>
+        <result column="total_commission" property="totalCommission"/>
+    </resultMap>
+    
+    <select id="selectByPage" resultMap="CommissionConfigVOMap">
+        SELECT 
+            c.id,
+            c.config_name,
+            c.product_category_id,
+            pc.name AS product_category_name,
+            c.level1_rate,
+            c.level2_rate,
+            c.level1_amount,
+            c.level2_amount,
+            c.commission_type,
+            c.min_order_amount,
+            c.max_commission,
+            c.is_active,
+            c.start_time,
+            c.end_time,
+            c.created_at,
+            c.updated_at,
+            COALESCE(ps.product_count, 0) AS product_count,
+            COALESCE(rs.total_commission, 0.00) AS total_commission
+        FROM pms_commission_config c
+        LEFT JOIN pms_product_category pc ON c.product_category_id = pc.id
+        LEFT JOIN (
+            SELECT 
+                CASE 
+                    WHEN c2.product_category_id IS NULL THEN 'global'
+                    ELSE c2.product_category_id
+                END AS config_key,
+                COUNT(*) AS product_count
+            FROM pms_commission_config c2
+            LEFT JOIN pms_product p ON (c2.product_category_id IS NULL OR p.product_category_id = c2.product_category_id)
+            WHERE c2.is_active = 1
+            GROUP BY config_key
+        ) ps ON (c.product_category_id IS NULL AND ps.config_key = 'global') OR ps.config_key = c.product_category_id
+        LEFT JOIN (
+            SELECT 
+                CASE 
+                    WHEN c3.product_category_id IS NULL THEN 'global'
+                    ELSE c3.product_category_id
+                END AS config_key,
+                SUM(r.reward_value) AS total_commission
+            FROM pms_commission_config c3
+            LEFT JOIN pms_invite_reward r ON r.commission_type IN (2, 3)
+            WHERE c3.is_active = 1 AND r.status = 1
+            GROUP BY config_key
+        ) rs ON (c.product_category_id IS NULL AND rs.config_key = 'global') OR rs.config_key = c.product_category_id
+        <where>
+            <if test="param.configName != null and param.configName != ''">
+                AND c.config_name LIKE CONCAT('%', #{param.configName}, '%')
+            </if>
+            <if test="param.productCategoryId != null">
+                AND c.product_category_id = #{param.productCategoryId}
+            </if>
+            <if test="param.commissionType != null">
+                AND c.commission_type = #{param.commissionType}
+            </if>
+            <if test="param.isActive != null">
+                AND c.is_active = #{param.isActive}
+            </if>
+            <if test="param.startTime != null and param.startTime != ''">
+                AND c.start_time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null and param.endTime != ''">
+                AND c.end_time &lt;= #{param.endTime}
+            </if>
+            <if test="param.createStartTime != null and param.createStartTime != ''">
+                AND c.created_at &gt;= #{param.createStartTime}
+            </if>
+            <if test="param.createEndTime != null and param.createEndTime != ''">
+                AND c.created_at &lt;= #{param.createEndTime}
+            </if>
+        </where>
+        ORDER BY c.created_at DESC
+    </select>
+    
+    <select id="selectDetailById" resultMap="CommissionConfigVOMap">
+        SELECT 
+            c.id,
+            c.config_name,
+            c.product_category_id,
+            pc.name AS product_category_name,
+            c.level1_rate,
+            c.level2_rate,
+            c.level1_amount,
+            c.level2_amount,
+            c.commission_type,
+            c.min_order_amount,
+            c.max_commission,
+            c.is_active,
+            c.start_time,
+            c.end_time,
+            c.created_at,
+            c.updated_at,
+            0 AS product_count,
+            0.00 AS total_commission
+        FROM pms_commission_config c
+        LEFT JOIN pms_product_category pc ON c.product_category_id = pc.id
+        WHERE c.id = #{id}
+    </select>
+    
+    <select id="selectStatistics" resultType="map">
+        SELECT 
+            COUNT(*) AS total_count,
+            COUNT(CASE WHEN is_active = 1 THEN 1 END) AS active_count,
+            COUNT(CASE WHEN is_active = 0 THEN 1 END) AS inactive_count,
+            COUNT(CASE WHEN commission_type = 1 THEN 1 END) AS rate_count,
+            COUNT(CASE WHEN commission_type = 2 THEN 1 END) AS fixed_count,
+            COUNT(CASE WHEN commission_type = 3 THEN 1 END) AS mixed_count,
+            COUNT(CASE WHEN product_category_id IS NULL THEN 1 END) AS global_count,
+            COUNT(CASE WHEN product_category_id IS NOT NULL THEN 1 END) AS category_count
+        FROM pms_commission_config
+    </select>
+    
+    <select id="selectActiveByCategoryId" resultMap="CommissionConfigVOMap">
+        SELECT 
+            c.id,
+            c.config_name,
+            c.product_category_id,
+            c.level1_rate,
+            c.level2_rate,
+            c.level1_amount,
+            c.level2_amount,
+            c.commission_type,
+            c.min_order_amount,
+            c.max_commission,
+            c.is_active,
+            c.start_time,
+            c.end_time,
+            c.created_at,
+            c.updated_at,
+            0 AS product_count,
+            0.00 AS total_commission
+        FROM pms_commission_config c
+        WHERE c.product_category_id = #{productCategoryId}
+        AND c.is_active = 1
+        AND (c.start_time IS NULL OR c.start_time &lt;= NOW())
+        AND (c.end_time IS NULL OR c.end_time &gt;= NOW())
+        ORDER BY c.created_at DESC
+        LIMIT 1
+    </select>
+    
+    <select id="selectGlobalDefault" resultMap="CommissionConfigVOMap">
+        SELECT 
+            c.id,
+            c.config_name,
+            c.product_category_id,
+            c.level1_rate,
+            c.level2_rate,
+            c.level1_amount,
+            c.level2_amount,
+            c.commission_type,
+            c.min_order_amount,
+            c.max_commission,
+            c.is_active,
+            c.start_time,
+            c.end_time,
+            c.created_at,
+            c.updated_at,
+            0 AS product_count,
+            0.00 AS total_commission
+        FROM pms_commission_config c
+        WHERE c.product_category_id IS NULL
+        AND c.is_active = 1
+        AND (c.start_time IS NULL OR c.start_time &lt;= NOW())
+        AND (c.end_time IS NULL OR c.end_time &gt;= NOW())
+        ORDER BY c.created_at DESC
+        LIMIT 1
+    </select>
+    
+    <select id="checkConfigNameExists" resultType="int">
+        SELECT COUNT(*)
+        FROM pms_commission_config
+        WHERE config_name = #{configName}
+        <if test="excludeId != null">
+            AND id != #{excludeId}
+        </if>
+    </select>
+    
+    <update id="updateStatus">
+        UPDATE pms_commission_config
+        SET is_active = #{isActive}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+    
+    <update id="batchUpdateStatus">
+        UPDATE pms_commission_config
+        SET is_active = #{isActive}, updated_at = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    
+    <select id="countAppliedProducts" resultType="int">
+        SELECT COUNT(*)
+        FROM pms_product p
+        LEFT JOIN pms_commission_config c ON 
+            (c.product_category_id IS NULL OR p.product_category_id = c.product_category_id)
+        WHERE c.id = #{configId}
+        AND c.is_active = 1
+        AND p.publish_status = 1
+        AND p.delete_status = 0
+    </select>
+    
+    <select id="getTotalCommission" resultType="decimal">
+        SELECT COALESCE(SUM(r.reward_value), 0.00)
+        FROM pms_invite_reward r
+        INNER JOIN pms_commission_config c ON 
+            (c.product_category_id IS NULL OR r.product_category = c.product_category_id)
+        WHERE c.id = #{configId}
+        AND r.commission_type IN (2, 3)
+        AND r.status = 1
+    </select>
+    
+</mapper> 

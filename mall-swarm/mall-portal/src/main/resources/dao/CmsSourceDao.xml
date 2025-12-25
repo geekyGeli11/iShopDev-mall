@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.portal.dao.CmsSourceDao">
+    
+    <!-- 获取本地活动列表 -->
+    <select id="getActivityList" resultMap="com.macro.mall.mapper.CmsActivityMapper.BaseResultMap">
+        SELECT *
+        FROM cms_activity
+        WHERE status = 1
+        ORDER BY 
+            create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+    <!-- 获取本地好物列表 -->
+    <select id="getLocalGoodsList" resultMap="com.macro.mall.mapper.CmsLocalGoodsMapper.BaseResultMap">
+        SELECT *
+        FROM cms_local_goods
+        WHERE status = 1
+        ORDER BY 
+            create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+    <!-- 获取精彩濠江列表 -->
+    <select id="getWonderfulMacauList" resultMap="com.macro.mall.mapper.CmsWonderfulMacauMapper.BaseResultMap">
+        SELECT *
+        FROM cms_wonderful_macau
+        WHERE status = 1
+        ORDER BY 
+            is_top DESC,
+            sort DESC,
+            create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+    <!-- 获取百大主理人列表 -->
+    <select id="getPrincipalPersonList" resultMap="com.macro.mall.mapper.CmsPrincipalPersonMapper.BaseResultMap">
+        SELECT *
+        FROM cms_principal_person
+        WHERE status = 1
+        ORDER BY 
+            is_recommend DESC,
+            sort DESC,
+            create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+    <!-- 获取本地好物关联的商品ID -->
+    <select id="getProductIdsByLocalGoodsId" resultType="java.lang.Long">
+        SELECT product_id
+        FROM cms_local_goods_relation
+        WHERE local_goods_id = #{localGoodsId}
+        ORDER BY sort ASC
+    </select>
+    
+    <!-- 根据商品ID列表查询商品详情 -->
+    <select id="getProductsByIds" resultMap="com.macro.mall.mapper.PmsProductMapper.BaseResultMap">
+        SELECT *
+        FROM pms_product
+        WHERE delete_status = 0
+        AND publish_status = 1
+        AND id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY FIELD(id, 
+        <foreach item="id" collection="ids" separator="," close="">
+            #{id}
+        </foreach>
+        )
+    </select>
+    
+</mapper> 

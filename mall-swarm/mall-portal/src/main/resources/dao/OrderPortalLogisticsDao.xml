@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.portal.dao.OrderPortalLogisticsDao">
+
+    <!-- 订单物流详情查询 -->
+    <resultMap id="orderLogisticsResultMap" type="com.macro.mall.portal.dto.OrderPortalLogistics">
+        <result property="orderId" column="orderId"/>
+        <result property="deliveryCompany" column="deliveryCompany"/>
+        <result property="deliverySn" column="deliverySn"/>
+        <result property="receiverPhone" column="receiverPhone"/>
+    </resultMap>
+
+    <!-- 根据订单ID查询订单物流信息 -->
+    <select id="getOrderLogisticsByOrderId" resultMap="orderLogisticsResultMap">
+        SELECT
+            id AS orderId,
+            delivery_company AS deliveryCompany,
+            delivery_sn AS deliverySn,
+            receiver_phone AS receiverPhone
+        FROM oms_order
+        WHERE id = #{orderId}
+    </select>
+
+</mapper>

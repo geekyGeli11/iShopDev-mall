@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.PmsStockOperationLogMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.PmsStockOperationLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="operation_no" jdbcType="VARCHAR" property="operationNo" />
+    <result column="operation_type" jdbcType="TINYINT" property="operationType" />
+    <result column="operation_subtype" jdbcType="TINYINT" property="operationSubtype" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_sn" jdbcType="VARCHAR" property="productSn" />
+    <result column="sku_id" jdbcType="BIGINT" property="skuId" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="store_id" jdbcType="BIGINT" property="storeId" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="order_sn" jdbcType="VARCHAR" property="orderSn" />
+    <result column="before_stock" jdbcType="INTEGER" property="beforeStock" />
+    <result column="operation_quantity" jdbcType="INTEGER" property="operationQuantity" />
+    <result column="after_stock" jdbcType="INTEGER" property="afterStock" />
+    <result column="operation_reason" jdbcType="VARCHAR" property="operationReason" />
+    <result column="operator_id" jdbcType="BIGINT" property="operatorId" />
+    <result column="operator_name" jdbcType="VARCHAR" property="operatorName" />
+    <result column="operator_ip" jdbcType="VARCHAR" property="operatorIp" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, operation_no, operation_type, operation_subtype, product_id, product_name, product_sn, 
+    sku_id, sku_code, store_id, order_id, order_sn, before_stock, operation_quantity, 
+    after_stock, operation_reason, operator_id, operator_name, operator_ip, created_at
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.PmsStockOperationLogExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pms_stock_operation_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pms_stock_operation_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pms_stock_operation_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsStockOperationLogExample">
+    delete from pms_stock_operation_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.PmsStockOperationLog">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_stock_operation_log (operation_no, operation_type, operation_subtype, 
+      product_id, product_name, product_sn, 
+      sku_id, sku_code, store_id, 
+      order_id, order_sn, before_stock, 
+      operation_quantity, after_stock, operation_reason, 
+      operator_id, operator_name, operator_ip, 
+      created_at)
+    values (#{operationNo,jdbcType=VARCHAR}, #{operationType,jdbcType=TINYINT}, #{operationSubtype,jdbcType=TINYINT}, 
+      #{productId,jdbcType=BIGINT}, #{productName,jdbcType=VARCHAR}, #{productSn,jdbcType=VARCHAR}, 
+      #{skuId,jdbcType=BIGINT}, #{skuCode,jdbcType=VARCHAR}, #{storeId,jdbcType=BIGINT}, 
+      #{orderId,jdbcType=BIGINT}, #{orderSn,jdbcType=VARCHAR}, #{beforeStock,jdbcType=INTEGER}, 
+      #{operationQuantity,jdbcType=INTEGER}, #{afterStock,jdbcType=INTEGER}, #{operationReason,jdbcType=VARCHAR}, 
+      #{operatorId,jdbcType=BIGINT}, #{operatorName,jdbcType=VARCHAR}, #{operatorIp,jdbcType=VARCHAR}, 
+      #{createdAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsStockOperationLog">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_stock_operation_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="operationNo != null">
+        operation_no,
+      </if>
+      <if test="operationType != null">
+        operation_type,
+      </if>
+      <if test="operationSubtype != null">
+        operation_subtype,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="productSn != null">
+        product_sn,
+      </if>
+      <if test="skuId != null">
+        sku_id,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="storeId != null">
+        store_id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="orderSn != null">
+        order_sn,
+      </if>
+      <if test="beforeStock != null">
+        before_stock,
+      </if>
+      <if test="operationQuantity != null">
+        operation_quantity,
+      </if>
+      <if test="afterStock != null">
+        after_stock,
+      </if>
+      <if test="operationReason != null">
+        operation_reason,
+      </if>
+      <if test="operatorId != null">
+        operator_id,
+      </if>
+      <if test="operatorName != null">
+        operator_name,
+      </if>
+      <if test="operatorIp != null">
+        operator_ip,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="operationNo != null">
+        #{operationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="operationType != null">
+        #{operationType,jdbcType=TINYINT},
+      </if>
+      <if test="operationSubtype != null">
+        #{operationSubtype,jdbcType=TINYINT},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productSn != null">
+        #{productSn,jdbcType=VARCHAR},
+      </if>
+      <if test="skuId != null">
+        #{skuId,jdbcType=BIGINT},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="storeId != null">
+        #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="orderSn != null">
+        #{orderSn,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeStock != null">
+        #{beforeStock,jdbcType=INTEGER},
+      </if>
+      <if test="operationQuantity != null">
+        #{operationQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="afterStock != null">
+        #{afterStock,jdbcType=INTEGER},
+      </if>
+      <if test="operationReason != null">
+        #{operationReason,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null">
+        #{operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="operatorName != null">
+        #{operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorIp != null">
+        #{operatorIp,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.PmsStockOperationLogExample" resultType="java.lang.Long">
+    select count(*) from pms_stock_operation_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pms_stock_operation_log
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.operationNo != null">
+        operation_no = #{row.operationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="row.operationType != null">
+        operation_type = #{row.operationType,jdbcType=TINYINT},
+      </if>
+      <if test="row.operationSubtype != null">
+        operation_subtype = #{row.operationSubtype,jdbcType=TINYINT},
+      </if>
+      <if test="row.productId != null">
+        product_id = #{row.productId,jdbcType=BIGINT},
+      </if>
+      <if test="row.productName != null">
+        product_name = #{row.productName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.productSn != null">
+        product_sn = #{row.productSn,jdbcType=VARCHAR},
+      </if>
+      <if test="row.skuId != null">
+        sku_id = #{row.skuId,jdbcType=BIGINT},
+      </if>
+      <if test="row.skuCode != null">
+        sku_code = #{row.skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="row.storeId != null">
+        store_id = #{row.storeId,jdbcType=BIGINT},
+      </if>
+      <if test="row.orderId != null">
+        order_id = #{row.orderId,jdbcType=BIGINT},
+      </if>
+      <if test="row.orderSn != null">
+        order_sn = #{row.orderSn,jdbcType=VARCHAR},
+      </if>
+      <if test="row.beforeStock != null">
+        before_stock = #{row.beforeStock,jdbcType=INTEGER},
+      </if>
+      <if test="row.operationQuantity != null">
+        operation_quantity = #{row.operationQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="row.afterStock != null">
+        after_stock = #{row.afterStock,jdbcType=INTEGER},
+      </if>
+      <if test="row.operationReason != null">
+        operation_reason = #{row.operationReason,jdbcType=VARCHAR},
+      </if>
+      <if test="row.operatorId != null">
+        operator_id = #{row.operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="row.operatorName != null">
+        operator_name = #{row.operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="row.operatorIp != null">
+        operator_ip = #{row.operatorIp,jdbcType=VARCHAR},
+      </if>
+      <if test="row.createdAt != null">
+        created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pms_stock_operation_log
+    set id = #{row.id,jdbcType=BIGINT},
+      operation_no = #{row.operationNo,jdbcType=VARCHAR},
+      operation_type = #{row.operationType,jdbcType=TINYINT},
+      operation_subtype = #{row.operationSubtype,jdbcType=TINYINT},
+      product_id = #{row.productId,jdbcType=BIGINT},
+      product_name = #{row.productName,jdbcType=VARCHAR},
+      product_sn = #{row.productSn,jdbcType=VARCHAR},
+      sku_id = #{row.skuId,jdbcType=BIGINT},
+      sku_code = #{row.skuCode,jdbcType=VARCHAR},
+      store_id = #{row.storeId,jdbcType=BIGINT},
+      order_id = #{row.orderId,jdbcType=BIGINT},
+      order_sn = #{row.orderSn,jdbcType=VARCHAR},
+      before_stock = #{row.beforeStock,jdbcType=INTEGER},
+      operation_quantity = #{row.operationQuantity,jdbcType=INTEGER},
+      after_stock = #{row.afterStock,jdbcType=INTEGER},
+      operation_reason = #{row.operationReason,jdbcType=VARCHAR},
+      operator_id = #{row.operatorId,jdbcType=BIGINT},
+      operator_name = #{row.operatorName,jdbcType=VARCHAR},
+      operator_ip = #{row.operatorIp,jdbcType=VARCHAR},
+      created_at = #{row.createdAt,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsStockOperationLog">
+    update pms_stock_operation_log
+    <set>
+      <if test="operationNo != null">
+        operation_no = #{operationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="operationType != null">
+        operation_type = #{operationType,jdbcType=TINYINT},
+      </if>
+      <if test="operationSubtype != null">
+        operation_subtype = #{operationSubtype,jdbcType=TINYINT},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productSn != null">
+        product_sn = #{productSn,jdbcType=VARCHAR},
+      </if>
+      <if test="skuId != null">
+        sku_id = #{skuId,jdbcType=BIGINT},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="storeId != null">
+        store_id = #{storeId,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="orderSn != null">
+        order_sn = #{orderSn,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeStock != null">
+        before_stock = #{beforeStock,jdbcType=INTEGER},
+      </if>
+      <if test="operationQuantity != null">
+        operation_quantity = #{operationQuantity,jdbcType=INTEGER},
+      </if>
+      <if test="afterStock != null">
+        after_stock = #{afterStock,jdbcType=INTEGER},
+      </if>
+      <if test="operationReason != null">
+        operation_reason = #{operationReason,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null">
+        operator_id = #{operatorId,jdbcType=BIGINT},
+      </if>
+      <if test="operatorName != null">
+        operator_name = #{operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorIp != null">
+        operator_ip = #{operatorIp,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsStockOperationLog">
+    update pms_stock_operation_log
+    set operation_no = #{operationNo,jdbcType=VARCHAR},
+      operation_type = #{operationType,jdbcType=TINYINT},
+      operation_subtype = #{operationSubtype,jdbcType=TINYINT},
+      product_id = #{productId,jdbcType=BIGINT},
+      product_name = #{productName,jdbcType=VARCHAR},
+      product_sn = #{productSn,jdbcType=VARCHAR},
+      sku_id = #{skuId,jdbcType=BIGINT},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      store_id = #{storeId,jdbcType=BIGINT},
+      order_id = #{orderId,jdbcType=BIGINT},
+      order_sn = #{orderSn,jdbcType=VARCHAR},
+      before_stock = #{beforeStock,jdbcType=INTEGER},
+      operation_quantity = #{operationQuantity,jdbcType=INTEGER},
+      after_stock = #{afterStock,jdbcType=INTEGER},
+      operation_reason = #{operationReason,jdbcType=VARCHAR},
+      operator_id = #{operatorId,jdbcType=BIGINT},
+      operator_name = #{operatorName,jdbcType=VARCHAR},
+      operator_ip = #{operatorIp,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.UmsMemberBalanceHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.UmsMemberBalanceHistory">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="member_id" jdbcType="BIGINT" property="memberId" />
+    <result column="change_type" jdbcType="TINYINT" property="changeType" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="balance_before" jdbcType="DECIMAL" property="balanceBefore" />
+    <result column="balance_after" jdbcType="DECIMAL" property="balanceAfter" />
+    <result column="business_type" jdbcType="VARCHAR" property="businessType" />
+    <result column="business_id" jdbcType="VARCHAR" property="businessId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, member_id, change_type, amount, balance_before, balance_after, business_type, 
+    business_id, remark, operator, create_time, update_time
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.UmsMemberBalanceHistoryExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ums_member_balance_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ums_member_balance_history
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ums_member_balance_history
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.UmsMemberBalanceHistoryExample">
+    delete from ums_member_balance_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.UmsMemberBalanceHistory">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_member_balance_history (member_id, change_type, amount, 
+      balance_before, balance_after, business_type, 
+      business_id, remark, operator, 
+      create_time, update_time)
+    values (#{memberId,jdbcType=BIGINT}, #{changeType,jdbcType=TINYINT}, #{amount,jdbcType=DECIMAL}, 
+      #{balanceBefore,jdbcType=DECIMAL}, #{balanceAfter,jdbcType=DECIMAL}, #{businessType,jdbcType=VARCHAR}, 
+      #{businessId,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.UmsMemberBalanceHistory">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_member_balance_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="memberId != null">
+        member_id,
+      </if>
+      <if test="changeType != null">
+        change_type,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="balanceBefore != null">
+        balance_before,
+      </if>
+      <if test="balanceAfter != null">
+        balance_after,
+      </if>
+      <if test="businessType != null">
+        business_type,
+      </if>
+      <if test="businessId != null">
+        business_id,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="operator != null">
+        operator,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="memberId != null">
+        #{memberId,jdbcType=BIGINT},
+      </if>
+      <if test="changeType != null">
+        #{changeType,jdbcType=TINYINT},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="balanceBefore != null">
+        #{balanceBefore,jdbcType=DECIMAL},
+      </if>
+      <if test="balanceAfter != null">
+        #{balanceAfter,jdbcType=DECIMAL},
+      </if>
+      <if test="businessType != null">
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="businessId != null">
+        #{businessId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.UmsMemberBalanceHistoryExample" resultType="java.lang.Long">
+    select count(*) from ums_member_balance_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update ums_member_balance_history
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.memberId != null">
+        member_id = #{row.memberId,jdbcType=BIGINT},
+      </if>
+      <if test="row.changeType != null">
+        change_type = #{row.changeType,jdbcType=TINYINT},
+      </if>
+      <if test="row.amount != null">
+        amount = #{row.amount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.balanceBefore != null">
+        balance_before = #{row.balanceBefore,jdbcType=DECIMAL},
+      </if>
+      <if test="row.balanceAfter != null">
+        balance_after = #{row.balanceAfter,jdbcType=DECIMAL},
+      </if>
+      <if test="row.businessType != null">
+        business_type = #{row.businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="row.businessId != null">
+        business_id = #{row.businessId,jdbcType=VARCHAR},
+      </if>
+      <if test="row.remark != null">
+        remark = #{row.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="row.operator != null">
+        operator = #{row.operator,jdbcType=VARCHAR},
+      </if>
+      <if test="row.createTime != null">
+        create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updateTime != null">
+        update_time = #{row.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update ums_member_balance_history
+    set id = #{row.id,jdbcType=BIGINT},
+      member_id = #{row.memberId,jdbcType=BIGINT},
+      change_type = #{row.changeType,jdbcType=TINYINT},
+      amount = #{row.amount,jdbcType=DECIMAL},
+      balance_before = #{row.balanceBefore,jdbcType=DECIMAL},
+      balance_after = #{row.balanceAfter,jdbcType=DECIMAL},
+      business_type = #{row.businessType,jdbcType=VARCHAR},
+      business_id = #{row.businessId,jdbcType=VARCHAR},
+      remark = #{row.remark,jdbcType=VARCHAR},
+      operator = #{row.operator,jdbcType=VARCHAR},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      update_time = #{row.updateTime,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.UmsMemberBalanceHistory">
+    update ums_member_balance_history
+    <set>
+      <if test="memberId != null">
+        member_id = #{memberId,jdbcType=BIGINT},
+      </if>
+      <if test="changeType != null">
+        change_type = #{changeType,jdbcType=TINYINT},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="balanceBefore != null">
+        balance_before = #{balanceBefore,jdbcType=DECIMAL},
+      </if>
+      <if test="balanceAfter != null">
+        balance_after = #{balanceAfter,jdbcType=DECIMAL},
+      </if>
+      <if test="businessType != null">
+        business_type = #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="businessId != null">
+        business_id = #{businessId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null">
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.UmsMemberBalanceHistory">
+    update ums_member_balance_history
+    set member_id = #{memberId,jdbcType=BIGINT},
+      change_type = #{changeType,jdbcType=TINYINT},
+      amount = #{amount,jdbcType=DECIMAL},
+      balance_before = #{balanceBefore,jdbcType=DECIMAL},
+      balance_after = #{balanceAfter,jdbcType=DECIMAL},
+      business_type = #{businessType,jdbcType=VARCHAR},
+      business_id = #{businessId,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      operator = #{operator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

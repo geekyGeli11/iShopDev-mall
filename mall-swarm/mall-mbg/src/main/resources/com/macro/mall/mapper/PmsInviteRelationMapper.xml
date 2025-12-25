@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.PmsInviteRelationMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.PmsInviteRelation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="inviter_id" jdbcType="BIGINT" property="inviterId" />
+    <result column="invitee_id" jdbcType="BIGINT" property="inviteeId" />
+    <result column="invite_param" jdbcType="VARCHAR" property="inviteParam" />
+    <result column="invite_time" jdbcType="TIMESTAMP" property="inviteTime" />
+    <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
+    <result column="first_order_time" jdbcType="TIMESTAMP" property="firstOrderTime" />
+    <result column="first_order_amount" jdbcType="DECIMAL" property="firstOrderAmount" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="reward_status" jdbcType="TINYINT" property="rewardStatus" />
+    <result column="device_info" jdbcType="VARCHAR" property="deviceInfo" />
+    <result column="ip_address" jdbcType="VARCHAR" property="ipAddress" />
+    <result column="scene_type" jdbcType="TINYINT" property="sceneType" />
+    <result column="source_page" jdbcType="VARCHAR" property="sourcePage" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="relation_type" jdbcType="TINYINT" property="relationType" />
+    <result column="distributor_level" jdbcType="TINYINT" property="distributorLevel" />
+    <result column="bind_source" jdbcType="TINYINT" property="bindSource" />
+    <result column="relation_expire_time" jdbcType="TIMESTAMP" property="relationExpireTime" />
+    <result column="is_permanent" jdbcType="TINYINT" property="isPermanent" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, inviter_id, invitee_id, invite_param, invite_time, register_time, first_order_time, 
+    first_order_amount, status, reward_status, device_info, ip_address, scene_type, source_page, 
+    created_at, updated_at, relation_type, distributor_level, bind_source, relation_expire_time, 
+    is_permanent
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.PmsInviteRelationExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pms_invite_relation
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pms_invite_relation
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pms_invite_relation
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsInviteRelationExample">
+    delete from pms_invite_relation
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.PmsInviteRelation">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_invite_relation (inviter_id, invitee_id, invite_param, 
+      invite_time, register_time, first_order_time, 
+      first_order_amount, status, reward_status, 
+      device_info, ip_address, scene_type, 
+      source_page, created_at, updated_at, 
+      relation_type, distributor_level, bind_source, 
+      relation_expire_time, is_permanent)
+    values (#{inviterId,jdbcType=BIGINT}, #{inviteeId,jdbcType=BIGINT}, #{inviteParam,jdbcType=VARCHAR}, 
+      #{inviteTime,jdbcType=TIMESTAMP}, #{registerTime,jdbcType=TIMESTAMP}, #{firstOrderTime,jdbcType=TIMESTAMP}, 
+      #{firstOrderAmount,jdbcType=DECIMAL}, #{status,jdbcType=TINYINT}, #{rewardStatus,jdbcType=TINYINT}, 
+      #{deviceInfo,jdbcType=VARCHAR}, #{ipAddress,jdbcType=VARCHAR}, #{sceneType,jdbcType=TINYINT}, 
+      #{sourcePage,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{relationType,jdbcType=TINYINT}, #{distributorLevel,jdbcType=TINYINT}, #{bindSource,jdbcType=TINYINT}, 
+      #{relationExpireTime,jdbcType=TIMESTAMP}, #{isPermanent,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsInviteRelation">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pms_invite_relation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="inviterId != null">
+        inviter_id,
+      </if>
+      <if test="inviteeId != null">
+        invitee_id,
+      </if>
+      <if test="inviteParam != null">
+        invite_param,
+      </if>
+      <if test="inviteTime != null">
+        invite_time,
+      </if>
+      <if test="registerTime != null">
+        register_time,
+      </if>
+      <if test="firstOrderTime != null">
+        first_order_time,
+      </if>
+      <if test="firstOrderAmount != null">
+        first_order_amount,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="rewardStatus != null">
+        reward_status,
+      </if>
+      <if test="deviceInfo != null">
+        device_info,
+      </if>
+      <if test="ipAddress != null">
+        ip_address,
+      </if>
+      <if test="sceneType != null">
+        scene_type,
+      </if>
+      <if test="sourcePage != null">
+        source_page,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="updatedAt != null">
+        updated_at,
+      </if>
+      <if test="relationType != null">
+        relation_type,
+      </if>
+      <if test="distributorLevel != null">
+        distributor_level,
+      </if>
+      <if test="bindSource != null">
+        bind_source,
+      </if>
+      <if test="relationExpireTime != null">
+        relation_expire_time,
+      </if>
+      <if test="isPermanent != null">
+        is_permanent,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="inviterId != null">
+        #{inviterId,jdbcType=BIGINT},
+      </if>
+      <if test="inviteeId != null">
+        #{inviteeId,jdbcType=BIGINT},
+      </if>
+      <if test="inviteParam != null">
+        #{inviteParam,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteTime != null">
+        #{inviteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registerTime != null">
+        #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstOrderTime != null">
+        #{firstOrderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstOrderAmount != null">
+        #{firstOrderAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="rewardStatus != null">
+        #{rewardStatus,jdbcType=TINYINT},
+      </if>
+      <if test="deviceInfo != null">
+        #{deviceInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="ipAddress != null">
+        #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneType != null">
+        #{sceneType,jdbcType=TINYINT},
+      </if>
+      <if test="sourcePage != null">
+        #{sourcePage,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="relationType != null">
+        #{relationType,jdbcType=TINYINT},
+      </if>
+      <if test="distributorLevel != null">
+        #{distributorLevel,jdbcType=TINYINT},
+      </if>
+      <if test="bindSource != null">
+        #{bindSource,jdbcType=TINYINT},
+      </if>
+      <if test="relationExpireTime != null">
+        #{relationExpireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isPermanent != null">
+        #{isPermanent,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.PmsInviteRelationExample" resultType="java.lang.Long">
+    select count(*) from pms_invite_relation
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pms_invite_relation
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.inviterId != null">
+        inviter_id = #{row.inviterId,jdbcType=BIGINT},
+      </if>
+      <if test="row.inviteeId != null">
+        invitee_id = #{row.inviteeId,jdbcType=BIGINT},
+      </if>
+      <if test="row.inviteParam != null">
+        invite_param = #{row.inviteParam,jdbcType=VARCHAR},
+      </if>
+      <if test="row.inviteTime != null">
+        invite_time = #{row.inviteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.registerTime != null">
+        register_time = #{row.registerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.firstOrderTime != null">
+        first_order_time = #{row.firstOrderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.firstOrderAmount != null">
+        first_order_amount = #{row.firstOrderAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="row.status != null">
+        status = #{row.status,jdbcType=TINYINT},
+      </if>
+      <if test="row.rewardStatus != null">
+        reward_status = #{row.rewardStatus,jdbcType=TINYINT},
+      </if>
+      <if test="row.deviceInfo != null">
+        device_info = #{row.deviceInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="row.ipAddress != null">
+        ip_address = #{row.ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="row.sceneType != null">
+        scene_type = #{row.sceneType,jdbcType=TINYINT},
+      </if>
+      <if test="row.sourcePage != null">
+        source_page = #{row.sourcePage,jdbcType=VARCHAR},
+      </if>
+      <if test="row.createdAt != null">
+        created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.updatedAt != null">
+        updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.relationType != null">
+        relation_type = #{row.relationType,jdbcType=TINYINT},
+      </if>
+      <if test="row.distributorLevel != null">
+        distributor_level = #{row.distributorLevel,jdbcType=TINYINT},
+      </if>
+      <if test="row.bindSource != null">
+        bind_source = #{row.bindSource,jdbcType=TINYINT},
+      </if>
+      <if test="row.relationExpireTime != null">
+        relation_expire_time = #{row.relationExpireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.isPermanent != null">
+        is_permanent = #{row.isPermanent,jdbcType=TINYINT},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pms_invite_relation
+    set id = #{row.id,jdbcType=BIGINT},
+      inviter_id = #{row.inviterId,jdbcType=BIGINT},
+      invitee_id = #{row.inviteeId,jdbcType=BIGINT},
+      invite_param = #{row.inviteParam,jdbcType=VARCHAR},
+      invite_time = #{row.inviteTime,jdbcType=TIMESTAMP},
+      register_time = #{row.registerTime,jdbcType=TIMESTAMP},
+      first_order_time = #{row.firstOrderTime,jdbcType=TIMESTAMP},
+      first_order_amount = #{row.firstOrderAmount,jdbcType=DECIMAL},
+      status = #{row.status,jdbcType=TINYINT},
+      reward_status = #{row.rewardStatus,jdbcType=TINYINT},
+      device_info = #{row.deviceInfo,jdbcType=VARCHAR},
+      ip_address = #{row.ipAddress,jdbcType=VARCHAR},
+      scene_type = #{row.sceneType,jdbcType=TINYINT},
+      source_page = #{row.sourcePage,jdbcType=VARCHAR},
+      created_at = #{row.createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{row.updatedAt,jdbcType=TIMESTAMP},
+      relation_type = #{row.relationType,jdbcType=TINYINT},
+      distributor_level = #{row.distributorLevel,jdbcType=TINYINT},
+      bind_source = #{row.bindSource,jdbcType=TINYINT},
+      relation_expire_time = #{row.relationExpireTime,jdbcType=TIMESTAMP},
+      is_permanent = #{row.isPermanent,jdbcType=TINYINT}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsInviteRelation">
+    update pms_invite_relation
+    <set>
+      <if test="inviterId != null">
+        inviter_id = #{inviterId,jdbcType=BIGINT},
+      </if>
+      <if test="inviteeId != null">
+        invitee_id = #{inviteeId,jdbcType=BIGINT},
+      </if>
+      <if test="inviteParam != null">
+        invite_param = #{inviteParam,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteTime != null">
+        invite_time = #{inviteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="registerTime != null">
+        register_time = #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstOrderTime != null">
+        first_order_time = #{firstOrderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstOrderAmount != null">
+        first_order_amount = #{firstOrderAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="rewardStatus != null">
+        reward_status = #{rewardStatus,jdbcType=TINYINT},
+      </if>
+      <if test="deviceInfo != null">
+        device_info = #{deviceInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="ipAddress != null">
+        ip_address = #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneType != null">
+        scene_type = #{sceneType,jdbcType=TINYINT},
+      </if>
+      <if test="sourcePage != null">
+        source_page = #{sourcePage,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="relationType != null">
+        relation_type = #{relationType,jdbcType=TINYINT},
+      </if>
+      <if test="distributorLevel != null">
+        distributor_level = #{distributorLevel,jdbcType=TINYINT},
+      </if>
+      <if test="bindSource != null">
+        bind_source = #{bindSource,jdbcType=TINYINT},
+      </if>
+      <if test="relationExpireTime != null">
+        relation_expire_time = #{relationExpireTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isPermanent != null">
+        is_permanent = #{isPermanent,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsInviteRelation">
+    update pms_invite_relation
+    set inviter_id = #{inviterId,jdbcType=BIGINT},
+      invitee_id = #{inviteeId,jdbcType=BIGINT},
+      invite_param = #{inviteParam,jdbcType=VARCHAR},
+      invite_time = #{inviteTime,jdbcType=TIMESTAMP},
+      register_time = #{registerTime,jdbcType=TIMESTAMP},
+      first_order_time = #{firstOrderTime,jdbcType=TIMESTAMP},
+      first_order_amount = #{firstOrderAmount,jdbcType=DECIMAL},
+      status = #{status,jdbcType=TINYINT},
+      reward_status = #{rewardStatus,jdbcType=TINYINT},
+      device_info = #{deviceInfo,jdbcType=VARCHAR},
+      ip_address = #{ipAddress,jdbcType=VARCHAR},
+      scene_type = #{sceneType,jdbcType=TINYINT},
+      source_page = #{sourcePage,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      relation_type = #{relationType,jdbcType=TINYINT},
+      distributor_level = #{distributorLevel,jdbcType=TINYINT},
+      bind_source = #{bindSource,jdbcType=TINYINT},
+      relation_expire_time = #{relationExpireTime,jdbcType=TIMESTAMP},
+      is_permanent = #{isPermanent,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,42 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "@vue/eslint-config-typescript",
+    "plugin:vue/vue3-essential",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "vue",
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "vue/component-name-in-template-casing": ["error", "PascalCase"],
+    "vue/component-definition-name-casing": ["error", "PascalCase"],
+    "vue/multi-word-component-names": "off",
+    "prefer-const": "error",
+    "no-var": "error",
+    "no-console": "warn"
+  },
+  "ignorePatterns": [
+    "dist/",
+    "node_modules/",
+    "*.d.ts",
+    "capacitor/",
+    "electron/dist/"
+  ]
+} 

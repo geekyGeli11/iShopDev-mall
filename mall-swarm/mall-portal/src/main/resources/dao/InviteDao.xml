@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.portal.dao.InviteDao">
+
+    <!-- 获取用户邀请统计数据 -->
+    <select id="getUserInviteStatistics" resultType="com.macro.mall.portal.domain.InviteStatisticsResult">
+        SELECT
+            IFNULL(total_invites.total_count, 0) as totalInvites,
+            IFNULL(today_invites.today_count, 0) as todayInvites,
+            IFNULL(registered_count.registered, 0) as registeredCount,
+            IFNULL(ordered_count.ordered, 0) as orderedCount,
+            IFNULL(reward_summary.total_points, 0) as totalRewardPoints,
+            IFNULL(reward_summary.total_amount, 0.00) as totalRewardAmount,
+            IFNULL(pending_rewards.pending_count, 0) as pendingRewards,
+            CASE 
+                WHEN IFNULL(total_invites.total_count, 0) = 0 THEN 0.00
+                ELSE ROUND((IFNULL(ordered_count.ordered, 0) * 100.0 / total_invites.total_count), 2)
+            END as conversionRate,
+            1 as ranking,
+            IFNULL(reward_summary.total_amount, 0.00) as currentTotalIncome,
+            IFNULL(income_detail.withdrawable_amount, 0.00) as withdrawableAmount,
+            IFNULL(income_detail.pending_amount, 0.00) as pendingAmount
+        FROM
+            (SELECT #{userId} as user_id) base
+        LEFT JOIN (
+            -- 总邀请数
+            SELECT inviter_id, COUNT(*) as total_count
+            FROM pms_invite_relation
+            WHERE inviter_id = #{userId}
+            GROUP BY inviter_id
+        ) total_invites ON base.user_id = total_invites.inviter_id
+        LEFT JOIN (
+            -- 今日邀请数
+            SELECT inviter_id, COUNT(*) as today_count
+            FROM pms_invite_relation
+            WHERE inviter_id = #{userId}
+            AND DATE(created_at) = CURDATE()
+            GROUP BY inviter_id
+        ) today_invites ON base.user_id = today_invites.inviter_id
+        LEFT JOIN (
+            -- 已注册人数
+            SELECT inviter_id, COUNT(*) as registered
+            FROM pms_invite_relation
+            WHERE inviter_id = #{userId}
+            AND status &gt;= 1
+            GROUP BY inviter_id
+        ) registered_count ON base.user_id = registered_count.inviter_id
+        LEFT JOIN (
+            -- 已下单人数
+            SELECT inviter_id, COUNT(*) as ordered
+            FROM pms_invite_relation
+            WHERE inviter_id = #{userId}
+            AND status &gt;= 2
+            GROUP BY inviter_id
+        ) ordered_count ON base.user_id = ordered_count.inviter_id
+        LEFT JOIN (
+            -- 奖励汇总（包含所有已发放的奖励）
+            SELECT
+                user_id,
+                SUM(CASE WHEN reward_type = 1 THEN CAST(reward_value AS SIGNED) ELSE 0 END) as total_points,
+                SUM(reward_value) as total_amount
+            FROM pms_invite_reward
+            WHERE user_id = #{userId} AND status &gt;= 1
+            GROUP BY user_id
+        ) reward_summary ON base.user_id = reward_summary.user_id
+        LEFT JOIN (
+            -- 待发放奖励数
+            SELECT user_id, COUNT(*) as pending_count
+            FROM pms_invite_reward
+            WHERE user_id = #{userId} AND status = 0
+            GROUP BY user_id
+        ) pending_rewards ON base.user_id = pending_rewards.user_id
+        LEFT JOIN (
+            -- 收益详情（已发放且未结算的奖励减去已锁定金额）
+            SELECT
+                user_id,
+                SUM(CASE
+                    WHEN status = 1 AND settlement_status = 0
+                    THEN reward_value - COALESCE(locked_amount, 0)
+                    ELSE 0
+                END) as withdrawable_amount,
+                SUM(CASE WHEN status = 0 THEN reward_value ELSE 0 END) as pending_amount
+            FROM pms_invite_reward
+            WHERE user_id = #{userId}
+            GROUP BY user_id
+        ) income_detail ON base.user_id = income_detail.user_id
+    </select>
+
+    <!-- 获取用户奖励汇总数据 -->
+    <select id="getUserRewardSummary" resultType="com.macro.mall.portal.domain.RewardSummaryResult">
+        SELECT
+            IFNULL(SUM(reward_value), 0.00) as yearTotalAmount,
+            IFNULL(SUM(CASE WHEN reward_type = 1 THEN reward_value ELSE 0 END), 0) as yearTotalPoints,
+            IFNULL(COUNT(*), 0) as yearRewardCount
+        FROM pms_invite_reward
+        WHERE user_id = #{userId}
+        AND status &gt;= 1
+        AND YEAR(send_time) = #{year}
+    </select>
+
+    <!-- 获取用户月度奖励数据 -->
+    <select id="getUserMonthlyRewards" resultType="java.util.HashMap">
+        SELECT 
+            month_num as month,
+            CONCAT(month_num, '月') as monthName,
+            IFNULL(amount, 0.00) as amount,
+            IFNULL(points, 0) as points,
+            IFNULL(rewardCount, 0) as rewardCount,
+            CASE WHEN month_num = MONTH(NOW()) THEN true ELSE false END as isCurrent
+        FROM (
+            SELECT
+                MONTH(send_time) as month_num,
+                SUM(reward_value) as amount,
+                SUM(CASE WHEN reward_type = 1 THEN reward_value ELSE 0 END) as points,
+                COUNT(*) as rewardCount
+            FROM pms_invite_reward
+            WHERE user_id = #{userId}
+            AND status &gt;= 1
+            AND YEAR(send_time) = #{year}
+            AND MONTH(send_time) &lt;= #{maxMonth}
+            GROUP BY MONTH(send_time)
+        ) sub
+        ORDER BY month_num
+    </select>
+
+    <!-- 获取用户的被邀请人列表 -->
+    <select id="getUserInvitedList" resultType="java.util.HashMap">
+        SELECT 
+            r.invitee_id as userId,
+            COALESCE(m.nickname, '用户') as nickname,
+            COALESCE(m.icon, 'https://haojiang-1332489043.cos.ap-guangzhou.myqcloud.com/static/miss-face.png') as avatar,
+            r.status,
+            r.created_at as createTime
+        FROM pms_invite_relation r
+        LEFT JOIN ums_member m ON r.invitee_id = m.id
+        WHERE r.inviter_id = #{userId}
+        ORDER BY r.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 获取用户可提现的奖励记录ID列表 -->
+    <select id="getWithdrawableRewardIds" resultType="java.lang.Long">
+        SELECT id
+        FROM pms_invite_reward
+        WHERE user_id = #{userId}
+        AND status = 1
+        AND settlement_status = 0
+        AND reward_value > 0
+        ORDER BY send_time ASC
+    </select>
+
+    <!-- 锁定指定的奖励记录 -->
+    <update id="lockRewardsByIds">
+        UPDATE pms_invite_reward
+        SET status = 2,
+            send_result = CONCAT('提现申请锁定：', #{withdrawSn}),
+            updated_at = NOW()
+        WHERE id IN
+        <foreach collection="rewardIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <!-- 锁定用户的可提现奖励记录（旧方法，保持兼容性） -->
+    <update id="lockWithdrawableRewards">
+        UPDATE pms_invite_reward
+        SET status = 2,
+            send_result = CONCAT('提现申请锁定：', #{withdrawSn}),
+            updated_at = NOW()
+        WHERE user_id = #{userId}
+        AND status = 1
+        AND settlement_status = 0
+        AND reward_value > 0
+    </update>
+    
+    <!-- 检查用户是否有待处理的提现申请 -->
+    <select id="countPendingWithdrawApply" resultType="int">
+        SELECT COUNT(*)
+        FROM pms_invite_withdraw_apply
+        WHERE user_id = #{userId}
+        AND status IN (0, 1)
+    </select>
+
+    <!-- 保存邀请参数日志到数据库 -->
+    <insert id="saveInviteParamLog">
+        INSERT INTO pms_invite_param_log (
+            user_id,
+            invite_param,
+            param_timestamp,
+            expire_time,
+            use_count,
+            max_use_count,
+            status,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{userId},
+            #{inviteParam},
+            #{timestamp},
+            #{expireTime},
+            0,
+            0,
+            1,
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+    <!-- 检查被邀请者是否已有邀请者 -->
+    <select id="checkInviteeHasInviter" resultType="boolean">
+        SELECT COUNT(1) > 0
+        FROM pms_invite_relation
+        WHERE invitee_id = #{inviteeUserId}
+          AND status >= 0
+    </select>
+
+    <!-- 保存邀请关系 -->
+    <insert id="saveInviteRelation">
+        INSERT INTO pms_invite_relation (
+            inviter_id,
+            invitee_id,
+            invite_param,
+            invite_time,
+            register_time,
+            status,
+            reward_status,
+            scene_type,
+            relation_type,
+            distributor_level,
+            bind_source,
+            is_permanent,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{inviterUserId},
+            #{inviteeUserId},
+            #{inviteParam},
+            NOW(),
+            NOW(),
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            NOW(),
+            NOW()
+        )
+    </insert>
+
+    <!-- 获取用户的邀请者ID -->
+    <select id="getInviterUserId" resultType="java.lang.Long">
+        SELECT inviter_id
+        FROM pms_invite_relation
+        WHERE invitee_id = #{inviteeUserId}
+          AND status = 1
+        LIMIT 1
+    </select>
+
+    <!-- 获取邀请关系建立时间 -->
+    <select id="getInviteDate" resultType="java.util.Date">
+        SELECT created_at
+        FROM pms_invite_relation
+        WHERE inviter_id = #{inviterUserId}
+          AND invitee_id = #{inviteeUserId}
+          AND status = 1
+        LIMIT 1
+    </select>
+
+    <!-- 获取邀请关系ID -->
+    <select id="getInviteRelationId" resultType="java.lang.Long">
+        SELECT id
+        FROM pms_invite_relation
+        WHERE (inviter_id = #{userId} AND invitee_id = #{relatedUserId})
+           OR (inviter_id = #{relatedUserId} AND invitee_id = #{userId})
+        LIMIT 1
+    </select>
+
+</mapper>

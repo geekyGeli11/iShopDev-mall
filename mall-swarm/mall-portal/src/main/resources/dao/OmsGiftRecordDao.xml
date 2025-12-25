@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.portal.dao.OmsGiftRecordDao">
+    
+    <!-- 获取用户的送礼记录 -->
+    <select id="getSentGiftList" resultMap="com.macro.mall.mapper.OmsGiftRecordMapper.BaseResultMap">
+        SELECT g.*
+        FROM oms_gift_record g
+        WHERE g.sender_id = #{senderId}
+        ORDER BY g.create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+    <!-- 获取用户的收礼记录 -->
+    <select id="getReceivedGiftList" resultMap="com.macro.mall.mapper.OmsGiftRecordMapper.BaseResultMap">
+        SELECT g.*
+        FROM oms_gift_record g
+        WHERE g.receiver_id = #{receiverId}
+        ORDER BY g.create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+</mapper> 

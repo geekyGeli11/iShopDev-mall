@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.PmsInviteRewardDao">
+    
+    <!-- 分页获取奖励记录列表（包含用户信息） -->
+    <select id="getInviteRewardsList" resultType="map">
+        SELECT 
+            r.id,
+            r.relation_id AS relationId,
+            r.user_id AS userId,
+            r.user_type AS userType,
+            r.reward_type AS rewardType,
+            r.reward_value AS rewardValue,
+            r.reward_desc AS rewardDesc,
+            r.trigger_type AS triggerType,
+            r.trigger_amount AS triggerAmount,
+            r.status,
+            r.coupon_id AS couponId,
+            r.expire_time AS expireTime,
+            r.send_time AS sendTime,
+            r.send_result AS sendResult,
+            r.created_at AS createdAt,
+            r.updated_at AS updatedAt,
+            -- 用户信息
+            u.nickname AS userNickname,
+            u.phone AS userPhone,
+            u.icon AS userIcon,
+            -- 邀请关系信息
+            ir.inviter_id AS inviterId,
+            ir.invitee_id AS inviteeId,
+            inviter.nickname AS inviterNickname,
+            invitee.nickname AS inviteeNickname,
+            -- 状态文本
+            CASE r.status
+                WHEN 0 THEN '待发放'
+                WHEN 1 THEN '已发放'
+                WHEN 2 THEN '发放失败'
+                WHEN 3 THEN '已过期'
+                ELSE '未知状态'
+            END AS statusText,
+            -- 用户类型文本
+            CASE r.user_type
+                WHEN 1 THEN '邀请者'
+                WHEN 2 THEN '被邀请者'
+                ELSE '未知类型'
+            END AS userTypeText,
+            -- 奖励类型文本
+            CASE r.reward_type
+                WHEN 1 THEN '积分'
+                WHEN 2 THEN '优惠券'
+                WHEN 3 THEN '现金红包'
+                WHEN 4 THEN '商品'
+                ELSE '未知类型'
+            END AS rewardTypeText,
+            -- 触发类型文本
+            CASE r.trigger_type
+                WHEN 1 THEN '注册完成'
+                WHEN 2 THEN '首单完成'
+                WHEN 3 THEN '累计消费达标'
+                ELSE '未知触发'
+            END AS triggerTypeText
+        FROM 
+            pms_invite_reward r
+        LEFT JOIN 
+            ums_member u ON r.user_id = u.id
+        LEFT JOIN 
+            pms_invite_relation ir ON r.relation_id = ir.id
+        LEFT JOIN 
+            ums_member inviter ON ir.inviter_id = inviter.id
+        LEFT JOIN 
+            ums_member invitee ON ir.invitee_id = invitee.id
+        <where>
+            <if test="userId != null">
+                AND r.user_id = #{userId}
+            </if>
+            <if test="userType != null">
+                AND r.user_type = #{userType}
+            </if>
+            <if test="rewardType != null">
+                AND r.reward_type = #{rewardType}
+            </if>
+            <if test="triggerType != null">
+                AND r.trigger_type = #{triggerType}
+            </if>
+            <if test="status != null">
+                AND r.status = #{status}
+            </if>
+            <if test="commissionType != null">
+                <!-- 根据佣金类型筛选，1=一级分销，2=二级分销 -->
+                <if test="commissionType == 1">
+                    AND r.user_type = 1 AND r.reward_type = 3
+                </if>
+                <if test="commissionType == 2">
+                    AND r.user_type = 2 AND r.reward_type = 3
+                </if>
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND r.created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND r.created_at &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY r.created_at DESC
+    </select>
+    
+    <!-- 统计奖励记录数量 -->
+    <select id="countInviteRewardsList" resultType="long">
+        SELECT COUNT(*)
+        FROM 
+            pms_invite_reward r
+        LEFT JOIN 
+            ums_member u ON r.user_id = u.id
+        LEFT JOIN 
+            pms_invite_relation ir ON r.relation_id = ir.id
+        LEFT JOIN 
+            ums_member inviter ON ir.inviter_id = inviter.id
+        LEFT JOIN 
+            ums_member invitee ON ir.invitee_id = invitee.id
+        <where>
+            <if test="userId != null">
+                AND r.user_id = #{userId}
+            </if>
+            <if test="userType != null">
+                AND r.user_type = #{userType}
+            </if>
+            <if test="rewardType != null">
+                AND r.reward_type = #{rewardType}
+            </if>
+            <if test="triggerType != null">
+                AND r.trigger_type = #{triggerType}
+            </if>
+            <if test="status != null">
+                AND r.status = #{status}
+            </if>
+            <if test="commissionType != null">
+                <!-- 根据佣金类型筛选，1=一级分销，2=二级分销 -->
+                <if test="commissionType == 1">
+                    AND r.user_type = 1 AND r.reward_type = 3
+                </if>
+                <if test="commissionType == 2">
+                    AND r.user_type = 2 AND r.reward_type = 3
+                </if>
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND r.created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND r.created_at &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+    
+    <!-- 获取奖励记录详情（包含用户信息） -->
+    <select id="getInviteRewardDetail" resultType="map">
+        SELECT 
+            r.id,
+            r.relation_id AS relationId,
+            r.user_id AS userId,
+            r.user_type AS userType,
+            r.reward_type AS rewardType,
+            r.reward_value AS rewardValue,
+            r.reward_desc AS rewardDesc,
+            r.trigger_type AS triggerType,
+            r.trigger_amount AS triggerAmount,
+            r.status,
+            r.coupon_id AS couponId,
+            r.expire_time AS expireTime,
+            r.send_time AS sendTime,
+            r.send_result AS sendResult,
+            r.created_at AS createdAt,
+            r.updated_at AS updatedAt,
+            -- 用户信息
+            u.nickname AS userNickname,
+            u.phone AS userPhone,
+            u.icon AS userIcon,
+            u.member_code AS memberCode,
+            -- 邀请关系信息
+            ir.inviter_id AS inviterId,
+            ir.invitee_id AS inviteeId,
+            ir.invite_param AS inviteParam,
+            inviter.nickname AS inviterNickname,
+            inviter.phone AS inviterPhone,
+            invitee.nickname AS inviteeNickname,
+            invitee.phone AS inviteePhone,
+            -- 状态文本
+            CASE r.status
+                WHEN 0 THEN '待发放'
+                WHEN 1 THEN '已发放'
+                WHEN 2 THEN '发放失败'
+                WHEN 3 THEN '已过期'
+                ELSE '未知状态'
+            END AS statusText,
+            -- 用户类型文本
+            CASE r.user_type
+                WHEN 1 THEN '邀请者'
+                WHEN 2 THEN '被邀请者'
+                ELSE '未知类型'
+            END AS userTypeText,
+            -- 奖励类型文本
+            CASE r.reward_type
+                WHEN 1 THEN '积分'
+                WHEN 2 THEN '优惠券'
+                WHEN 3 THEN '现金红包'
+                WHEN 4 THEN '商品'
+                ELSE '未知类型'
+            END AS rewardTypeText,
+            -- 触发类型文本
+            CASE r.trigger_type
+                WHEN 1 THEN '注册完成'
+                WHEN 2 THEN '首单完成'
+                WHEN 3 THEN '累计消费达标'
+                ELSE '未知触发'
+            END AS triggerTypeText
+        FROM 
+            pms_invite_reward r
+        LEFT JOIN 
+            ums_member u ON r.user_id = u.id
+        LEFT JOIN 
+            pms_invite_relation ir ON r.relation_id = ir.id
+        LEFT JOIN 
+            ums_member inviter ON ir.inviter_id = inviter.id
+        LEFT JOIN 
+            ums_member invitee ON ir.invitee_id = invitee.id
+        WHERE 
+            r.id = #{id}
+    </select>
+    
+    <!-- 获取奖励发放汇总统计 -->
+    <select id="getRewardSummaryStats" resultType="map">
+        SELECT 
+            COUNT(*) AS totalRewards,
+            SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) AS sentRewards,
+            SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) AS pendingRewards,
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS failedRewards,
+            SUM(CASE WHEN status = 3 THEN 1 ELSE 0 END) AS expiredRewards,
+            -- 按奖励类型统计
+            SUM(CASE WHEN reward_type = 1 THEN 1 ELSE 0 END) AS pointsRewards,
+            SUM(CASE WHEN reward_type = 2 THEN 1 ELSE 0 END) AS couponRewards,
+            SUM(CASE WHEN reward_type = 3 THEN 1 ELSE 0 END) AS cashRewards,
+            SUM(CASE WHEN reward_type = 4 THEN 1 ELSE 0 END) AS productRewards,
+            -- 按用户类型统计
+            SUM(CASE WHEN user_type = 1 THEN 1 ELSE 0 END) AS inviterRewards,
+            SUM(CASE WHEN user_type = 2 THEN 1 ELSE 0 END) AS inviteeRewards,
+            -- 奖励金额统计（仅现金红包）
+            SUM(CASE WHEN reward_type = 3 AND status = 1 THEN reward_value ELSE 0 END) AS totalCashSent,
+            SUM(CASE WHEN reward_type = 1 AND status = 1 THEN reward_value ELSE 0 END) AS totalPointsSent,
+            -- 发放成功率
+            CASE 
+                WHEN COUNT(*) &gt; 0 THEN 
+                    ROUND(SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 4)
+                ELSE 0 
+            END AS successRate
+        FROM 
+            pms_invite_reward
+    </select>
+    
+    <!-- 获取不同佣金类型的统计数据 -->
+    <select id="getCommissionStatistics" resultType="map">
+        SELECT 
+            -- 邀请奖励总额
+            SUM(CASE WHEN reward_type IN (1,2,4) AND status = 1 THEN reward_value ELSE 0 END) AS inviteRewardTotal,
+            -- 一级分销佣金总额
+            SUM(CASE WHEN user_type = 1 AND reward_type = 3 AND status = 1 THEN reward_value ELSE 0 END) AS level1CommissionTotal,
+            -- 二级分销佣金总额  
+            SUM(CASE WHEN user_type = 2 AND reward_type = 3 AND status = 1 THEN reward_value ELSE 0 END) AS level2CommissionTotal,
+            -- 总佣金
+            SUM(CASE WHEN reward_type = 3 AND status = 1 THEN reward_value ELSE 0 END) AS totalCommission,
+            -- 统计数量
+            COUNT(CASE WHEN reward_type IN (1,2,4) AND status = 1 THEN 1 END) AS inviteRewardCount,
+            COUNT(CASE WHEN user_type = 1 AND reward_type = 3 AND status = 1 THEN 1 END) AS level1CommissionCount,
+            COUNT(CASE WHEN user_type = 2 AND reward_type = 3 AND status = 1 THEN 1 END) AS level2CommissionCount
+        FROM 
+            pms_invite_reward
+        <where>
+            <if test="startTime != null and startTime != ''">
+                AND created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND created_at &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+    
+    <!-- 获取佣金趋势数据 -->
+    <select id="getCommissionTrend" resultType="map">
+        SELECT 
+            <choose>
+                <when test="granularity == 'day'">
+                    DATE(created_at) AS dateKey,
+                    DATE_FORMAT(created_at, '%Y-%m-%d') AS dateLabel
+                </when>
+                <when test="granularity == 'week'">
+                    DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY) AS dateKey,
+                    CONCAT(DATE_FORMAT(DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY), '%Y-%m-%d'), ' 至 ', 
+                           DATE_FORMAT(DATE_ADD(DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY), INTERVAL 6 DAY), '%Y-%m-%d')) AS dateLabel
+                </when>
+                <otherwise>
+                    DATE_FORMAT(created_at, '%Y-%m') AS dateKey,
+                    DATE_FORMAT(created_at, '%Y年%m月') AS dateLabel
+                </otherwise>
+            </choose>,
+            COUNT(*) AS totalCount,
+            SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) AS successCount,
+            SUM(CASE WHEN status = 1 THEN reward_value ELSE 0 END) AS successAmount,
+            AVG(CASE WHEN status = 1 THEN reward_value ELSE NULL END) AS avgAmount
+        FROM 
+            pms_invite_reward
+        <where>
+            <if test="commissionType != null">
+                <if test="commissionType == 1">
+                    AND user_type = 1 AND reward_type = 3
+                </if>
+                <if test="commissionType == 2">
+                    AND user_type = 2 AND reward_type = 3
+                </if>
+                <if test="commissionType == 0">
+                    AND reward_type IN (1,2,4)
+                </if>
+            </if>
+            <if test="startTime != null and startTime != ''">
+                AND created_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND created_at &lt;= #{endTime}
+            </if>
+        </where>
+        GROUP BY dateKey
+        ORDER BY dateKey ASC
+    </select>
+    
+</mapper> 

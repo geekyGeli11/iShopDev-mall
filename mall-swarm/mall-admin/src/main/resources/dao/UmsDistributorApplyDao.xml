@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.UmsDistributorApplyDao">
+    
+    <resultMap id="DistributorApplyListVOMap" type="com.macro.mall.dto.UmsDistributorApplyListVO">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="nickname" property="nickname"/>
+        <result column="real_name" property="realName"/>
+        <result column="phone" property="phone"/>
+        <result column="wechat" property="wechat"/>
+        <result column="status" property="status"/>
+        <result column="apply_time" property="applyTime"/>
+        <result column="review_time" property="reviewTime"/>
+        <result column="reviewer_id" property="reviewerId"/>
+        <result column="reviewer_name" property="reviewerName"/>
+        <result column="apply_reason" property="applyReason"/>
+        <result column="review_comment" property="reviewComment"/>
+        <result column="self_introduction" property="selfIntroduction"/>
+        <result column="influence_screenshots" property="influenceScreenshots"/>
+        <result column="id_card_front_img" property="idCardFrontImg"/>
+        <result column="id_card_back_img" property="idCardBackImg"/>
+        <result column="other_certificates" property="otherCertificates"/>
+        <result column="work_screenshots" property="workScreenshots"/>
+    </resultMap>
+    
+    <select id="selectByPage" resultMap="DistributorApplyListVOMap">
+        SELECT
+            da.id,
+            da.user_id,
+            m.nickname,
+            da.real_name,
+            da.phone,
+            da.wechat,
+            da.status,
+            da.apply_time,
+            da.review_time,
+            da.reviewer_id,
+            admin.nick_name as reviewer_name,
+            da.apply_reason,
+            da.review_comment,
+            da.self_introduction,
+            da.influence_screenshots,
+            da.id_card_front_img,
+            da.id_card_back_img,
+            da.other_certificates,
+            da.work_screenshots
+        FROM ums_distributor_apply da
+        LEFT JOIN ums_member m ON da.user_id = m.id
+        LEFT JOIN ums_admin admin ON da.reviewer_id = admin.id
+        <where>
+            <if test="param.realName != null and param.realName != ''">
+                AND da.real_name LIKE CONCAT('%', #{param.realName}, '%')
+            </if>
+            <if test="param.phone != null and param.phone != ''">
+                AND da.phone LIKE CONCAT('%', #{param.phone}, '%')
+            </if>
+            <if test="param.status != null">
+                AND da.status = #{param.status}
+            </if>
+            <if test="param.startTime != null and param.startTime != ''">
+                AND da.apply_time &gt;= #{param.startTime}
+            </if>
+            <if test="param.endTime != null and param.endTime != ''">
+                AND da.apply_time &lt;= #{param.endTime}
+            </if>
+            <if test="param.reviewerId != null">
+                AND da.reviewer_id = #{param.reviewerId}
+            </if>
+        </where>
+        ORDER BY da.apply_time DESC
+    </select>
+    
+    <select id="selectDetailById" resultMap="DistributorApplyListVOMap">
+        SELECT
+            da.id,
+            da.user_id,
+            m.nickname,
+            da.real_name,
+            da.phone,
+            da.wechat,
+            da.status,
+            da.apply_time,
+            da.review_time,
+            da.reviewer_id,
+            admin.nick_name as reviewer_name,
+            da.apply_reason,
+            da.review_comment,
+            da.self_introduction,
+            da.influence_screenshots,
+            da.id_card_front_img,
+            da.id_card_back_img,
+            da.other_certificates,
+            da.work_screenshots
+        FROM ums_distributor_apply da
+        LEFT JOIN ums_member m ON da.user_id = m.id
+        LEFT JOIN ums_admin admin ON da.reviewer_id = admin.id
+        WHERE da.id = #{id}
+    </select>
+    
+    <update id="batchReview">
+        UPDATE ums_distributor_apply 
+        SET status = #{status},
+            review_time = NOW(),
+            reviewer_id = #{reviewerId},
+            review_comment = #{reviewComment},
+            updated_at = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND status = 0
+    </update>
+    
+</mapper> 

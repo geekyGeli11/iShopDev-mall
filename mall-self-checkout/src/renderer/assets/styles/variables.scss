@@ -1,0 +1,113 @@
+/**
+ * 自助收银系统 - 设计变量
+ * 针对触屏设备和各年龄段用户优化
+ */
+
+// ===== 颜色系统 =====
+
+// 主色调 - 温暖可信赖的蓝色
+$primary-color: #1989fa;
+$primary-light: #4dabf7;
+$primary-dark: #0969da;
+
+// 辅助色
+$success-color: #07c160;  // 微信绿
+$warning-color: #ff976a;  // 温暖橙色
+$danger-color: #ee0a24;   // 危险红色
+$info-color: #909399;     // 信息灰色
+
+// 渐变色
+$gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$gradient-success: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+$gradient-warning: linear-gradient(135deg, #faad14 0%, #d48806 100%);
+
+// 中性色
+$text-primary: #323233;   // 主要文字
+$text-secondary: #646566; // 次要文字
+$text-light: #969799;     // 辅助文字
+$border-color: #ebedf0;   // 边框色
+$background-light: #f7f8fa; // 浅色背景
+$background-white: #ffffff; // 白色背景
+
+// ===== 尺寸系统 =====
+
+// 触屏优化 - 按钮尺寸
+$button-height-small: 48px;   // 小按钮最小触摸区域
+$button-height-medium: 56px;  // 中等按钮
+$button-height-large: 64px;   // 大按钮
+$button-height-xl: 80px;      // 超大按钮（主要操作）
+
+// 字体大小 - 可读性优化
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-md: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 20px;
+$font-size-2xl: 24px;
+$font-size-3xl: 28px;
+$font-size-4xl: 32px;
+
+// 间距系统
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-2xl: 48px;
+$spacing-3xl: 64px;
+
+// 圆角
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 16px;
+$border-radius-round: 50%;
+
+// 阴影
+$shadow-light: 0 2px 4px rgba(0, 0, 0, 0.05);
+$shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.1);
+$shadow-heavy: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+// ===== 组件特定变量 =====
+
+// 会员卡
+$member-card-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$member-card-text: #ffffff;
+
+// 扫码区域
+$scan-overlay-bg: rgba(0, 0, 0, 0.6);
+$scan-frame-color: #1989fa;
+
+// 商品卡片
+$product-card-bg: #ffffff;
+$product-card-border: #ebedf0;
+$product-card-shadow: $shadow-light;
+
+// 支付相关
+$payment-qr-bg: #ffffff;
+$payment-success-color: $success-color;
+$payment-failed-color: $danger-color;
+
+// 购物车
+$cart-item-bg: #ffffff;
+$cart-total-bg: #f7f8fa;
+
+// ===== 响应式断点 =====
+
+$breakpoint-mobile: 320px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
+// ===== 动画时间 =====
+
+$animation-fast: 0.2s;
+$animation-normal: 0.3s;
+$animation-slow: 0.5s;
+
+// ===== Z-index 层级 =====
+
+$z-index-normal: 1;
+$z-index-dropdown: 10;
+$z-index-modal: 100;
+$z-index-notification: 1000;
+$z-index-toast: 2000; 

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据类型测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .test-section h3 {
+            color: #555;
+            margin-top: 0;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #666;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>数据类型测试工具</h1>
+        
+        <!-- 手机号登录参数测试 -->
+        <div class="test-section">
+            <h3>1. 手机号登录参数测试</h3>
+            <div class="input-group">
+                <label>手机号:</label>
+                <input type="tel" id="phoneInput" placeholder="15521006217" maxlength="11">
+            </div>
+            <div class="input-group">
+                <label>验证码:</label>
+                <input type="text" id="codeInput" placeholder="123456" maxlength="6">
+            </div>
+            <button onclick="testMemberLogin()">测试手机号登录</button>
+            <div id="memberResult" class="result log" style="display: none;"></div>
+        </div>
+
+        <!-- JSON序列化测试 -->
+        <div class="test-section">
+            <h3>2. JSON序列化测试</h3>
+            <div class="input-group">
+                <label>手机号:</label>
+                <input type="tel" id="phoneInput2" placeholder="15521006217" maxlength="11">
+            </div>
+            <div class="input-group">
+                <label>验证码:</label>
+                <input type="text" id="codeInput2" placeholder="123456" maxlength="6">
+            </div>
+            <button onclick="testJSONSerialization()">测试JSON序列化</button>
+            <div id="jsonResult" class="result log" style="display: none;"></div>
+        </div>
+
+        <!-- 类型转换测试 -->
+        <div class="test-section">
+            <h3>3. 类型转换测试</h3>
+            <div class="input-group">
+                <label>测试值:</label>
+                <input type="text" id="testValue" placeholder="123456">
+            </div>
+            <button onclick="testTypeConversion()">测试类型转换</button>
+            <div id="typeResult" class="result log" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentLogElement = null;
+
+        function log(message) {
+            console.log(message);
+            if (currentLogElement) {
+                currentLogElement.textContent += message + '\n';
+                currentLogElement.scrollTop = currentLogElement.scrollHeight;
+            }
+        }
+
+        function clearLog(element) {
+            element.textContent = '';
+            element.style.display = 'block';
+            currentLogElement = element;
+        }
+
+        function testMemberLogin() {
+            const phone = document.getElementById('phoneInput').value;
+            const code = document.getElementById('codeInput').value;
+            const resultDiv = document.getElementById('memberResult');
+            
+            clearLog(resultDiv);
+            
+            if (!phone.trim() || !code.trim()) {
+                log('❌ 请输入手机号和验证码');
+                return;
+            }
+            
+            log('🔍 原始输入:');
+            log('手机号: ' + phone + ' (类型: ' + typeof phone + ')');
+            log('验证码: ' + code + ' (类型: ' + typeof code + ')');
+            
+            // 模拟前端表单数据
+            const loginForm = {
+                phone: phone,
+                verifyCode: code
+            };
+            
+            log('\n📝 表单数据:');
+            log('loginForm.phone: ' + loginForm.phone + ' (类型: ' + typeof loginForm.phone + ')');
+            log('loginForm.verifyCode: ' + loginForm.verifyCode + ' (类型: ' + typeof loginForm.verifyCode + ')');
+            
+            // 模拟构建登录参数
+            const loginParams = {
+                telephone: loginForm.phone,
+                verifyCode: loginForm.verifyCode,
+            };
+            
+            log('\n📤 登录参数:');
+            log('telephone: ' + loginParams.telephone + ' (类型: ' + typeof loginParams.telephone + ')');
+            log('verifyCode: ' + loginParams.verifyCode + ' (类型: ' + typeof loginParams.verifyCode + ')');
+            
+            // 模拟JSON序列化
+            const serialized = JSON.stringify(loginParams);
+            log('\n🔄 JSON序列化:');
+            log('序列化结果: ' + serialized);
+            log('序列化长度: ' + serialized.length);
+            
+            // 模拟反序列化
+            try {
+                const deserialized = JSON.parse(serialized);
+                log('\n📥 反序列化:');
+                log('telephone: ' + deserialized.telephone + ' (类型: ' + typeof deserialized.telephone + ')');
+                log('verifyCode: ' + deserialized.verifyCode + ' (类型: ' + typeof deserialized.verifyCode + ')');
+                
+                // 模拟后端验证码处理
+                log('\n🔍 模拟后端处理:');
+                const verifyCode = deserialized.verifyCode;
+                log('原始验证码: ' + verifyCode + ' (类型: ' + typeof verifyCode + ')');
+                
+                // 检查是否为数字字符串
+                const isNumericString = /^\d{1,6}$/.test(verifyCode);
+                log('是否为数字字符串: ' + isNumericString);
+                
+                if (isNumericString) {
+                    try {
+                        const parsed = parseInt(verifyCode);
+                        log('parseInt结果: ' + parsed + ' (类型: ' + typeof parsed + ')');
+                        
+                        const formatted = String.prototype.padStart.call(parsed.toString(), 6, '0');
+                        log('格式化结果: ' + formatted + ' (类型: ' + typeof formatted + ')');
+                    } catch (error) {
+                        log('❌ parseInt失败: ' + error.message);
+                    }
+                } else {
+                    log('❌ 验证码格式不正确');
+                }
+                
+            } catch (error) {
+                log('❌ 反序列化失败: ' + error.message);
+            }
+        }
+
+        function testJSONSerialization() {
+            const phone = document.getElementById('phoneInput2').value;
+            const code = document.getElementById('codeInput2').value;
+            const resultDiv = document.getElementById('jsonResult');
+            
+            clearLog(resultDiv);
+            
+            if (!phone.trim() || !code.trim()) {
+                log('❌ 请输入手机号和验证码');
+                return;
+            }
+            
+            // 测试不同的数据类型
+            const testCases = [
+                { name: '字符串验证码', data: { telephone: phone, verifyCode: code } },
+                { name: '数字验证码', data: { telephone: phone, verifyCode: parseInt(code) } },
+                { name: '混合类型', data: { telephone: parseInt(phone), verifyCode: code } },
+            ];
+            
+            testCases.forEach((testCase, index) => {
+                log(`\n🧪 测试用例 ${index + 1}: ${testCase.name}`);
+                log('原始数据: ' + JSON.stringify(testCase.data));
+                log('telephone 类型: ' + typeof testCase.data.telephone);
+                log('verifyCode 类型: ' + typeof testCase.data.verifyCode);
+                
+                const serialized = JSON.stringify(testCase.data);
+                log('序列化: ' + serialized);
+                
+                try {
+                    const deserialized = JSON.parse(serialized);
+                    log('反序列化 telephone 类型: ' + typeof deserialized.telephone);
+                    log('反序列化 verifyCode 类型: ' + typeof deserialized.verifyCode);
+                } catch (error) {
+                    log('❌ 反序列化失败: ' + error.message);
+                }
+            });
+        }
+
+        function testTypeConversion() {
+            const value = document.getElementById('testValue').value;
+            const resultDiv = document.getElementById('typeResult');
+            
+            clearLog(resultDiv);
+            
+            if (!value.trim()) {
+                log('❌ 请输入测试值');
+                return;
+            }
+            
+            log('🔍 原始值: ' + value + ' (类型: ' + typeof value + ')');
+            
+            // 测试各种转换
+            log('\n🔄 类型转换测试:');
+            
+            try {
+                const asNumber = Number(value);
+                log('Number(): ' + asNumber + ' (类型: ' + typeof asNumber + ')');
+            } catch (error) {
+                log('❌ Number() 失败: ' + error.message);
+            }
+            
+            try {
+                const asInt = parseInt(value);
+                log('parseInt(): ' + asInt + ' (类型: ' + typeof asInt + ')');
+            } catch (error) {
+                log('❌ parseInt() 失败: ' + error.message);
+            }
+            
+            try {
+                const asString = String(value);
+                log('String(): ' + asString + ' (类型: ' + typeof asString + ')');
+            } catch (error) {
+                log('❌ String() 失败: ' + error.message);
+            }
+            
+            // 测试JSON序列化对不同类型的处理
+            log('\n📦 JSON序列化测试:');
+            const testObj1 = { value: value };  // 字符串
+            const testObj2 = { value: parseInt(value) };  // 数字
+            
+            log('字符串对象: ' + JSON.stringify(testObj1));
+            log('数字对象: ' + JSON.stringify(testObj2));
+            
+            // 测试反序列化
+            const parsed1 = JSON.parse(JSON.stringify(testObj1));
+            const parsed2 = JSON.parse(JSON.stringify(testObj2));
+            
+            log('反序列化字符串: ' + parsed1.value + ' (类型: ' + typeof parsed1.value + ')');
+            log('反序列化数字: ' + parsed2.value + ' (类型: ' + typeof parsed2.value + ')');
+        }
+
+        // 页面加载时设置默认值
+        window.onload = function() {
+            document.getElementById('phoneInput').value = '15521006217';
+            document.getElementById('codeInput').value = '123456';
+            document.getElementById('phoneInput2').value = '15521006217';
+            document.getElementById('codeInput2').value = '123456';
+            document.getElementById('testValue').value = '123456';
+        };
+    </script>
+</body>
+</html>

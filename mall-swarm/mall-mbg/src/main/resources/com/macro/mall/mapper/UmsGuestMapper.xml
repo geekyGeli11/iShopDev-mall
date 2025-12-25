@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.UmsGuestMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.UmsGuest">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="guest_id" jdbcType="VARCHAR" property="guestId" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="device_type" jdbcType="VARCHAR" property="deviceType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="last_active_time" jdbcType="TIMESTAMP" property="lastActiveTime" />
+    <result column="last_access_ip" jdbcType="VARCHAR" property="lastAccessIp" />
+    <result column="user_agent" jdbcType="VARCHAR" property="userAgent" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="has_active_order" jdbcType="BIT" property="hasActiveOrder" />
+    <result column="school_id" jdbcType="BIGINT" property="schoolId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, guest_id, device_id, device_type, create_time, last_active_time, last_access_ip, 
+    user_agent, status, has_active_order, school_id
+  </sql>
+  <select id="selectByExample" parameterType="com.macro.mall.model.UmsGuestExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ums_guest
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ums_guest
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ums_guest
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.UmsGuestExample">
+    delete from ums_guest
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.UmsGuest">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_guest (guest_id, device_id, device_type, 
+      create_time, last_active_time, last_access_ip, 
+      user_agent, status, has_active_order, 
+      school_id)
+    values (#{guestId,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{lastActiveTime,jdbcType=TIMESTAMP}, #{lastAccessIp,jdbcType=VARCHAR}, 
+      #{userAgent,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{hasActiveOrder,jdbcType=BIT}, 
+      #{schoolId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.UmsGuest">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_guest
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="guestId != null">
+        guest_id,
+      </if>
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="deviceType != null">
+        device_type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="lastActiveTime != null">
+        last_active_time,
+      </if>
+      <if test="lastAccessIp != null">
+        last_access_ip,
+      </if>
+      <if test="userAgent != null">
+        user_agent,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="hasActiveOrder != null">
+        has_active_order,
+      </if>
+      <if test="schoolId != null">
+        school_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="guestId != null">
+        #{guestId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null">
+        #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastActiveTime != null">
+        #{lastActiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastAccessIp != null">
+        #{lastAccessIp,jdbcType=VARCHAR},
+      </if>
+      <if test="userAgent != null">
+        #{userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="hasActiveOrder != null">
+        #{hasActiveOrder,jdbcType=BIT},
+      </if>
+      <if test="schoolId != null">
+        #{schoolId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.UmsGuestExample" resultType="java.lang.Long">
+    select count(*) from ums_guest
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update ums_guest
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.guestId != null">
+        guest_id = #{row.guestId,jdbcType=VARCHAR},
+      </if>
+      <if test="row.deviceId != null">
+        device_id = #{row.deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="row.deviceType != null">
+        device_type = #{row.deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="row.createTime != null">
+        create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.lastActiveTime != null">
+        last_active_time = #{row.lastActiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.lastAccessIp != null">
+        last_access_ip = #{row.lastAccessIp,jdbcType=VARCHAR},
+      </if>
+      <if test="row.userAgent != null">
+        user_agent = #{row.userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="row.status != null">
+        status = #{row.status,jdbcType=INTEGER},
+      </if>
+      <if test="row.hasActiveOrder != null">
+        has_active_order = #{row.hasActiveOrder,jdbcType=BIT},
+      </if>
+      <if test="row.schoolId != null">
+        school_id = #{row.schoolId,jdbcType=BIGINT},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update ums_guest
+    set id = #{row.id,jdbcType=BIGINT},
+      guest_id = #{row.guestId,jdbcType=VARCHAR},
+      device_id = #{row.deviceId,jdbcType=VARCHAR},
+      device_type = #{row.deviceType,jdbcType=VARCHAR},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      last_active_time = #{row.lastActiveTime,jdbcType=TIMESTAMP},
+      last_access_ip = #{row.lastAccessIp,jdbcType=VARCHAR},
+      user_agent = #{row.userAgent,jdbcType=VARCHAR},
+      status = #{row.status,jdbcType=INTEGER},
+      has_active_order = #{row.hasActiveOrder,jdbcType=BIT},
+      school_id = #{row.schoolId,jdbcType=BIGINT}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.UmsGuest">
+    update ums_guest
+    <set>
+      <if test="guestId != null">
+        guest_id = #{guestId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceType != null">
+        device_type = #{deviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastActiveTime != null">
+        last_active_time = #{lastActiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastAccessIp != null">
+        last_access_ip = #{lastAccessIp,jdbcType=VARCHAR},
+      </if>
+      <if test="userAgent != null">
+        user_agent = #{userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="hasActiveOrder != null">
+        has_active_order = #{hasActiveOrder,jdbcType=BIT},
+      </if>
+      <if test="schoolId != null">
+        school_id = #{schoolId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.UmsGuest">
+    update ums_guest
+    set guest_id = #{guestId,jdbcType=VARCHAR},
+      device_id = #{deviceId,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_active_time = #{lastActiveTime,jdbcType=TIMESTAMP},
+      last_access_ip = #{lastAccessIp,jdbcType=VARCHAR},
+      user_agent = #{userAgent,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      has_active_order = #{hasActiveOrder,jdbcType=BIT},
+      school_id = #{schoolId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

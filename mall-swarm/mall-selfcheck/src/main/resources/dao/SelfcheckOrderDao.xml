@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.selfcheck.dao.SelfcheckOrderDao">
+
+    <!-- 订单详情结果映射 -->
+    <resultMap id="OrderVOResultMap" type="com.macro.mall.selfcheck.dto.OrderVO">
+        <id column="order_id" property="orderId" jdbcType="BIGINT"/>
+        <result column="order_sn" property="orderSn" jdbcType="VARCHAR"/>
+        <result column="user_type" property="userType" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="member_id" property="memberId" jdbcType="BIGINT"/>
+        <result column="member_username" property="memberUsername" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="status_name" property="statusName" jdbcType="VARCHAR"/>
+        <result column="order_type" property="orderType" jdbcType="VARCHAR"/>
+        <result column="source_type" property="sourceType" jdbcType="INTEGER"/>
+        <result column="total_amount" property="totalAmount" jdbcType="DECIMAL"/>
+        <result column="freight_amount" property="freightAmount" jdbcType="DECIMAL"/>
+        <result column="promotion_amount" property="promotionAmount" jdbcType="DECIMAL"/>
+        <result column="integration_amount" property="integrationAmount" jdbcType="DECIMAL"/>
+        <result column="coupon_amount" property="couponAmount" jdbcType="DECIMAL"/>
+        <result column="discount_amount" property="discountAmount" jdbcType="DECIMAL"/>
+        <result column="pay_amount" property="payAmount" jdbcType="DECIMAL"/>
+        <result column="pay_type" property="payType" jdbcType="VARCHAR"/>
+        <result column="pay_status" property="payStatus" jdbcType="INTEGER"/>
+        <result column="pay_time" property="payTime" jdbcType="TIMESTAMP"/>
+        <result column="delivery_type" property="deliveryType" jdbcType="INTEGER"/>
+        <result column="receiver_name" property="receiverName" jdbcType="VARCHAR"/>
+        <result column="receiver_phone" property="receiverPhone" jdbcType="VARCHAR"/>
+        <result column="receiver_post_code" property="receiverPostCode" jdbcType="VARCHAR"/>
+        <result column="receiver_province" property="receiverProvince" jdbcType="VARCHAR"/>
+        <result column="receiver_city" property="receiverCity" jdbcType="VARCHAR"/>
+        <result column="receiver_region" property="receiverRegion" jdbcType="VARCHAR"/>
+        <result column="receiver_detail_address" property="receiverDetailAddress" jdbcType="VARCHAR"/>
+        <result column="note" property="note" jdbcType="VARCHAR"/>
+        <result column="confirm_status" property="confirmStatus" jdbcType="INTEGER"/>
+        <result column="delete_status" property="deleteStatus" jdbcType="INTEGER"/>
+        <result column="use_integration" property="useIntegration" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+        <result column="auto_confirm_day" property="autoConfirmDay" jdbcType="INTEGER"/>
+        <result column="integration" property="integration" jdbcType="INTEGER"/>
+        <result column="growth" property="growth" jdbcType="INTEGER"/>
+        <result column="terminal_code" property="terminalCode" jdbcType="VARCHAR"/>
+        <result column="device_info" property="deviceInfo" jdbcType="VARCHAR"/>
+        <result column="delivery_time" property="deliveryTime" jdbcType="TIMESTAMP"/>
+        <result column="receive_time" property="receiveTime" jdbcType="TIMESTAMP"/>
+        <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!-- 根据订单ID和用户信息查询订单详情 -->
+    <select id="getOrderDetail" resultMap="OrderVOResultMap">
+        SELECT 
+            o.id AS order_id,
+            o.order_sn,
+            CASE 
+                WHEN o.member_id IS NOT NULL THEN 'MEMBER'
+                ELSE 'GUEST'
+            END AS user_type,
+            CASE 
+                WHEN o.member_id IS NOT NULL THEN CAST(o.member_id AS CHAR)
+                ELSE #{guestId}
+            END AS user_id,
+            o.member_id,
+            o.member_username,
+            o.status,
+            CASE o.status
+                WHEN 0 THEN '待付款'
+                WHEN 1 THEN '待发货'
+                WHEN 2 THEN '已发货'
+                WHEN 3 THEN '已完成'
+                WHEN 4 THEN '已关闭'
+                WHEN 5 THEN '无效订单'
+                ELSE '未知状态'
+            END AS status_name,
+            CASE o.order_type
+                WHEN 0 THEN 'NORMAL'
+                WHEN 1 THEN 'QUICK'
+                ELSE 'UNKNOWN'
+            END AS order_type,
+            o.source_type,
+            o.total_amount,
+            o.freight_amount,
+            o.promotion_amount,
+            o.integration_amount,
+            o.coupon_amount,
+            o.discount_amount,
+            o.pay_amount,
+            CASE o.pay_type
+                WHEN 0 THEN 'WECHAT'
+                WHEN 1 THEN 'ALIPAY'
+                ELSE 'UNKNOWN'
+            END AS pay_type,
+            CASE 
+                WHEN o.status = 0 THEN 0
+                WHEN o.status IN (1, 2, 3) AND o.payment_time IS NOT NULL THEN 1
+                WHEN o.status IN (4, 5) THEN 2
+                ELSE 0
+            END AS pay_status,
+            o.payment_time AS pay_time,
+            o.delivery_type,
+            o.receiver_name,
+            o.receiver_phone,
+            o.receiver_post_code,
+            o.receiver_province,
+            o.receiver_city,
+            o.receiver_region,
+            o.receiver_detail_address,
+            o.note,
+            o.confirm_status,
+            o.delete_status,
+            o.use_integration,
+            o.create_time,
+            o.modify_time,
+            o.auto_confirm_day,
+            o.integration,
+            o.growth,
+            SUBSTRING_INDEX(SUBSTRING_INDEX(o.note, '终端编码：', -1), '，', 1) AS terminal_code,
+            o.note AS device_info,
+            o.delivery_time,
+            o.receive_time,
+            o.comment_time
+        FROM oms_order o
+        WHERE o.id = #{orderId}
+          AND o.delete_status = 0
+          AND (
+              (#{memberId} IS NOT NULL AND o.member_id = #{memberId})
+              OR (#{guestId} IS NOT NULL AND o.note LIKE CONCAT('%游客ID：', #{guestId}, '%'))
+          )
+    </select>
+
+    <!-- 查询会员订单列表 -->
+    <select id="getMemberOrderList" resultMap="OrderVOResultMap">
+        SELECT 
+            o.id AS order_id,
+            o.order_sn,
+            'MEMBER' AS user_type,
+            CAST(o.member_id AS CHAR) AS user_id,
+            o.member_id,
+            o.member_username,
+            o.status,
+            CASE o.status
+                WHEN 0 THEN '待付款'
+                WHEN 1 THEN '待发货'
+                WHEN 2 THEN '已发货'
+                WHEN 3 THEN '已完成'
+                WHEN 4 THEN '已关闭'
+                WHEN 5 THEN '无效订单'
+                ELSE '未知状态'
+            END AS status_name,
+            CASE o.order_type
+                WHEN 0 THEN 'NORMAL'
+                WHEN 1 THEN 'QUICK'
+                ELSE 'UNKNOWN'
+            END AS order_type,
+            o.source_type,
+            o.total_amount,
+            o.freight_amount,
+            o.promotion_amount,
+            o.integration_amount,
+            o.coupon_amount,
+            o.discount_amount,
+            o.pay_amount,
+            CASE o.pay_type
+                WHEN 0 THEN 'WECHAT'
+                WHEN 1 THEN 'ALIPAY'
+                ELSE 'UNKNOWN'
+            END AS pay_type,
+            CASE 
+                WHEN o.status = 0 THEN 0
+                WHEN o.status IN (1, 2, 3) AND o.payment_time IS NOT NULL THEN 1
+                WHEN o.status IN (4, 5) THEN 2
+                ELSE 0
+            END AS pay_status,
+            o.payment_time AS pay_time,
+            o.delivery_type,
+            o.receiver_name,
+            o.receiver_phone,
+            o.receiver_post_code,
+            o.receiver_province,
+            o.receiver_city,
+            o.receiver_region,
+            o.receiver_detail_address,
+            o.note,
+            o.confirm_status,
+            o.delete_status,
+            o.use_integration,
+            o.create_time,
+            o.modify_time,
+            o.auto_confirm_day,
+            o.integration,
+            o.growth,
+            SUBSTRING_INDEX(SUBSTRING_INDEX(o.note, '终端编码：', -1), '，', 1) AS terminal_code,
+            o.note AS device_info,
+            o.delivery_time,
+            o.receive_time,
+            o.comment_time
+        FROM oms_order o
+        WHERE o.member_id = #{memberId}
+          AND o.delete_status = 0
+          AND o.source_type = 2
+        <if test="status != null">
+          AND o.status = #{status}
+        </if>
+        ORDER BY o.create_time DESC
+    </select>
+
+    <!-- 查询游客订单列表 -->
+    <select id="getGuestOrderList" resultMap="OrderVOResultMap">
+        SELECT 
+            o.id AS order_id,
+            o.order_sn,
+            'GUEST' AS user_type,
+            #{guestId} AS user_id,
+            o.member_id,
+            o.member_username,
+            o.status,
+            CASE o.status
+                WHEN 0 THEN '待付款'
+                WHEN 1 THEN '待发货'
+                WHEN 2 THEN '已发货'
+                WHEN 3 THEN '已完成'
+                WHEN 4 THEN '已关闭'
+                WHEN 5 THEN '无效订单'
+                ELSE '未知状态'
+            END AS status_name,
+            CASE o.order_type
+                WHEN 0 THEN 'NORMAL'
+                WHEN 1 THEN 'QUICK'
+                ELSE 'UNKNOWN'
+            END AS order_type,
+            o.source_type,
+            o.total_amount,
+            o.freight_amount,
+            o.promotion_amount,
+            o.integration_amount,
+            o.coupon_amount,
+            o.discount_amount,
+            o.pay_amount,
+            CASE o.pay_type
+                WHEN 0 THEN 'WECHAT'
+                WHEN 1 THEN 'ALIPAY'
+                ELSE 'UNKNOWN'
+            END AS pay_type,
+            CASE 
+                WHEN o.status = 0 THEN 0
+                WHEN o.status IN (1, 2, 3) AND o.payment_time IS NOT NULL THEN 1
+                WHEN o.status IN (4, 5) THEN 2
+                ELSE 0
+            END AS pay_status,
+            o.payment_time AS pay_time,
+            o.delivery_type,
+            o.receiver_name,
+            o.receiver_phone,
+            o.receiver_post_code,
+            o.receiver_province,
+            o.receiver_city,
+            o.receiver_region,
+            o.receiver_detail_address,
+            o.note,
+            o.confirm_status,
+            o.delete_status,
+            o.use_integration,
+            o.create_time,
+            o.modify_time,
+            o.auto_confirm_day,
+            o.integration,
+            o.growth,
+            SUBSTRING_INDEX(SUBSTRING_INDEX(o.note, '终端编码：', -1), '，', 1) AS terminal_code,
+            o.note AS device_info,
+            o.delivery_time,
+            o.receive_time,
+            o.comment_time
+        FROM oms_order o
+        WHERE o.note LIKE CONCAT('%游客ID：', #{guestId}, '%')
+          AND o.delete_status = 0
+          AND o.source_type = 2
+        ORDER BY o.create_time DESC
+    </select>
+
+    <!-- 根据订单ID查询订单商品列表 -->
+    <select id="getOrderItemsByOrderId" resultMap="com.macro.mall.mapper.OmsOrderItemMapper.BaseResultMap">
+        SELECT
+            id,
+            order_id,
+            order_sn,
+            product_id,
+            product_pic,
+            product_name,
+            product_brand,
+            product_sn,
+            product_price,
+            product_quantity,
+            product_sku_id,
+            product_sku_code,
+            product_category_id,
+            promotion_name,
+            promotion_amount,
+            coupon_amount,
+            integration_amount,
+            real_amount,
+            gift_integration,
+            gift_growth,
+            product_attr
+        FROM oms_order_item
+        WHERE order_id = #{orderId}
+        ORDER BY id
+    </select>
+
+    <!-- 查询订单基本信息 -->
+    <select id="getOrderById" resultType="com.macro.mall.model.OmsOrder">
+        SELECT * FROM oms_order
+        WHERE id = #{orderId}
+          AND delete_status = 0
+          AND (
+              (#{memberId} IS NOT NULL AND member_id = #{memberId})
+              OR (#{guestId} IS NOT NULL AND note LIKE CONCAT('%游客ID：', #{guestId}, '%'))
+          )
+    </select>
+
+    <!-- 更新订单状态 -->
+    <update id="updateOrderStatus">
+        UPDATE oms_order
+        SET status = #{status},
+            modify_time = NOW()
+            <if test="note != null">,note = CONCAT(IFNULL(note, ''), '；', #{note})</if>
+        WHERE id = #{orderId}
+    </update>
+
+    <!-- 更新订单支付信息 -->
+    <update id="updateOrderPayment">
+        UPDATE oms_order
+        SET pay_type = #{payType},
+            payment_time = NOW(),
+            status = CASE WHEN status = 0 THEN 1 ELSE status END,
+            modify_time = NOW()
+            <if test="transactionId != null">,note = CONCAT(IFNULL(note, ''), '；支付流水号：', #{transactionId})</if>
+            <if test="paidAmount != null">,pay_amount = #{paidAmount}</if>
+        WHERE id = #{orderId}
+    </update>
+
+    <!-- 获取订单统计信息 -->
+    <select id="getOrderStatistics" resultType="java.util.HashMap">
+        SELECT 
+            COUNT(*) AS totalOrders,
+            SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END) AS pendingPayment,
+            SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) AS pendingShipment,
+            SUM(CASE WHEN status = 2 THEN 1 ELSE 0 END) AS shipped,
+            SUM(CASE WHEN status = 3 THEN 1 ELSE 0 END) AS completed,
+            SUM(CASE WHEN status = 4 THEN 1 ELSE 0 END) AS cancelled,
+            SUM(total_amount) AS totalAmount,
+            SUM(pay_amount) AS totalPaidAmount
+        FROM oms_order
+        WHERE delete_status = 0
+          AND source_type = 2
+          AND (
+              (#{memberId} IS NOT NULL AND member_id = #{memberId})
+              OR (#{guestId} IS NOT NULL AND note LIKE CONCAT('%游客ID：', #{guestId}, '%'))
+          )
+    </select>
+
+    <!-- 查询待付款订单数量 -->
+    <select id="getPendingPaymentOrderCount" resultType="int">
+        SELECT COUNT(*)
+        FROM oms_order
+        WHERE status = 0
+          AND delete_status = 0
+          AND source_type = 2
+          AND (
+              (#{memberId} IS NOT NULL AND member_id = #{memberId})
+              OR (#{guestId} IS NOT NULL AND note LIKE CONCAT('%游客ID：', #{guestId}, '%'))
+          )
+    </select>
+
+    <!-- 查询超时未支付订单 -->
+    <select id="getTimeoutOrders" resultType="java.lang.Long">
+        SELECT id
+        FROM oms_order
+        WHERE status = 0
+          AND delete_status = 0
+          AND source_type = 2
+          AND create_time &lt; DATE_SUB(NOW(), INTERVAL #{timeoutMinutes} MINUTE)
+    </select>
+
+    <!-- 批量更新订单状态为已关闭 -->
+    <update id="batchCloseOrders">
+        UPDATE oms_order
+        SET status = 4,
+            modify_time = NOW(),
+            note = CONCAT(IFNULL(note, ''), '；系统自动关闭（超时未支付）')
+        WHERE id IN
+        <foreach collection="orderIds" item="orderId" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </update>
+
+    <!-- 插入订单操作历史 -->
+    <insert id="insertOrderOperateHistory">
+        INSERT INTO oms_order_operate_history (
+            order_id, operate_man, create_time, order_status, note
+        ) VALUES (
+            #{orderId}, #{operateMan}, NOW(), #{orderStatus}, #{note}
+        )
+    </insert>
+
+</mapper> 

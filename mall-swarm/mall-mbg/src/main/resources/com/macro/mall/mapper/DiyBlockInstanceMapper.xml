@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.mapper.DiyBlockInstanceMapper">
+  <resultMap id="BaseResultMap" type="com.macro.mall.model.DiyBlockInstance">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="page_id" jdbcType="BIGINT" property="pageId" />
+    <result column="version" jdbcType="INTEGER" property="version" />
+    <result column="block_key" jdbcType="VARCHAR" property="blockKey" />
+    <result column="component_type" jdbcType="VARCHAR" property="componentType" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.macro.mall.model.DiyBlockInstance">
+    <result column="props_json" jdbcType="LONGVARCHAR" property="propsJson" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, page_id, version, block_key, component_type, sort, create_time
+  </sql>
+  <sql id="Blob_Column_List">
+    props_json
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.model.DiyBlockInstanceExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from diy_block_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.macro.mall.model.DiyBlockInstanceExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from diy_block_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from diy_block_instance
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from diy_block_instance
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.macro.mall.model.DiyBlockInstanceExample">
+    delete from diy_block_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.macro.mall.model.DiyBlockInstance">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into diy_block_instance (page_id, version, block_key, 
+      component_type, sort, create_time, 
+      props_json)
+    values (#{pageId,jdbcType=BIGINT}, #{version,jdbcType=INTEGER}, #{blockKey,jdbcType=VARCHAR}, 
+      #{componentType,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{propsJson,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.macro.mall.model.DiyBlockInstance">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into diy_block_instance
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pageId != null">
+        page_id,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="blockKey != null">
+        block_key,
+      </if>
+      <if test="componentType != null">
+        component_type,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="propsJson != null">
+        props_json,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pageId != null">
+        #{pageId,jdbcType=BIGINT},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=INTEGER},
+      </if>
+      <if test="blockKey != null">
+        #{blockKey,jdbcType=VARCHAR},
+      </if>
+      <if test="componentType != null">
+        #{componentType,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="propsJson != null">
+        #{propsJson,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.macro.mall.model.DiyBlockInstanceExample" resultType="java.lang.Long">
+    select count(*) from diy_block_instance
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update diy_block_instance
+    <set>
+      <if test="row.id != null">
+        id = #{row.id,jdbcType=BIGINT},
+      </if>
+      <if test="row.pageId != null">
+        page_id = #{row.pageId,jdbcType=BIGINT},
+      </if>
+      <if test="row.version != null">
+        version = #{row.version,jdbcType=INTEGER},
+      </if>
+      <if test="row.blockKey != null">
+        block_key = #{row.blockKey,jdbcType=VARCHAR},
+      </if>
+      <if test="row.componentType != null">
+        component_type = #{row.componentType,jdbcType=VARCHAR},
+      </if>
+      <if test="row.sort != null">
+        sort = #{row.sort,jdbcType=INTEGER},
+      </if>
+      <if test="row.createTime != null">
+        create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="row.propsJson != null">
+        props_json = #{row.propsJson,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update diy_block_instance
+    set id = #{row.id,jdbcType=BIGINT},
+      page_id = #{row.pageId,jdbcType=BIGINT},
+      version = #{row.version,jdbcType=INTEGER},
+      block_key = #{row.blockKey,jdbcType=VARCHAR},
+      component_type = #{row.componentType,jdbcType=VARCHAR},
+      sort = #{row.sort,jdbcType=INTEGER},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP},
+      props_json = #{row.propsJson,jdbcType=LONGVARCHAR}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update diy_block_instance
+    set id = #{row.id,jdbcType=BIGINT},
+      page_id = #{row.pageId,jdbcType=BIGINT},
+      version = #{row.version,jdbcType=INTEGER},
+      block_key = #{row.blockKey,jdbcType=VARCHAR},
+      component_type = #{row.componentType,jdbcType=VARCHAR},
+      sort = #{row.sort,jdbcType=INTEGER},
+      create_time = #{row.createTime,jdbcType=TIMESTAMP}
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.DiyBlockInstance">
+    update diy_block_instance
+    <set>
+      <if test="pageId != null">
+        page_id = #{pageId,jdbcType=BIGINT},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=INTEGER},
+      </if>
+      <if test="blockKey != null">
+        block_key = #{blockKey,jdbcType=VARCHAR},
+      </if>
+      <if test="componentType != null">
+        component_type = #{componentType,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="propsJson != null">
+        props_json = #{propsJson,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.DiyBlockInstance">
+    update diy_block_instance
+    set page_id = #{pageId,jdbcType=BIGINT},
+      version = #{version,jdbcType=INTEGER},
+      block_key = #{blockKey,jdbcType=VARCHAR},
+      component_type = #{componentType,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      props_json = #{propsJson,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.DiyBlockInstance">
+    update diy_block_instance
+    set page_id = #{pageId,jdbcType=BIGINT},
+      version = #{version,jdbcType=INTEGER},
+      block_key = #{blockKey,jdbcType=VARCHAR},
+      component_type = #{componentType,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

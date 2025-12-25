@@ -1,0 +1,33 @@
+# 依赖目录 (最常见)
+node_modules/    # Node.js 依赖包 [5](@ref)
+.cursor/        # Cursor AI 生成的文件 [10](@ref)
+android/        # Android 项目构建输出 [11](@ref)
+
+# 构建输出目录
+dist/           # 常见的构建输出目录（如 Vue, React 等）[9](@ref)
+dist-electron/  # Electron 构建输出 [12](@ref)
+
+# 日志文件
+*.log           # 所有日志文件 [3](@ref)
+tests/         # 测试报告和结果 [13](@ref)
+
+# 环境变量文件（通常包含敏感信息）
+.env            # 环境变量文件 [4](@ref)
+.env.local
+.env.development
+.env.staging
+.env.production
+
+# 压缩包和归档
+*.tar.gz
+*.zip
+*.7z
+
+# 临时文件夹和文件
+tmp/
+temp/
+*.tmp           # 临时文件 [3](@ref)
+.tmp/
+.cache/
+.elasticbeanstalk/
+.terraform/

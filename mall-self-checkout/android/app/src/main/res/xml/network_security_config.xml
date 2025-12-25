@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- 允许所有明文通信（开发和测试环境） -->
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- 允许localhost和本地IP -->
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">192.168.1.4</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+        <!-- 允许局域网IP段 -->
+        <domain includeSubdomains="true">192.168.0.0/16</domain>
+        <domain includeSubdomains="true">10.0.0.0/8</domain>
+    </domain-config>
+    
+    <!-- 如果需要允许所有明文通信（仅开发环境） -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <!-- 信任系统根证书 -->
+            <certificates src="system"/>
+        </trust-anchors>
+    </base-config>
+
+    <domain-config>
+        <domain includeSubdomains="true">haojiangzhenhao.hello4am.com</domain>
+        <domain includeSubdomains="true">test.haojiangzhenhao.hello4am.com</domain>
+        <trust-anchors>
+            <certificates src="system"/>
+            <certificates src="user"/>
+        </trust-anchors>
+    </domain-config>
+</network-security-config> 
