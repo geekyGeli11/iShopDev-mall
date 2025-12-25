@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iShopDev Mall - 开源电商解决方案</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .feature-icon { width: 60px; height: 60px; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Hero Section -->
+    <header class="gradient-bg text-white">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold">🛒 iShopDev Mall</div>
+            <div class="space-x-6">
+                <a href="#features" class="hover:text-gray-200">功能特性</a>
+                <a href="#architecture" class="hover:text-gray-200">系统架构</a>
+                <a href="#tech" class="hover:text-gray-200">技术栈</a>
+                <a href="https://github.com/geekyGeli11/iShopDev-mall" class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100">
+                    <i class="fab fa-github mr-2"></i>GitHub
+                </a>
+            </div>
+        </nav>
+        <div class="container mx-auto px-6 py-20 text-center">
+            <h1 class="text-5xl font-bold mb-6">iShopDev Mall</h1>
+            <p class="text-xl mb-8 text-gray-200">一站式微服务电商解决方案，基于 Spring Cloud 2023 + Vue 全家桶</p>
+            <div class="space-x-4">
+                <a href="https://github.com/geekyGeli11/iShopDev-mall" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 inline-block">
+                    <i class="fab fa-github mr-2"></i>查看源码
+                </a>
+                <a href="#quickstart" class="border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 inline-block">
+                    快速开始
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">核心功能</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg card-hover transition-all duration-300">
+                    <div class="feature-icon bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-store text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">商城系统</h3>
+                    <p class="text-gray-600">商品管理、分类、品牌、库存、购物车、订单全流程</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg card-hover transition-all duration-300">
+                    <div class="feature-icon bg-green-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-users text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">会员体系</h3>
+                    <p class="text-gray-600">会员等级、积分、签到、优惠券、分销推广</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg card-hover transition-all duration-300">
+                    <div class="feature-icon bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-palette text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">AI 定制</h3>
+                    <p class="text-gray-600">商品个性化定制、AI 图像生成、效果预览</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg card-hover transition-all duration-300">
+                    <div class="feature-icon bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-cash-register text-orange-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">自助收银</h3>
+                    <p class="text-gray-600">扫码购物、多种支付、小票打印、语音播报</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">系统架构</h2>
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <pre class="text-sm overflow-x-auto">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           客户端层                                       │
+│     ┌───────────┐    ┌───────────┐    ┌───────────┐    ┌───────────┐   │
+│     │ 小程序端   │    │   H5端    │    │  管理后台  │    │ 自助收银   │   │
+│     └───────────┘    └───────────┘    └───────────┘    └───────────┘   │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          API 网关层                                      │
+│                    mall-gateway (Spring Cloud Gateway)                  │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         微服务应用层                                     │
+│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ │
+│  │mall-admin │ │mall-portal│ │mall-search│ │mall-auth  │ │mall-self  │ │
+│  │ 后台服务   │ │ 前台服务   │ │ 搜索服务   │ │ 认证服务   │ │ check服务 │ │
+│  └───────────┘ └───────────┘ └───────────┘ └───────────┘ └───────────┘ │
+└─────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         基础设施层                                       │
+│  ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ ┌───────────┐ │
+│  │   Nacos   │ │   Redis   │ │   MySQL   │ │ RabbitMQ  │ │Elasticsearch│
+│  └───────────┘ └───────────┘ └───────────┘ └───────────┘ └───────────┘ │
+└─────────────────────────────────────────────────────────────────────────┘
+                </pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech" class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">技术栈</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 flex items-center">
+                        <i class="fas fa-server text-blue-600 mr-3"></i>后端技术
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Spring Cloud 2023</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Spring Boot 3.2</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Sa-Token</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">MyBatis</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Elasticsearch</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Redis</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">RabbitMQ</span>
+                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Docker</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 flex items-center">
+                        <i class="fas fa-laptop-code text-green-600 mr-3"></i>前端技术
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Vue 2/3</span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Element UI</span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">uni-app</span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Vant</span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Electron</span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Capacitor</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Structure -->
+    <section id="quickstart" class="py-20 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center mb-12">项目结构</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="text-4xl mb-4">⚙️</div>
+                    <h3 class="text-lg font-semibold mb-2">mall-swarm</h3>
+                    <p class="text-gray-600 text-sm">Spring Cloud 微服务后端</p>
+                    <a href="https://github.com/geekyGeli11/iShopDev-mall/tree/master/mall-swarm" class="text-purple-600 text-sm mt-2 inline-block hover:underline">查看详情 →</a>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="text-4xl mb-4">🖥️</div>
+                    <h3 class="text-lg font-semibold mb-2">mall-admin-web</h3>
+                    <p class="text-gray-600 text-sm">Vue 2 + Element UI 管理后台</p>
+                    <a href="https://github.com/geekyGeli11/iShopDev-mall/tree/master/mall-admin-web" class="text-purple-600 text-sm mt-2 inline-block hover:underline">查看详情 →</a>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="text-4xl mb-4">📱</div>
+                    <h3 class="text-lg font-semibold mb-2">mall-app-web</h3>
+                    <p class="text-gray-600 text-sm">uni-app 小程序/H5/App</p>
+                    <a href="https://github.com/geekyGeli11/iShopDev-mall/tree/master/mall-app-web" class="text-purple-600 text-sm mt-2 inline-block hover:underline">查看详情 →</a>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="text-4xl mb-4">🏪</div>
+                    <h3 class="text-lg font-semibold mb-2">mall-self-checkout</h3>
+                    <p class="text-gray-600 text-sm">Vue 3 自助收银系统</p>
+                    <a href="https://github.com/geekyGeli11/iShopDev-mall/tree/master/mall-self-checkout" class="text-purple-600 text-sm mt-2 inline-block hover:underline">查看详情 →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="gradient-bg py-16">
+        <div class="container mx-auto px-6 text-center text-white">
+            <h2 class="text-3xl font-bold mb-4">开始使用 iShopDev Mall</h2>
+            <p class="text-xl mb-8 text-gray-200">完整的电商解决方案，开箱即用</p>
+            <div class="space-x-4">
+                <a href="https://github.com/geekyGeli11/iShopDev-mall" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 inline-block">
+                    <i class="fab fa-github mr-2"></i>Star on GitHub
+                </a>
+                <a href="https://github.com/geekyGeli11/iShopDev-mall/fork" class="border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 inline-block">
+                    <i class="fas fa-code-branch mr-2"></i>Fork 项目
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>© 2025 iShopDev Mall. Released under the Apache-2.0 License.</p>
+            <p class="mt-2">
+                <a href="https://github.com/geekyGeli11/iShopDev-mall" class="hover:text-white">GitHub</a>
+                <span class="mx-2">|</span>
+                <a href="https://github.com/geekyGeli11/iShopDev-mall/issues" class="hover:text-white">Issues</a>
+                <span class="mx-2">|</span>
+                <a href="https://github.com/geekyGeli11/iShopDev-mall/blob/master/README.md" class="hover:text-white">文档</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
